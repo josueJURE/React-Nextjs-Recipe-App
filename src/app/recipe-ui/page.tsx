@@ -14,6 +14,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import DietaryRequirements from "@/components/ui/dietary-requirements";
+
 
 
 export default function Test() {
@@ -22,7 +24,7 @@ export default function Test() {
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
 
-  
+
 
 
 
@@ -36,9 +38,18 @@ export default function Test() {
 
   return (
     <>
+ 
       <main className="min-h-screen w-full flex items-center justify-center p-4">
+     
         <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl">
-          <Card>
+      
+          <Card className=" flex items-center justify-cente">
+            <DietaryRequirements/>
+         
+        
+     
+            <div>{selectedCountry}</div>
+     
             <Map
               handleCountrySelect={handleCountrySelect}
               isDarkMode={isDarkMode}
