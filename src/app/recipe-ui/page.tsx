@@ -1,37 +1,62 @@
-"use client"
+"use client";
+
+// #Gladiator2000
+
+import Map from "@/components/map";
+
+import { useState } from "react";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import DietaryRequirements from "@/components/ui/dietary-requirements";
+
+
 
 export default function Test() {
 
-    function handleCookies() {
-        console.log("cookies")
-    }
+  const [selectedCountry,  setSelectedCountry] = useState<string>("")
+
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(false)
+
+
+
+
+
+
+
+  const handleCountrySelect = (countryName: string) => {
+    setSelectedCountry(countryName);
+  };
+
 
 
   return (
-    <div className="space-y-4">
-  <div  className="flex items-center space-x-2">
-    <input onChange={handleCookies}
-      id="lactose"
-      type="checkbox"
-      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+    <>
+ 
+      <main className="min-h-screen w-full flex items-center justify-center p-4">
+     
+        <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl">
       
-    />
-    <label htmlFor="lactose" className="text-sm font-medium text-gray-200">
-      Lactose intolerant
-    </label>
-  </div>
-
-  <div  className="flex items-center space-x-2">
-    <input
-      id="vegetarian"
-      type="checkbox"
-      className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-    />
-    <label htmlFor="vegetarian" className="text-sm font-medium text-gray-200">
-      Vegetarian
-    </label>
-  </div>
-</div>
-
+          <Card className=" flex items-center justify-cente">
+            <DietaryRequirements/>
+         
+        
+     
+            <div>{selectedCountry}</div>
+     
+            <Map
+              handleCountrySelect={handleCountrySelect}
+              isDarkMode={isDarkMode}
+            />
+          </Card>
+        </form>
+      </main>
+    </>
   );
 }
