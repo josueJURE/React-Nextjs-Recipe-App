@@ -2,10 +2,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface DietaryRequirementsProps {
-  onToggle?: () => void;
+  onToggle?: (checked: boolean) => void;
 }
 
-function DietaryRequirements(props: DietaryRequirementsProps) {
+function DietaryRequirements({ onToggle }: DietaryRequirementsProps) {
   return (
     <div>
       <h1>Indicate any diatery requirements</h1>
@@ -15,11 +15,12 @@ function DietaryRequirements(props: DietaryRequirementsProps) {
         <Label htmlFor="other">Other</Label>
 
         <Input
-          onChange={props.onToggle}
+          onChange={(e) => onToggle?.(e.target.checked)}
           className="h-4"
           id="other"
           type="checkbox"
         />
+ 
       </div>
     </div>
   );
