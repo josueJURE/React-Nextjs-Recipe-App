@@ -16,11 +16,9 @@ import {
 
 import DietaryRequirements from "@/components/ui/dietary-requirements";
 import { Input } from "@/components/ui/input";
+import type {RecipeUIProps} from "@/utils/types"
 
-interface RecipeUIProps {
-  email: string;
-  name: string;
-}
+
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const [selectedCountry, setSelectedCountry] = useState<string>("");

@@ -3,10 +3,9 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import RecipeUIClient from "@/components/ui/recipe-ui-client";
 
-interface RecipeUIProps {
-  email: string;
-  name: string;
-}
+import type {RecipeUIProps} from "@/utils/types"
+
+
 
 export default async function RecipeUIPage(userProps: RecipeUIProps) {
   const session = await auth.api.getSession({

@@ -40,3 +40,8 @@ export interface GeographyFeature {
   rsmKey: string;
   properties: Record<string, string>;
 }
+
+export interface RecipeUIProps {
+  email: string;
+  name: string;
+}
