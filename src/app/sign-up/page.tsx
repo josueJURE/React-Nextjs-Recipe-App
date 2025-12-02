@@ -39,6 +39,8 @@ const formSchema = registerFormSchema;
 export default function Register() {
   const router = useRouter();
 
+
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

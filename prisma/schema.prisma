@@ -23,10 +23,13 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  vegan         Boolean   @default(false)
 
   @@unique([email])
   @@map("user")
 }
+
+// preferences in another table
 
 model Session {
   id        String   @id
@@ -38,6 +41,7 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 
   @@unique([token])
   @@index([userId])

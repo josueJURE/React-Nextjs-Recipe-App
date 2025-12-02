@@ -44,4 +44,12 @@ export interface GeographyFeature {
 export interface RecipeUIProps {
   email: string;
   name: string;
+  vegan: boolean;
+}
+
+
+export interface DietaryRequirementsProps {
+  vegan: boolean;
+  onVeganToggle: (checked: boolean) => void;
+  onOtherToggle?: (checked: boolean) => void;
 }
