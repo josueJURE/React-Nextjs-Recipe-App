@@ -13,21 +13,50 @@ datasource db {
   provider = "postgresql"
 }
 
+// model User {
+//   id            String    @id
+//   name          String
+//   email         String
+//   emailVerified Boolean   @default(false)
+//   image         String?
+//   createdAt     DateTime  @default(now())
+//   updatedAt     DateTime  @updatedAt
+//   sessions      Session[]
+//   accounts      Account[]
+//   vegan         Boolean   @default(false)
+
+//   @@unique([email])
+//   @@map("user")
+// }
 model User {
-  id            String    @id
+  id            String           @id
   name          String
-  email         String
-  emailVerified Boolean   @default(false)
+  email         String           @unique
+  emailVerified Boolean          @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
   sessions      Session[]
   accounts      Account[]
-  vegan         Boolean   @default(false)
 
-  @@unique([email])
+  // 1-to-1 relation
+  preferences   UserPreferences?
+
   @@map("user")
 }
+
+model UserPreferences {
+  // Use the User.id as both the PK and FK
+  userId  String    @id
+  vegan   Boolean   @default(false)
+
+  // Relation back to user
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+
 
 // preferences in another table
 

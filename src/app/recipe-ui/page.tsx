@@ -27,18 +27,28 @@ export default async function RecipeUIPage(userProps: RecipeUIProps) {
   // console.log("user.name:", user?.name);
 
   // Fetch user's dietary preferences from database
-  const userWithPreferences = await prisma.user.findUnique({
+  const recipeAppUser = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { email: true, name: true, vegan: true },
+    select: { email: true, name: true},
+    
   });
 
-  if (!userWithPreferences) {
+  const recipeAppUserPreferences = await prisma.userPreferences.findUnique({
+    where: {userId: user.id},
+    select: {vegan: true}
+  })
+
+  if (!recipeAppUser && !recipeAppUserPreferences) {
+    return redirect("/");
+  }
+
+  if (!recipeAppUser) {
     return redirect("/");
   }
 
   return <RecipeUIClient
-    email={userWithPreferences.email}
-    name={userWithPreferences.name}
-    vegan={userWithPreferences.vegan}
+    email={recipeAppUser.email}
+    name={recipeAppUser.name}
+    vegan={recipeAppUserPreferences?.vegan || false}
   />;
 }

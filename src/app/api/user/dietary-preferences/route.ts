@@ -35,11 +35,19 @@ export async function PATCH(request: Request) {
       );
     }
 
-    // Update the user's vegan preference
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: { vegan },
-      select: { id: true, vegan: true }, // It limits how much data Prisma sends back. Without select, Prisma would return the entire user record, including fields you don't need (email, createdAt, etc.)
+    // await prisma.userPreferences.create({
+    //   data: {
+    //     userId,
+    //     vegan: true,
+    //   },
+    // });
+
+    // Update or create the user's vegan preference
+    const updatedUser = await prisma.userPreferences.upsert({
+      where: { userId : userId },
+      update: { vegan },
+      create: { userId, vegan },
+      select: { userId : true, vegan: true }, // It limits how much data Prisma sends back. Without select, Prisma would return the entire user record, including fields you don't need (email, createdAt, etc.)
     });
 
     return NextResponse.json({
