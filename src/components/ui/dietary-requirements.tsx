@@ -29,6 +29,10 @@ function DietaryRequirements({ vegan, onVeganToggle, onOtherToggle }: DietaryReq
 
       const data = await response.json();
 
+      // console.log(data.pays)
+
+
+
       // Update the parent component's state
       onVeganToggle(data.vegan);
 

@@ -19,16 +19,12 @@ import { Input } from "@/components/ui/input";
 import type { RecipeUIProps } from "@/utils/types";
 import { useRouter } from "next/navigation";
 
-
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
 
-
-
-
-  const  handleSignOut = () => {
+  const handleSignOut = () => {
     router.push("/sign-in");
-  }
+  };
   const [selectedCountry, setSelectedCountry] = useState<string>("");
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -48,6 +44,25 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const handleCountrySelect = (countryName: string) => {
     setSelectedCountry(countryName);
+  };
+
+  const handleCountrySelection = async () => {
+    // console.log("country selected")
+    const response = await fetch("/api/user/country-post-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ country: selectedCountry }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update preference");
+    }
+
+    const data = await response.json();
+
+    console.log(data.pays);
   };
 
   return (
@@ -71,7 +86,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               handleCountrySelect={handleCountrySelect}
               isDarkMode={isDarkMode}
             />
-            <Button>Submit</Button>
+            <Button onClick={handleCountrySelection}>Submit</Button>
             <Button type="button" onClick={handleSignOut}>
               Sign out
             </Button>
