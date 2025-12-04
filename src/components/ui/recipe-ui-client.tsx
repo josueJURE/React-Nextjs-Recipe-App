@@ -48,7 +48,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const handleCountrySelection = async (e: React.FormEvent) => {
    
-    e.preventDefault();  // <-- REQUIRED
+    e.preventDefault();  // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
+
     const response = await fetch("/api/user/country-post-request", {
       method: "POST",
       headers: {
