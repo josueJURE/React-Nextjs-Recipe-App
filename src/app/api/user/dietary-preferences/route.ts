@@ -28,6 +28,7 @@ export async function PATCH(request: Request) {
     const { vegan } = body;
 
     // Validate input
+    // use zod validation instead
     if (typeof vegan !== "boolean") {
       return NextResponse.json(
         { error: "Invalid vegan value. Must be a boolean." },
