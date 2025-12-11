@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-import {userChoicesSchema} from  '@/lib/validations/user-choices'
+import { userChoicesSchema } from "@/lib/validations/user-choices";
 
 console.log("ENV:", process.env.OPENAI_API_KEY);
-
-
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,14 +11,18 @@ export async function POST(request: NextRequest) {
     const userChoicesValidation = userChoicesSchema.safeParse(body);
 
     if (!userChoicesValidation.success) {
-      return NextResponse.json({
-        success: false,
-        error: "Invalid request data",
-        details: userChoicesValidation.error.issues,
-      }, {status: 400}
-    );
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid request data",
+          details: userChoicesValidation.error.issues,
+        },
+        { status: 400 }
+      );
     }
-    const { country, vegan } = userChoicesValidation.data;
+    const { country, vegan, other } = userChoicesValidation.data;
+
+    console.log("is other picked up", other);
 
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
@@ -30,12 +32,16 @@ export async function POST(request: NextRequest) {
 
     console.log("is user vegan", vegan);
 
+    const veganNote = vegan
+      ? ", taking into account that the user is vegan"
+      : "";
+    const additionalNote = other ? `. ${other}` : "";
+
     const stream = await openai.chat.completions.create({
       messages: [
         {
           role: "user",
-          content: `make me a dish from ${country}${vegan ? ', taking into account that the user is vegan' : ''}`
-
+          content: `make me a dish from ${country}${veganNote}${additionalNote}`,
         },
       ],
       model: "gpt-3.5-turbo",
@@ -53,7 +59,6 @@ export async function POST(request: NextRequest) {
       const message = chunk.choices[0]?.delta?.content || "";
 
       console.log(message);
-  
     }
 
     return NextResponse.json({

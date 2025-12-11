@@ -34,6 +34,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const [otherDietaryRequirements, setOtherDietaryRequirements] =
     useState<boolean>(false);
 
+    const [userOtherDietaryRequirements, setuserOtherDietaryRequirements] = useState<string>("");
+
   const handleVeganToggle = (checked: boolean) => {
     setVegan(checked);
   };
@@ -46,6 +48,16 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setSelectedCountry(countryName);
   };
 
+  const handleuserOtherDietaryRequirements = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setuserOtherDietaryRequirements(e.target.value)
+  }
+
+
+
+
+
+
+
   const handleCountrySelection = async (e: React.FormEvent) => {
    
     e.preventDefault();  // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
@@ -55,7 +67,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ country: selectedCountry, vegan }),
+      body: JSON.stringify({ country: selectedCountry, vegan: vegan, other: userOtherDietaryRequirements }),
     });
 
     if (!response.ok) {
@@ -78,7 +90,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               onOtherToggle={handleDietaryRequirements}
             />
             {otherDietaryRequirements && (
-              <Input type="text" className="w-0.25xl" />
+              <Input type="text" onChange={handleuserOtherDietaryRequirements} className="w-0.25xl" />
             )}
 
             <div>{`welcome back ${userProps.name}`}</div>
