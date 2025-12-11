@@ -5,6 +5,11 @@ import prisma from "@/lib/prisma";
 // The headers function allows you to read the HTTP incoming request headers from a Server Component.
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import {z} from "zod"
+
+const userPreference = z.object({
+  vegan: z.boolean()
+})
 
 
 export async function PATCH(request: Request) {
@@ -16,6 +21,8 @@ export async function PATCH(request: Request) {
   
     console.log("session", session)
 
+
+
     if (!session) {
       return NextResponse.json(
         { error: "Unauthorized" },
@@ -25,22 +32,22 @@ export async function PATCH(request: Request) {
 
     const userId = session.user.id;
     const body = await request.json();
-    const { vegan } = body;
+    const userPreferencesValidation = userPreference.safeParse(body)
+    // const { vegan } = body;
 
-    // Validate input
-    if (typeof vegan !== "boolean") {
+    if(!userPreferencesValidation.success) {
       return NextResponse.json(
         { error: "Invalid vegan value. Must be a boolean." },
         { status: 400 }
       );
+
     }
 
-    // await prisma.userPreferences.create({
-    //   data: {
-    //     userId,
-    //     vegan: true,
-    //   },
-    // });
+
+
+    const {vegan} = userPreferencesValidation.data
+
+
 
     // Update or create the user's vegan preference
     const updatedUser = await prisma.userPreferences.upsert({
