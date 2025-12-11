@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
-import {z} from "zod"
+import { z } from "zod";
 
 console.log("ENV:", process.env.OPENAI_API_KEY);
 
 const userChoicesSchema = z.object({
-  country: z.string().min(1, "must have minimum 1 letter"),
+  country: z.string()
+    .min(1, "Country name is required")
+    .trim()
+    .max(100, "Country name is too long"),
   vegan: z.boolean()
 })
-
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,15 +20,12 @@ export async function POST(request: NextRequest) {
     if (!userChoicesValidation.success) {
       return NextResponse.json({
         success: false,
-        details :userChoicesValidation.error.issues,
-  
-  
-      
-      });
-
-
+        error: "Invalid request data",
+        details: userChoicesValidation.error.issues,
+      }, {status: 400}
+    );
     }
-    const { country, vegan} = userChoicesValidation.data;
+    const { country, vegan } = userChoicesValidation.data;
 
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
@@ -34,39 +33,34 @@ export async function POST(request: NextRequest) {
 
     console.log("openai", openai);
 
-    console.log("is user vegan", vegan)
-
-  
+    console.log("is user vegan", vegan);
 
     const stream = await openai.chat.completions.create({
-        messages: [
-          {
-            role: "user",
-            content: ` make me a dish from ${country}`,
-          },
-        ],
-        model: "gpt-3.5-turbo",
-        max_tokens: 2000,
-        stream: true,
-      });
-
+      messages: [
+        {
+          role: "user",
+          content: ` make me a dish from ${country}`,
+        },
+      ],
+      model: "gpt-3.5-turbo",
+      max_tokens: 2000,
+      stream: true,
+    });
 
     for await (const chunk of stream) {
-        const finishReason = chunk.choices[0].finish_reason;
-  
-        if (finishReason === "stop") {
-          break;
-        }
-  
-        const message = chunk.choices[0]?.delta?.content || "";
+      const finishReason = chunk.choices[0].finish_reason;
 
-        console.log(message)
-        // const messageJSON = JSON.stringify({ message });
-        // res.write(`data: ${messageJSON}\n\n`);
-        // getStreamRecipe(message);
+      if (finishReason === "stop") {
+        break;
       }
 
-  
+      const message = chunk.choices[0]?.delta?.content || "";
+
+      console.log(message);
+      // const messageJSON = JSON.stringify({ message });
+      // res.write(`data: ${messageJSON}\n\n`);
+      // getStreamRecipe(message);
+    }
 
     return NextResponse.json({
       success: true,
