@@ -1,16 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
+
 
 import { userChoicesSchema } from "@/lib/validations/user-choices";
+import { chatCompletion} from "@/lib/chat-completions/openai"
 
 console.log("ENV:", process.env.OPENAI_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log("Received body:", body);
+
     const userChoicesValidation = userChoicesSchema.safeParse(body);
 
     if (!userChoicesValidation.success) {
+      console.error("Validation failed:", userChoicesValidation.error.issues);
       return NextResponse.json(
         {
           success: false,
@@ -24,30 +28,7 @@ export async function POST(request: NextRequest) {
 
     console.log("is other picked up", other);
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-
-    console.log("openai", openai);
-
-    console.log("is user vegan", vegan);
-
-    const veganNote = vegan
-      ? ", taking into account that the user is vegan"
-      : "";
-    const additionalNote = other ? `. ${other}` : "";
-
-    const stream = await openai.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content: `make me a dish from ${country}${veganNote}${additionalNote}`,
-        },
-      ],
-      model: "gpt-3.5-turbo",
-      max_tokens: 2000,
-      stream: true,
-    });
+    const stream = await chatCompletion(country, vegan, other)
 
     for await (const chunk of stream) {
       const finishReason = chunk.choices[0].finish_reason;
@@ -66,9 +47,13 @@ export async function POST(request: NextRequest) {
       pays: country,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error in POST handler:", error);
     return NextResponse.json(
-      { error: "Failed to process request" },
+      {
+        success: false,
+        error: "Failed to process request",
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

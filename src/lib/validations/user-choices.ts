@@ -7,9 +7,10 @@ export const userChoicesSchema = z.object({
     .trim()
     .max(100, "Country name is too long"),
   vegan: z.boolean(),
-  other: z.string().min(2, "Country name is required")
-  .trim()
-  .max(56, "Country name is too long" )
+  other: z
+    .string()
+    .max(56, "Additional note is too long")
+    .default("")
 });
 
 export type UserChoices = z.infer<typeof userChoicesSchema>;

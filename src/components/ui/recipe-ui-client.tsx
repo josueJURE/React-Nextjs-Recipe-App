@@ -59,7 +59,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
 
   const handleCountrySelection = async (e: React.FormEvent) => {
-   
+
     e.preventDefault();  // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
 
     const response = await fetch("/api/user/country-post-request", {
@@ -71,7 +71,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to update preference");
+      const errorData = await response.json();
+      console.error("Error response:", errorData);
+      throw new Error(`Failed to update preference: ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
