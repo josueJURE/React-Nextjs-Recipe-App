@@ -1,16 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
-import { z } from "zod";
+
+import {userChoicesSchema} from  '@/lib/validations/user-choices'
 
 console.log("ENV:", process.env.OPENAI_API_KEY);
 
-const userChoicesSchema = z.object({
-  country: z.string()
-    .min(1, "Country name is required")
-    .trim()
-    .max(100, "Country name is too long"),
-  vegan: z.boolean()
-})
+
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,7 +34,8 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: "user",
-          content: ` make me a dish from ${country}`,
+          content: `make me a dish from ${country}${vegan ? ', taking into account that the user is vegan' : ''}`
+
         },
       ],
       model: "gpt-3.5-turbo",
@@ -57,9 +53,7 @@ export async function POST(request: NextRequest) {
       const message = chunk.choices[0]?.delta?.content || "";
 
       console.log(message);
-      // const messageJSON = JSON.stringify({ message });
-      // res.write(`data: ${messageJSON}\n\n`);
-      // getStreamRecipe(message);
+  
     }
 
     return NextResponse.json({
