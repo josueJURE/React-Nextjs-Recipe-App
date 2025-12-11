@@ -55,7 +55,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ country: selectedCountry }),
+      body: JSON.stringify({ country: selectedCountry, vegan }),
     });
 
     if (!response.ok) {

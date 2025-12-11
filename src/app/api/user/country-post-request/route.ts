@@ -1,18 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import {z} from "zod"
 
 console.log("ENV:", process.env.OPENAI_API_KEY);
+
+const userChoicesSchema = z.object({
+  country: z.string().min(1, "must have minimum 1 letter"),
+  vegan: z.boolean()
+})
+
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { country } = body;
+    const userChoicesValidation = userChoicesSchema.safeParse(body);
+
+    if (!userChoicesValidation.success) {
+      return NextResponse.json({
+        success: false,
+        details :userChoicesValidation.error.issues,
+  
+  
+      
+      });
+
+
+    }
+    const { country, vegan} = userChoicesValidation.data;
 
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
 
     console.log("openai", openai);
+
+    console.log("is user vegan", vegan)
+
+  
 
     const stream = await openai.chat.completions.create({
         messages: [
