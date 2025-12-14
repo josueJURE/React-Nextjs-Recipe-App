@@ -27,8 +27,14 @@ export const userChoicesSchema = z.object({
     .default(""),
 });
 
+export const userPreference = userChoicesSchema.pick({
+  vegan: true
+
+})
+
 // Export types
 export type RegisterForm = z.infer<typeof registerFormSchema>;
 export type SignInForm = z.infer<typeof signInFormSchema>;
 export type UserChoices = z.infer<typeof userChoicesSchema>;
+export type UserPreference  = z.infer<typeof userPreference >
 

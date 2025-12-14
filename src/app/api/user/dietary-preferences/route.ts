@@ -1,16 +1,12 @@
-
-
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 // The headers function allows you to read the HTTP incoming request headers from a Server Component.
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import {z} from "zod"
 
-const userPreference = z.object({
-  vegan: z.boolean()
-})
 
+import { userPreference } from "@/lib/validations/user-choices";
+import type { UserPreference } from "@/lib/validations/user-choices";
 
 export async function PATCH(request: Request) {
   try {
@@ -18,43 +14,33 @@ export async function PATCH(request: Request) {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-  
-    console.log("session", session)
 
-
+    console.log("session", session);
 
     if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const userId = session.user.id;
     const body = await request.json();
-    const userPreferencesValidation = userPreference.safeParse(body)
-    // const { vegan } = body;
+    const userPreferencesValidation = userPreference.safeParse(body);
 
-    if(!userPreferencesValidation.success) {
+
+    if (!userPreferencesValidation.success) {
       return NextResponse.json(
         { error: "Invalid vegan value. Must be a boolean." },
         { status: 400 }
       );
-
     }
-
-
-
-    const {vegan} = userPreferencesValidation.data
-
-
+    const validatedData: UserPreference = userPreferencesValidation.data;
+    const { vegan } = validatedData;
 
     // Update or create the user's vegan preference
     const updatedUser = await prisma.userPreferences.upsert({
-      where: { userId : userId },
+      where: { userId: userId },
       update: { vegan },
       create: { userId, vegan },
-      select: { userId : true, vegan: true }, // It limits how much data Prisma sends back. Without select, Prisma would return the entire user record, including fields you don't need (email, createdAt, etc.)
+      select: { userId: true, vegan: true }, // It limits how much data Prisma sends back. Without select, Prisma would return the entire user record, including fields you don't need (email, createdAt, etc.)
     });
 
     return NextResponse.json({
