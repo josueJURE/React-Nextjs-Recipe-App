@@ -23,12 +23,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { signInFormSchema } from "@/lib/validation-schemas";
+import { signInFormSchema } from "@/lib/validations/user-choices";
+import type { SignInForm } from "@/lib/validations/user-choices"; 
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 export default function SignIn() {
-  const form = useForm<z.infer<typeof signInFormSchema>>({
+  const form = useForm< SignInForm >({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
       email: "",
@@ -36,7 +37,9 @@ export default function SignIn() {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof signInFormSchema>) {
+  // z.infer<typeof signInFormSchema>;
+
+  async function onSubmit(values: SignInForm) {
     console.log("this is called!!");
     const { email, password } = values;
 

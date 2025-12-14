@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 import { userChoicesSchema } from "@/lib/validations/user-choices";
+
+// Import the TYPE (used at compile-time for type checking)
+
 import { chatCompletion} from "@/lib/chat-completions/openai"
 
 console.log("ENV:", process.env.OPENAI_API_KEY);
