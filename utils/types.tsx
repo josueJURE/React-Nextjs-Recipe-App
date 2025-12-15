@@ -1,6 +1,6 @@
 // types/forms.ts
 import { z } from "zod";
-import { registerFormSchema } from "@/lib/validation-schemas";
+import { registerFormSchema } from "@/lib/validations/user-choices";
 
 // ✅ inferred type from schema
 type RegisterFormValues = z.infer<typeof registerFormSchema>;

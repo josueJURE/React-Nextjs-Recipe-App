@@ -44,6 +44,7 @@ export default function SignIn() {
     const { email, password } = values;
 
     const { data, error } = await authClient.signIn.email(
+      
       {
         email,
         password,
@@ -63,6 +64,8 @@ export default function SignIn() {
         },
       }
     );
+
+    console.log("data?.redirect", data?.redirect)
   }
 
   return (
