@@ -32,6 +32,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const [isMenuDisplayed, setIsMenuDisplayed ] = useState<boolean>(false);
+
+  const [menuContent, setMenuContent] = useState<string>("");
+
   const [vegan, setVegan] = useState<boolean>(userProps.vegan);
 
   const [otherDietaryRequirements, setOtherDietaryRequirements] =
@@ -81,9 +85,31 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       );
     }
 
-    const data = await response.json();
+    if (response.ok) {
+      setIsMenuDisplayed(true);
+      setMenuContent(""); // Reset content before streaming
 
-    console.log(data.pays);
+      // Read the stream
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (reader) {
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+
+            if (done) {
+              break;
+            }
+
+            const text = decoder.decode(value, { stream: true });
+            setMenuContent((prev) => prev + text);
+          }
+        } catch (error) {
+          console.error("Error reading stream:", error);
+        }
+      }
+    }
   };
 
   // Wait for hydration to complete
@@ -122,6 +148,14 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                   handleCountrySelect={handleCountrySelect}
                   isDarkMode={isDarkMode}
                 />
+                {isMenuDisplayed && (
+                  <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto rounded-lg">
+                    <div className="prose max-w-none">
+                      <h2 className="text-2xl font-bold mb-4">Your Recipe</h2>
+                      <div className="whitespace-pre-wrap">{menuContent}</div>
+                    </div>
+                  </div>
+                )}
               </div>
               <Button onClick={handleCountrySelection}>Submit</Button>
               <Button type="button" onClick={handleSignOut}>

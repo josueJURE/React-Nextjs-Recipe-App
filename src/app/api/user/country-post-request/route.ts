@@ -31,23 +31,43 @@ export async function POST(request: NextRequest) {
 
     console.log("is other picked up", other);
 
-    const stream = await chatCompletion(country, vegan, other)
+    
 
-    for await (const chunk of stream) {
-      const finishReason = chunk.choices[0].finish_reason;
+    const stream = await chatCompletion(country, vegan, other);
 
-      if (finishReason === "stop") {
-        break;
+    // Create a ReadableStream to send data to the client
+    const encoder = new TextEncoder();
+
+    const readableStream = new ReadableStream({
+      async start(controller) {
+        try {
+          for await (const chunk of stream) {
+            const finishReason = chunk.choices[0].finish_reason;
+
+            if (finishReason === "stop") {
+              controller.close();
+              break;
+            }
+
+            const message = chunk.choices[0]?.delta?.content || "";
+
+            if (message) {
+              console.log(message);
+              // Send each chunk to the client
+              controller.enqueue(encoder.encode(message));
+            }
+          }
+        } catch (error) {
+          controller.error(error);
+        }
       }
+    });
 
-      const message = chunk.choices[0]?.delta?.content || "";
-
-      console.log(message);
-    }
-
-    return NextResponse.json({
-      success: true,
-      pays: country,
+    return new Response(readableStream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Transfer-Encoding': 'chunked',
+      },
     });
   } catch (error) {
     console.error("Error in POST handler:", error);

@@ -1,6 +1,15 @@
 import OpenAI from "openai";
+import { streamText } from "ai";
+import { openai } from "@ai-sdk/openai";
 
-    const openai = new OpenAI({
+
+
+
+
+
+
+
+    const openaiObject = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
   
@@ -10,7 +19,7 @@ import OpenAI from "openai";
     : "";
   const additionalNoteText = additionalNote && additionalNote.trim() ? `. ${additionalNote}` : "";
 
-  const stream = await openai.chat.completions.create({
+  const stream = await openaiObject.chat.completions.create({
     messages: [
       {
         role: "user",
@@ -22,9 +31,39 @@ import OpenAI from "openai";
     stream: true,
   });
 
-  return stream;
+  return stream
+
+  // const stream = await streamText({
+  //   model: openai("gpt-3.5-turbo"),
+  //   messages: [
+  //     {
+  //       role: "user",
+  //       content: `make me a dish from ${country}${veganNote}${additionalNoteText}`,
+  //     },
+  //   ],
+  //   // max_tokens: 1000,
+  // });
+
+
 
 }
 
 
+
+
+
+
+// const response = await streamText({
+//   model: openai("gpt-3.5-turbo"),
+//   messages: [
+//     {
+//       role: "user",
+//       content: prompt,
+//     },
+//   ],
+//   maxTokens: 1000,
+// });
+
+
 export default chatCompletion
+// export default stream
