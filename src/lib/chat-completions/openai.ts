@@ -17,6 +17,24 @@ import { openai } from "@ai-sdk/openai";
   const veganNote = vegan
     ? ", taking into account that the user is vegan"
     : "";
+
+    if (process.env.NODE_ENV !== "production") {
+
+  const stream = await openaiObject.chat.completions.create({
+    messages: [
+      {
+        role: "user",
+        content: "Di",
+      },
+    ],
+    model: "gpt-3.5-turbo",
+    max_tokens: 2000,
+    stream: true,
+  });
+
+  return stream
+
+    }
   const additionalNoteText = additionalNote && additionalNote.trim() ? `. ${additionalNote}` : "";
 
   const stream = await openaiObject.chat.completions.create({

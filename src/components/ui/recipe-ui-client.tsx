@@ -62,6 +62,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setuserOtherDietaryRequirements(e.target.value);
   };
 
+  const handleMenuDislay = () => {
+    setIsMenuDisplayed(prev => !prev)
+  }
+
   const handleCountrySelection = async (e: React.FormEvent) => {
     e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
 
@@ -149,11 +153,12 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                   isDarkMode={isDarkMode}
                 />
                 {isMenuDisplayed && (
-                  <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto rounded-lg">
-                    <div className="prose max-w-none">
+                  <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2 rounded-md">
+                    <div className="prose max-w-none ">
                       <h2 className="text-2xl font-bold mb-4">Your Recipe</h2>
                       <div className="whitespace-pre-wrap">{menuContent}</div>
                     </div>
+                    <Button onClick={handleMenuDislay}>Back to home page</Button>
                   </div>
                 )}
               </div>
