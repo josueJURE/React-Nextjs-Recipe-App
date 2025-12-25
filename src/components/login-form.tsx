@@ -11,7 +11,6 @@ import {
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-
 import {
   Form,
   FormControl,
@@ -24,12 +23,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { signInFormSchema } from "@/lib/validations/user-choices";
-import type { SignInForm } from "@/lib/validations/user-choices"; 
+import type { SignInForm } from "@/lib/validations/user-choices";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 export default function SignIn() {
-  const form = useForm< SignInForm >({
+  const form = useForm<SignInForm>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
       email: "",
@@ -44,20 +43,14 @@ export default function SignIn() {
     const { email, password } = values;
 
     const { data, error } = await authClient.signIn.email(
-      
       {
         email,
         password,
         callbackURL: "/recipe-ui",
       },
       {
-        onRequest: () => {
-          setTimeout(() => {
-            toast("Please wait.");
-          }, 3000);
-        },
         onSuccess: () => {
-          toast("please wait")
+          toast("please wait");
           form.reset();
         },
         onError: (ctx) => {
@@ -66,7 +59,9 @@ export default function SignIn() {
       }
     );
 
-    console.log("data?.redirect", data?.redirect)
+    console.log(error?.code);
+
+    // console.log("data?.redirect", data?.redirect)
   }
 
   return (

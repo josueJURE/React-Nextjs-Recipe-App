@@ -18,12 +18,10 @@ import DietaryRequirements from "@/components/ui/dietary-requirements";
 import { Input } from "@/components/ui/input";
 import type { RecipeUIProps } from "@/utils/types";
 import { useRouter } from "next/navigation";
+import { Suspense } from "react";
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
-
-
-
 
   const handleSignOut = () => {
     router.push("/sign-in");
@@ -95,42 +93,44 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   return (
     <>
-      <main className="min-h-screen w-full flex items-center justify-center p-4">
-        <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-[600px]">
-          <Card className={`flex items-center min-h-[700px] transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-            <DietaryRequirements
-              vegan={vegan}
-              onVeganToggle={handleVeganToggle}
-              onOtherToggle={handleDietaryRequirements}
-            />
-            {otherDietaryRequirements && (
-              <Input
-                type="text"
-                onChange={handleuserOtherDietaryRequirements}
-                className="w-0.25xl"
+      {/* <Suspense fallback={<div>Loading...</div>}> */}
+        <main className="min-h-screen w-full flex items-center justify-center p-4">
+          <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-[600px]">
+            <Card
+              className={`flex items-center min-h-[700px] transition-opacity duration-300 ${
+                isLoading ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              <DietaryRequirements
+                vegan={vegan}
+                onVeganToggle={handleVeganToggle}
+                onOtherToggle={handleDietaryRequirements}
               />
-            )}
+              {otherDietaryRequirements && (
+                <Input
+                  type="text"
+                  onChange={handleuserOtherDietaryRequirements}
+                  className="w-0.25xl"
+                />
+              )}
 
-            <div>{`welcome back ${userProps.name}`}</div>
-            <div>{selectedCountry}</div>
+              <div>{`welcome back ${userProps.name}`}</div>
+              <div>{selectedCountry}</div>
 
-            <div className="min-h-[500px] w-full flex items-center justify-center">
-              <Map
-                handleCountrySelect={handleCountrySelect}
-                isDarkMode={isDarkMode}
-              />
-            </div>
-            <Button onClick={handleCountrySelection}>Submit</Button>
-            <Button type="button" onClick={handleSignOut}>
-              Sign out
-            </Button>
-          </Card>
-        </form>
-      </main>
+              <div className="min-h-[500px] w-full flex items-center justify-center">
+                <Map
+                  handleCountrySelect={handleCountrySelect}
+                  isDarkMode={isDarkMode}
+                />
+              </div>
+              <Button onClick={handleCountrySelection}>Submit</Button>
+              <Button type="button" onClick={handleSignOut}>
+                Sign out
+              </Button>
+            </Card>
+          </form>
+        </main>
+      {/* </Suspense> */}
     </>
   );
-
- 
-
-
 }
