@@ -32,9 +32,11 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [isMenuDisplayed, setIsMenuDisplayed ] = useState<boolean>(false);
+  const [isMenuDisplayed, setIsMenuDisplayed] = useState<boolean>(false);
 
   const [menuContent, setMenuContent] = useState<string>("");
+
+  const [isBackToHomePage, setIsBackToHomePage] = useState<boolean>(false);
 
   const [vegan, setVegan] = useState<boolean>(userProps.vegan);
 
@@ -63,8 +65,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   const handleMenuDislay = () => {
-    setIsMenuDisplayed(prev => !prev)
-  }
+    setIsMenuDisplayed((prev) => !prev);
+  };
 
   const handleCountrySelection = async (e: React.FormEvent) => {
     e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
@@ -103,6 +105,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             const { done, value } = await reader.read();
 
             if (done) {
+              setIsBackToHomePage(done);
               break;
             }
 
@@ -124,51 +127,60 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   return (
     <>
       {/* <Suspense fallback={<div>Loading...</div>}> */}
-        <main className="min-h-screen w-full flex items-center justify-center p-4">
-          <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-[600px]">
-            <Card
-              className={`flex items-center min-h-[700px] transition-opacity duration-300 ${
-                isLoading ? "opacity-0" : "opacity-100"
-              }`}
-            >
-              <DietaryRequirements
-                vegan={vegan}
-                onVeganToggle={handleVeganToggle}
-                onOtherToggle={handleDietaryRequirements}
+      <main className="min-h-screen w-full flex items-center justify-center p-4">
+        <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-[600px]">
+          <Card
+            className={`flex items-center min-h-[700px] transition-opacity duration-300 ${
+              isLoading ? "opacity-0" : "opacity-100"
+            }`}
+          >
+            <DietaryRequirements
+              vegan={vegan}
+              onVeganToggle={handleVeganToggle}
+              onOtherToggle={handleDietaryRequirements}
+            />
+            {otherDietaryRequirements && (
+              <Input
+                type="text"
+                onChange={handleuserOtherDietaryRequirements}
+                className="w-0.25xl"
               />
-              {otherDietaryRequirements && (
-                <Input
-                  type="text"
-                  onChange={handleuserOtherDietaryRequirements}
-                  className="w-0.25xl"
-                />
+            )}
+
+            <div>{`welcome back ${userProps.name}`}</div>
+            <div>{selectedCountry}</div>
+
+            <div className="min-h-[500px] w-full flex items-center justify-center">
+              <Map
+                handleCountrySelect={handleCountrySelect}
+                isDarkMode={isDarkMode}
+              />
+              {isMenuDisplayed && (
+                <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2 rounded-md ">
+                  <div className="prose max-w-none ">
+                    <h2 className="text-2xl font-bold mb-4">Your Recipe</h2>
+                    <div className="whitespace-pre-wrap">{menuContent}</div>
+                  </div>{" "}
+                  {isBackToHomePage && (
+                    <Button
+                      onClick={() => {
+                        handleMenuDislay();
+                        setIsBackToHomePage(false);
+                      }}
+                    >
+                      Back to home page
+                    </Button>
+                  )}
+                </div>
               )}
-
-              <div>{`welcome back ${userProps.name}`}</div>
-              <div>{selectedCountry}</div>
-
-              <div className="min-h-[500px] w-full flex items-center justify-center">
-                <Map
-                  handleCountrySelect={handleCountrySelect}
-                  isDarkMode={isDarkMode}
-                />
-                {isMenuDisplayed && (
-                  <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2 rounded-md">
-                    <div className="prose max-w-none ">
-                      <h2 className="text-2xl font-bold mb-4">Your Recipe</h2>
-                      <div className="whitespace-pre-wrap">{menuContent}</div>
-                    </div>
-                    <Button onClick={handleMenuDislay}>Back to home page</Button>
-                  </div>
-                )}
-              </div>
-              <Button onClick={handleCountrySelection}>Submit</Button>
-              <Button type="button" onClick={handleSignOut}>
-                Sign out
-              </Button>
-            </Card>
-          </form>
-        </main>
+            </div>
+            <Button onClick={handleCountrySelection}>Submit</Button>
+            <Button type="button" onClick={handleSignOut}>
+              Sign out
+            </Button>
+          </Card>
+        </form>
+      </main>
       {/* </Suspense> */}
     </>
   );
