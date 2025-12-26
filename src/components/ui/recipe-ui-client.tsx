@@ -127,11 +127,11 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ email: menuContent }),
+      body: JSON.stringify({ menuContent: menuContent }),
     });
 
     const data = await response
-    if (!data.ok) {
+    if (!data) {
       toast("menu not sent to user's inbox")
     }
 

@@ -21,20 +21,20 @@ export const userChoicesSchema = z.object({
     .trim()
     .max(100, "Country name is too long"),
   vegan: z.boolean(),
-  other: z
-    .string()
-    .max(56, "Additional note is too long")
-    .default(""),
+  other: z.string().max(56, "Additional note is too long").default(""),
 });
 
 export const userPreference = userChoicesSchema.pick({
-  vegan: true
+  vegan: true,
+});
 
-})
+export const userInbox = z.object({
+  menuContent: z.string().trim().min(1, "Menu content cannot be empty"),
+});
 
 // Export types
 export type RegisterForm = z.infer<typeof registerFormSchema>;
 export type SignInForm = z.infer<typeof signInFormSchema>;
 export type UserChoices = z.infer<typeof userChoicesSchema>;
-export type UserPreference  = z.infer<typeof userPreference >
-
+export type UserPreference = z.infer<typeof userPreference>;
+export type UserInbox = z.infer<typeof userInbox>;

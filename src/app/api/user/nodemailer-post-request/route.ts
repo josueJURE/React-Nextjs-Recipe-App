@@ -1,25 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
-import processEmail from '@/lib/nodemailer/nodemailer'
-
-
-
+import processEmail from "@/lib/nodemailer/nodemailer";
+import { userInbox } from "@/lib/validations/user-choices";
 
 export async function POST(request: NextRequest) {
-    try {
-        const body = await request.json();
-        console.log("Received email", body.email)
+  const body = await request.json();
+  const userInboxValidation = userInbox.safeParse(body);
 
-        processEmail(body.email)
+  if (!userInboxValidation.success) {
+    return NextResponse.json({
+      success: false,
+      error: userInboxValidation.error.flatten(),
+    });
+  }
 
-        return NextResponse.json({
-            success: true
-        }
+  const { menuContent } = userInboxValidation.data;
 
-        )
-    } catch (e: any) {
-        console.log(e.error)
+  await processEmail(menuContent);
 
-    }
-
+  return NextResponse.json({
+    success: true,
+  });
 }
-
