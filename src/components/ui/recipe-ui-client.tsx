@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import type { RecipeUIProps } from "@/utils/types";
 import { useRouter } from "next/navigation";
 import { Suspense } from "react";
+import { toast } from "sonner";
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
@@ -105,7 +106,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             const { done, value } = await reader.read();
 
             if (done) {
-              setIsBackToHomePage(done);
+              setIsBackToHomePage(true);
               break;
             }
 
@@ -117,6 +118,25 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
         }
       }
     }
+  };
+
+  const handleEmailingUser = async () => {
+    if (menuContent === "") return; /// perhaps use zod validation instead
+    const response = await fetch("/api/user/nodemailer-post-request", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ email: menuContent }),
+    });
+
+    const data = await response
+    if (!data.ok) {
+      toast("menu not sent to user's inbox")
+    }
+
+    toast("menu send to user's inbox")
+   
   };
 
   // Wait for hydration to complete
@@ -171,6 +191,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       Back to home page
                     </Button>
                   )}
+                  {isBackToHomePage && <Button type="button" onClick={handleEmailingUser}>
+                    send to my inbox
+                    
+                    </Button>}
                 </div>
               )}
             </div>
