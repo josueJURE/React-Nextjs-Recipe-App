@@ -2,40 +2,19 @@ import OpenAI from "openai";
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
 
+const openaiObject = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
+export async function chatCompletion(
+  country: string,
+  vegan: boolean,
+  additionalNote: string
+) {
+  const veganNote = vegan ? ", taking into account that the user is vegan" : "";
 
-
-
-
-
-
-    const openaiObject = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
-  
- export async function chatCompletion(country: string, vegan: boolean, additionalNote: string) {
-  const veganNote = vegan
-    ? ", taking into account that the user is vegan"
-    : "";
-
-    if (process.env.NODE_ENV !== "production") {
-
-  const stream = await openaiObject.chat.completions.create({
-    messages: [
-      {
-        role: "user",
-        content: "Di",
-      },
-    ],
-    model: "gpt-3.5-turbo",
-    max_tokens: 2000,
-    stream: true,
-  });
-
-  return stream
-
-    }
-  const additionalNoteText = additionalNote && additionalNote.trim() ? `. ${additionalNote}` : "";
+  const additionalNoteText =
+    additionalNote && additionalNote.trim() ? `. ${additionalNote}` : "";
 
   const stream = await openaiObject.chat.completions.create({
     messages: [
@@ -49,7 +28,7 @@ import { openai } from "@ai-sdk/openai";
     stream: true,
   });
 
-  return stream
+  return stream;
 
   // const stream = await streamText({
   //   model: openai("gpt-3.5-turbo"),
@@ -61,15 +40,7 @@ import { openai } from "@ai-sdk/openai";
   //   ],
   //   // max_tokens: 1000,
   // });
-
-
-
 }
-
-
-
-
-
 
 // const response = await streamText({
 //   model: openai("gpt-3.5-turbo"),
@@ -82,6 +53,5 @@ import { openai } from "@ai-sdk/openai";
 //   maxTokens: 1000,
 // });
 
-
-export default chatCompletion
+export default chatCompletion;
 // export default stream

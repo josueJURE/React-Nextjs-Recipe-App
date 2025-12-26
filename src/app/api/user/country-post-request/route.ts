@@ -7,7 +7,7 @@ import { userChoicesSchema } from "@/lib/validations/user-choices";
 
 import { chatCompletion} from "@/lib/chat-completions/openai"
 
-console.log("ENV:", process.env.OPENAI_API_KEY);
+
 
 export async function POST(request: NextRequest) {
   try {
