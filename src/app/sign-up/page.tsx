@@ -26,13 +26,11 @@ import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useRouter } from "next/navigation";
 
-//
 
-// import { PhoneInput } from '@/components/ui/phone-input'
 
-import { registerFormSchema } from "@/lib/validation-schemas";
+import { registerFormSchema } from "@/lib/validations/user-choices";
 import { authClient } from "@/lib/auth-client";
-import { redirect } from "next/dist/server/api-utils";
+
 
 const formSchema = registerFormSchema;
 

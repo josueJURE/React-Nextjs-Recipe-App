@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import RecipeUIClient from "@/components/ui/recipe-ui-client";
 import prisma from "@/lib/prisma";
+import { Suspense } from "react";
 
 import type {RecipeUIProps} from "@/utils/types"
 
@@ -47,6 +48,7 @@ export default async function RecipeUIPage(userProps: RecipeUIProps) {
   }
 
   return <RecipeUIClient
+  
     email={recipeAppUser.email}
     name={recipeAppUser.name}
     vegan={recipeAppUserPreferences?.vegan || false}
