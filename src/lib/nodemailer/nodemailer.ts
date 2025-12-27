@@ -1,15 +1,29 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export default async function processEmail(recipe: string) {
-    const transporter = nodemailer.createTransport({
-        service: process.env.service,
-        auth: {
-          user: process.env.from,
-          pass: process.env.third_party_app_password,
-        },
-      });
-   
-      const emailDocument = `
+  const transporter = nodemailer.createTransport({
+    service: process.env.service,
+    auth: {
+      user: process.env.from,
+      pass: process.env.third_party_app_password,
+    },
+  });
+
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    console.log("Oops something has gone wrong");
+  }
+
+  const userEmail = session?.user.email;
+
+  console.log("userEmail", userEmail);
+
+  const emailDocument = `
       <html>
         <head>
           <style>
@@ -28,13 +42,13 @@ export default async function processEmail(recipe: string) {
         </body>
       </html>
     `;
-    
-    transporter.sendMail({
-        from: process.env.from,
-        to: "josue.jure@gmail.com",
-        subject: "Your recipe",
-        html: emailDocument,
-      
-      });
 
+  transporter.sendMail({
+    from: process.env.from,
+    to: String(userEmail),
+    // to: "josue.jure@gmail.com",
+    subject: "Your recipe",
+
+    html: emailDocument,
+  });
 }

@@ -5,6 +5,7 @@
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { userInbox } from "@/lib/validations/user-choices";
 
 import {
   Card,
@@ -18,7 +19,7 @@ import DietaryRequirements from "@/components/ui/dietary-requirements";
 import { Input } from "@/components/ui/input";
 import type { RecipeUIProps } from "@/utils/types";
 import { useRouter } from "next/navigation";
-import { Suspense } from "react";
+
 import { toast } from "sonner";
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
@@ -121,22 +122,24 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   const handleEmailingUser = async () => {
-    if (menuContent === "") return; /// perhaps use zod validation instead
+    const validation = userInbox.safeParse({ menuContent });
+    if (!validation.success) {
+      toast("a menu has been genereated");
+      return;
+    }
     const response = await fetch("/api/user/nodemailer-post-request", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ menuContent: menuContent }),
+      body: JSON.stringify({ menuContent }),
     });
 
-    const data = await response
-    if (!data) {
-      toast("menu not sent to user's inbox")
+    if (!response.ok) {
+      toast("menu not sent to user's inbox");
     }
 
-    toast("menu send to user's inbox")
-   
+    toast("menu send to user's inbox");
   };
 
   // Wait for hydration to complete
@@ -191,10 +194,11 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       Back to home page
                     </Button>
                   )}
-                  {isBackToHomePage && <Button type="button" onClick={handleEmailingUser}>
-                    send to my inbox
-                    
-                    </Button>}
+                  {isBackToHomePage && (
+                    <Button type="button" onClick={handleEmailingUser}>
+                      send to my inbox
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
