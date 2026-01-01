@@ -43,9 +43,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const [isAudioGenerated, setIsAudioGenerated] = useState<boolean>(false);
 
-
-
   const [isImageGenerated, setIsImageGenerated] = useState<boolean>(false);
+  const [backgroundPicture, setIsBckgroundPicture] = useState("");
 
   const [vegan, setVegan] = useState<boolean>(userProps.vegan);
 
@@ -63,10 +62,34 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsAudioGenerated((onChecked) => !onChecked);
   };
 
-  const handleImageGeneration = () => {
-    setIsImageGenerated((onChecked) => !onChecked)
+  const handleImageGeneration = async () => {
+    setIsImageGenerated((onChecked) => !onChecked);
+    // if(isImageGenerated && menuContent)
+    // if(!isAudioGenerated || !menuContent) return
+    // try {
 
-  }
+    //   const response = await fetch("/api/user/image-post-request", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ menuContent }),
+    //   });
+
+    // if (!response.ok) {
+    //   toast("something has gone wrong")
+
+    // }
+
+    // const data = await response.json();
+
+    // // setIsBckgroundPicture(data)
+
+    // } catch(error) {
+    //   console.log(error)
+
+    // }
+  };
 
   const handleDietaryRequirements = (onChecked: boolean) => {
     setOtherDietaryRequirements(onChecked);
@@ -86,9 +109,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsMenuDisplayed((prev) => !prev);
   };
 
-  console.log("isAudioGenerated", isAudioGenerated)
+  console.log("isAudioGenerated", isAudioGenerated);
 
-  console.log("isImageGenerated", isImageGenerated)
+  console.log("isImageGenerated", isImageGenerated);
 
   const handleCountrySelection = async (e: React.FormEvent) => {
     e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
@@ -102,6 +125,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
         country: selectedCountry,
         vegan: vegan,
         other: userOtherDietaryRequirements,
+        isImageGenerated,
       }),
     });
 
@@ -115,7 +139,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
     if (response.ok) {
       setIsMenuDisplayed(true);
-      setMenuContent(""); // Reset content before streaming
+      setMenuContent("");
+
+      // Create a local variable to accumulate the complete recipe
+      let accumulatedContent = "";
 
       // Read the stream
       const reader = response.body?.getReader();
@@ -127,11 +154,34 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             const { done, value } = await reader.read();
 
             if (done) {
+              console.log("value", value);
               setIsBackToHomePage(true);
+              if (isImageGenerated) {
+                const imageResponse = await fetch(
+                  "/api/user/image-post-request",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      menuContent: accumulatedContent,  // ✅ Use accumulated content
+                
+                    }),
+                  }
+                );
+
+                if (imageResponse.ok) {
+                  const imageData = await imageResponse.json();
+                  setIsBckgroundPicture(imageData.backGroundPicture);
+                }
+              }
+
               break;
             }
 
             const text = decoder.decode(value, { stream: true });
+            accumulatedContent += text;  // ✅ Accumulate in local variable
             setMenuContent((prev) => prev + text);
           }
         } catch (error) {

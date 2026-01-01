@@ -1,6 +1,4 @@
 import OpenAI from "openai";
-import { streamText } from "ai";
-import { openai } from "@ai-sdk/openai";
 
 const openaiObject = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -29,29 +27,25 @@ export async function chatCompletion(
   });
 
   return stream;
-
-  // const stream = await streamText({
-  //   model: openai("gpt-3.5-turbo"),
-  //   messages: [
-  //     {
-  //       role: "user",
-  //       content: `make me a dish from ${country}${veganNote}${additionalNoteText}`,
-  //     },
-  //   ],
-  //   // max_tokens: 1000,
-  // });
 }
 
-// const response = await streamText({
-//   model: openai("gpt-3.5-turbo"),
-//   messages: [
-//     {
-//       role: "user",
-//       content: prompt,
-//     },
-//   ],
-//   maxTokens: 1000,
-// });
 
-export default chatCompletion;
-// export default stream
+export async function imageGeneration(recipe:string) {
+  const image = await openaiObject.images.generate({
+    model: "dall-e-3",
+    prompt: `${recipe}`,
+    n: 1,
+    size: "1024x1024",
+  })
+
+  const result = image?.data && image.data[0]?.url;
+  
+  
+  console.log(result)
+
+  return  result
+  
+}
+
+
+export default chatCompletion

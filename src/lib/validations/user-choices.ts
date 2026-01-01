@@ -22,6 +22,7 @@ export const userChoicesSchema = z.object({
     .max(100, "Country name is too long"),
   vegan: z.boolean(),
   other: z.string().max(56, "Additional note is too long").default(""),
+   isImageGenerated: z.boolean()
 });
 
 export const userPreference = userChoicesSchema.pick({
