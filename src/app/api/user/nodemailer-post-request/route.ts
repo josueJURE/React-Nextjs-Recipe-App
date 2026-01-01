@@ -2,14 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import processEmail from "@/lib/nodemailer/nodemailer";
 import { userInbox } from "@/lib/validations/user-choices";
 
+
+
+
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const userInboxValidation = userInbox.safeParse(body);
 
+
+
+
+
+
   if (!userInboxValidation.success) {
     return NextResponse.json({
       success: false,
-      error: userInboxValidation.error.flatten(),
+      error: userInboxValidation.error.issues
     });
   }
 

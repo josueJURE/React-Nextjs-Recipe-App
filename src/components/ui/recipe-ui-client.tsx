@@ -6,6 +6,7 @@ import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { userInbox } from "@/lib/validations/user-choices";
+import { SwitchComponent } from "@/components/switchComponent";
 
 import {
   Card,
@@ -40,6 +41,12 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const [isBackToHomePage, setIsBackToHomePage] = useState<boolean>(false);
 
+  const [isAudioGenerated, setIsAudioGenerated] = useState<boolean>(false);
+
+
+
+  const [isImageGenerated, setIsImageGenerated] = useState<boolean>(false);
+
   const [vegan, setVegan] = useState<boolean>(userProps.vegan);
 
   const [otherDietaryRequirements, setOtherDietaryRequirements] =
@@ -48,12 +55,21 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const [userOtherDietaryRequirements, setuserOtherDietaryRequirements] =
     useState<string>("");
 
-  const handleVeganToggle = (checked: boolean) => {
-    setVegan(checked);
+  const handleVeganToggle = (onChecked: boolean) => {
+    setVegan(onChecked);
   };
 
-  const handleDietaryRequirements = (checked: boolean) => {
-    setOtherDietaryRequirements(checked);
+  const handleAudioGeneration = () => {
+    setIsAudioGenerated((onChecked) => !onChecked);
+  };
+
+  const handleImageGeneration = () => {
+    setIsImageGenerated((onChecked) => !onChecked)
+
+  }
+
+  const handleDietaryRequirements = (onChecked: boolean) => {
+    setOtherDietaryRequirements(onChecked);
   };
 
   const handleCountrySelect = (countryName: string) => {
@@ -69,6 +85,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const handleMenuDislay = () => {
     setIsMenuDisplayed((prev) => !prev);
   };
+
+  console.log("isAudioGenerated", isAudioGenerated)
+
+  console.log("isImageGenerated", isImageGenerated)
 
   const handleCountrySelection = async (e: React.FormEvent) => {
     e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
@@ -202,6 +222,20 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                 </div>
               )}
             </div>
+
+            <SwitchComponent
+              onSwitch={handleAudioGeneration}
+              onChecked={isAudioGenerated}
+            >
+              Generate Audio
+            </SwitchComponent>
+            <SwitchComponent
+              onSwitch={handleImageGeneration}
+              onChecked={isImageGenerated}
+            >
+              Generate Image
+            </SwitchComponent>
+
             <Button onClick={handleCountrySelection}>Submit</Button>
             <Button type="button" onClick={handleSignOut}>
               Sign out
