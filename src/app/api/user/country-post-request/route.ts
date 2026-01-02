@@ -4,11 +4,11 @@ import { userChoicesSchema } from "@/lib/validations/user-choices";
 
 // Import the TYPE (used at compile-time for type checking)
 
-import { chatCompletion, imageGeneration } from "@/lib/chat-completions/openai";
-import { NextApiResponse } from "next";
-import { success } from "zod";
+import { chatCompletion } from "@/lib/chat-completions/openai";
 
-export async function POST(request: NextRequest, res: NextApiResponse) {
+
+
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     console.log("Received body:", body);
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest, res: NextApiResponse) {
         { status: 400 }
       );
     }
-    const { country, vegan, other, isImageGenerated } =
+    const { country, vegan, other } =
       userChoicesValidation.data;
 
     console.log("is other picked up", other);

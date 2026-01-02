@@ -48,4 +48,3 @@ export async function imageGeneration(recipe:string) {
 }
 
 
-export default chatCompletion

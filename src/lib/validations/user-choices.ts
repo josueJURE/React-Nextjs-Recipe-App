@@ -33,9 +33,14 @@ export const userInbox = z.object({
   menuContent: z.string().trim().min(1, "Menu content cannot be empty"),
 });
 
+export const menuContentForImageSchema = userInbox.pick({
+  menuContent: true
+})
+
 // Export types
 export type RegisterForm = z.infer<typeof registerFormSchema>;
 export type SignInForm = z.infer<typeof signInFormSchema>;
 export type UserChoices = z.infer<typeof userChoicesSchema>;
 export type UserPreference = z.infer<typeof userPreference>;
 export type UserInbox = z.infer<typeof userInbox>;
+export type MenuContentForImageSchema= z.infer<typeof menuContentForImageSchema>
