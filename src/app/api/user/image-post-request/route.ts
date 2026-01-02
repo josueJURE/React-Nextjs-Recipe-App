@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { readFile } from "fs/promises";
+import { join } from "path";
 
 import { imageGeneration } from "@/lib/chat-completions/openai";
 
@@ -24,7 +26,26 @@ export async function POST(request: NextRequest) {
     const { menuContent } = menuContentOPENAIValidation.data;
     console.log("menuContentz", menuContent);
 
-    const openAIimage = await imageGeneration(menuContent);
+    const isProduction = process.env.NODE_ENV === "production";
+    let openAIimage: string | null | undefined;
+
+    if (!isProduction) {
+      // Development: Use mock image to save API tokens
+      try {
+        const mockImagePath = join(process.cwd(), "assets", "mock-image.jpeg");
+        const imageBuffer = await readFile(mockImagePath);
+        const base64Image = imageBuffer.toString("base64");
+        openAIimage = `data:image/jpeg;base64,${base64Image}`;
+        console.log("Using mock image for development");
+      } catch (error) {
+        console.error("Failed to read mock image:", error);
+        // Fallback to API if mock image is not available
+        openAIimage = await imageGeneration(menuContent);
+      }
+    } else {
+      // Production: Use actual OpenAI API
+      openAIimage = await imageGeneration(menuContent);
+    }
 
     console.log(openAIimage);
 

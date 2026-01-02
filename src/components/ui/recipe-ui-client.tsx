@@ -7,6 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
+import { SpinnerButton } from "./spinnerButton";
+
+import WavesurferPlayer from "@wavesurfer/react";
+import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
 
 import {
   Card,
@@ -29,11 +33,41 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const handleSignOut = () => {
     router.push("/sign-in");
   };
+
+  ///// wave surfer
+  const [wavesurfer, setWavesurfer] = useState<any>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const onReady = (ws: any) => {
+    setWavesurfer(ws);
+    setIsPlaying(false);
+  };
+
+  const onPlayPause = () => {
+    wavesurfer && wavesurfer.playPause();
+  };
+
+  const onSkipForward = () => {
+    if (wavesurfer) {
+      const currentTime = wavesurfer.getCurrentTime();
+      wavesurfer.setTime(currentTime + 10); // Skip forward 10 seconds
+    }
+  };
+
+  const onSkipBack = () => {
+    if (wavesurfer) {
+      const currentTime = wavesurfer.getCurrentTime();
+      wavesurfer.setTime(Math.max(0, currentTime - 10)); // Skip back 10 seconds
+    }
+  };
+
+  ///// wave surfer
+
   const [selectedCountry, setSelectedCountry] = useState<string>("");
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [isMenuDisplayed, setIsMenuDisplayed] = useState<boolean>(false);
 
@@ -43,8 +77,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const [isAudioGenerated, setIsAudioGenerated] = useState<boolean>(false);
 
+  // const [isDisplaySinner, setIsDisplaySinner] = useState<boolean>(false);
+
   const [isImageGenerated, setIsImageGenerated] = useState<boolean>(false);
-  const [backgroundPicture, setIsBckgroundPicture] = useState("");
+  const [backgroundPicture, setIsBckgroundPicture] = useState<string>("");
 
   const [vegan, setVegan] = useState<boolean>(userProps.vegan);
 
@@ -64,31 +100,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const handleImageGeneration = async () => {
     setIsImageGenerated((onChecked) => !onChecked);
-    // if(isImageGenerated && menuContent)
-    // if(!isAudioGenerated || !menuContent) return
-    // try {
-
-    //   const response = await fetch("/api/user/image-post-request", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({ menuContent }),
-    //   });
-
-    // if (!response.ok) {
-    //   toast("something has gone wrong")
-
-    // }
-
-    // const data = await response.json();
-
-    // // setIsBckgroundPicture(data)
-
-    // } catch(error) {
-    //   console.log(error)
-
-    // }
   };
 
   const handleDietaryRequirements = (onChecked: boolean) => {
@@ -108,6 +119,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const handleMenuDislay = () => {
     setIsMenuDisplayed((prev) => !prev);
   };
+
+  const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
 
   console.log("isAudioGenerated", isAudioGenerated);
 
@@ -173,6 +186,23 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                 if (imageResponse.ok) {
                   const imageData = await imageResponse.json();
                   setIsBckgroundPicture(imageData.backGroundPicture);
+                  setIsImageGenerated(false);
+                }
+              }
+              if (isAudioGenerated) {
+                const audioResponse = await fetch(
+                  "/api/user/audio-post-request",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ menuContent: accumulatedContent }),
+                  }
+                );
+                if (audioResponse.ok) {
+                  const audioData = await audioResponse.json();
+                  setRecipeAudio(audioData.audio);
                 }
               }
 
@@ -256,6 +286,52 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       : undefined,
                   }}
                 >
+                  {isImageGenerated && <SpinnerButton></SpinnerButton>}
+                  {recipeAudio && (
+                    <div className="border-black border-2 bg-white/80 rounded-lg p-4 mb-4">
+                      <WavesurferPlayer
+                        height={80}
+                        waveColor="rgb(139, 92, 246)"
+                        progressColor="rgb(109, 40, 217)"
+                        url={recipeAudio}
+                        onReady={onReady}
+                        onPlay={() => setIsPlaying(true)}
+                        onPause={() => setIsPlaying(false)}
+                      />
+                      <div className="flex items-center justify-center gap-4 mt-4">
+                        <Button
+                          type="button"
+                          onClick={onSkipBack}
+                          variant="outline"
+                          size="icon"
+                          className="h-10 w-10"
+                        >
+                          <SkipBack className="h-5 w-5" />
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={onPlayPause}
+                          size="icon"
+                          className="h-12 w-12"
+                        >
+                          {isPlaying ? (
+                            <Pause className="h-6 w-6" />
+                          ) : (
+                            <Play className="h-6 w-6" />
+                          )}
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={onSkipForward}
+                          variant="outline"
+                          size="icon"
+                          className="h-10 w-10"
+                        >
+                          <SkipForward className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                   <div className="prose max-w-none ">
                     <h2 className="text-2xl font-bold mb-4">Your Recipe</h2>
                     <div className="whitespace-pre-wrap">{menuContent}</div>

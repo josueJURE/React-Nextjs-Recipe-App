@@ -33,18 +33,31 @@ export async function chatCompletion(
 export async function imageGeneration(recipe:string) {
   const image = await openaiObject.images.generate({
     model: "dall-e-3",
-    prompt: `${recipe}`,
+    prompt: recipe,
     n: 1,
     size: "1024x1024",
   })
 
-  const result = image?.data && image.data[0]?.url;
+  const result =  image?.data && image.data[0]?.url;
   
   
   console.log(result)
 
   return  result
   
+}
+
+export async function audioGeneration(recipe: string) {
+  const audio = await openaiObject.audio.speech
+  .create({
+    model: "tts-1",
+    voice: "alloy",
+    input: recipe,
+  })
+
+
+  return audio
+
 }
 
 
