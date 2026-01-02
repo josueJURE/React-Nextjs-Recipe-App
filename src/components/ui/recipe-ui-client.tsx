@@ -279,6 +279,18 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               )}
             </div>
 
+            <SwitchComponent
+              onSwitch={handleAudioGeneration}
+              onChecked={isAudioGenerated}
+            >
+              Generate Audio
+            </SwitchComponent>
+            <SwitchComponent
+              onSwitch={handleImageGeneration}
+              onChecked={isImageGenerated}
+            >
+              Generate Image
+            </SwitchComponent>
 
             <Button onClick={handleCountrySelection}>Submit</Button>
             <Button type="button" onClick={handleSignOut}>
