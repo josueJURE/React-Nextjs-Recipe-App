@@ -48,16 +48,20 @@ export async function imageGeneration(recipe:string) {
 }
 
 export async function audioGeneration(recipe: string) {
-  const audio = await openaiObject.audio.speech
-  .create({
+  const audio = await openaiObject.audio.speech.create({
     model: "tts-1",
     voice: "alloy",
     input: recipe,
-  })
+  });
 
+  // Convert the audio response to a buffer
+  const buffer = Buffer.from(await audio.arrayBuffer());
 
-  return audio
+  // Convert buffer to base64
+  const base64Audio = buffer.toString('base64');
 
+  // Return as a data URL that can be used by audio players
+  return `data:audio/mp3;base64,${base64Audio}`;
 }
 
 
