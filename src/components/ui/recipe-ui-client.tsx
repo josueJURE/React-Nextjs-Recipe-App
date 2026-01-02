@@ -165,8 +165,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                      menuContent: accumulatedContent,  // ✅ Use accumulated content
-                
+                      menuContent: accumulatedContent, // ✅ Use accumulated content
                     }),
                   }
                 );
@@ -181,7 +180,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             }
 
             const text = decoder.decode(value, { stream: true });
-            accumulatedContent += text;  // ✅ Accumulate in local variable
+            accumulatedContent += text; // ✅ Accumulate in local variable
             setMenuContent((prev) => prev + text);
           }
         } catch (error) {
@@ -249,7 +248,14 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                 isDarkMode={isDarkMode}
               />
               {isMenuDisplayed && (
-                <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2 rounded-md ">
+                <div
+                  className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2 "
+                  style={{
+                    backgroundImage: backgroundPicture
+                      ? `url(${backgroundPicture})`
+                      : undefined,
+                  }}
+                >
                   <div className="prose max-w-none ">
                     <h2 className="text-2xl font-bold mb-4">Your Recipe</h2>
                     <div className="whitespace-pre-wrap">{menuContent}</div>
@@ -273,18 +279,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               )}
             </div>
 
-            <SwitchComponent
-              onSwitch={handleAudioGeneration}
-              onChecked={isAudioGenerated}
-            >
-              Generate Audio
-            </SwitchComponent>
-            <SwitchComponent
-              onSwitch={handleImageGeneration}
-              onChecked={isImageGenerated}
-            >
-              Generate Image
-            </SwitchComponent>
 
             <Button onClick={handleCountrySelection}>Submit</Button>
             <Button type="button" onClick={handleSignOut}>
