@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
+import postJson from "@/lib/fetchFunction/fetchFunction";
 
 import WavesurferPlayer from "@wavesurfer/react";
 import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
@@ -170,38 +171,40 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               console.log("value", value);
               setIsBackToHomePage(true);
               if (isImageGenerated) {
-                const imageResponse = await fetch(
+                const imageData = await postJson<{ backGroundPicture: string }>(
                   "/api/user/image-post-request",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      menuContent: accumulatedContent, // ✅ Use accumulated content
-                    }),
-                  }
+                  { menuContent: accumulatedContent }
                 );
 
-                if (imageResponse.ok) {
-                  const imageData = await imageResponse.json();
-                  setIsBckgroundPicture(imageData.backGroundPicture);
-                  setIsImageGenerated(false);
-                }
+                setIsBckgroundPicture(imageData.backGroundPicture);
+                setIsImageGenerated(false);
+
+                // const imageResponse = await fetch(
+                //   "/api/user/image-post-request",
+                //   {
+                //     method: "POST",
+                //     headers: {
+                //       "Content-Type": "application/json",
+                //     },
+                //     body: JSON.stringify({
+                //       menuContent: accumulatedContent, // ✅ Use accumulated content
+                //     }),
+                //   }
+                // );
+
+                // if (imageResponse.ok) {
+                //   const imageData = await imageResponse.json();
+                //   setIsBckgroundPicture(imageData.backGroundPicture);
+                //   setIsImageGenerated(false);
+                // }
               }
               if (isAudioGenerated) {
-                const audioResponse = await fetch(
-                  "/api/user/audio-post-request",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ menuContent: accumulatedContent }),
-                  }
-                );
-                if (audioResponse.ok) {
-                  const audioData = await audioResponse.json();
+                if (isAudioGenerated) {
+                  const audioData = await postJson<{ audio: string }>(
+                    "/api/user/audio-post-request",
+                    { menuContent: accumulatedContent }
+                  );
+
                   setRecipeAudio(audioData.audio);
                 }
               }
@@ -226,13 +229,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       toast("a menu has been genereated");
       return;
     }
-    const response = await fetch("/api/user/nodemailer-post-request", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ menuContent }),
+    const response: Response = await postJson("/api/user/nodemailer-post-request", {
+      menuContent,
     });
+    
 
     if (!response.ok) {
       toast("menu not sent to user's inbox");
