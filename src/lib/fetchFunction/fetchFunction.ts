@@ -1,4 +1,4 @@
-type PostPayload = Record<string, unknown>;
+type PostPayload = Record<PropertyKey, unknown>;
 
 const postJson = async <TResponse = unknown>(
   path: string,

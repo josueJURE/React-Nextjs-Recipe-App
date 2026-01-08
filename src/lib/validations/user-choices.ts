@@ -17,13 +17,20 @@ export const signInFormSchema = registerFormSchema.pick({
 export const userChoicesSchema = z.object({
   country: z
     .string()
-    .min(2, "Country name is required")
+    .min(2, "Country is required")
     .trim()
     .max(100, "Country name is too long"),
   vegan: z.boolean(),
   other: z.string().max(56, "Additional note is too long").default(""),
    isImageGenerated: z.boolean()
 });
+
+
+
+export const countrySchema = z
+  .string()
+  .min(1, "Country is required")
+  .max(100);
 
 export const userPreference = userChoicesSchema.pick({
   vegan: true,
@@ -44,3 +51,4 @@ export type UserChoices = z.infer<typeof userChoicesSchema>;
 export type UserPreference = z.infer<typeof userPreference>;
 export type UserInbox = z.infer<typeof userInbox>;
 export type MenuContentForImageSchema= z.infer<typeof menuContentForImageSchema>
+export type CountrySchema = z.infer<typeof countrySchema>

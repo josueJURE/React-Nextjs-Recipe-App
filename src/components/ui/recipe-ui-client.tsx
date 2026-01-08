@@ -9,6 +9,7 @@ import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
 import postJson from "@/lib/fetchFunction/fetchFunction";
+import { countrySchema } from "@/lib/validations/user-choices";
 
 import WavesurferPlayer from "@wavesurfer/react";
 import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
@@ -130,6 +131,14 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const handleCountrySelection = async (e: React.FormEvent) => {
     e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
 
+    const countrySchemaValidation = countrySchema.safeParse(selectedCountry);
+
+    if (!countrySchemaValidation.success) {
+      
+      toast(`${countrySchemaValidation.error.issues[0]?.message ?? "Invalid input"}`);
+      throw new Error(" select a country");
+    }
+
     const response = await fetch("/api/user/country-post-request", {
       method: "POST",
       headers: {
@@ -177,26 +186,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                 );
 
                 setIsBckgroundPicture(imageData.backGroundPicture);
-                setIsImageGenerated(false);
-
-                // const imageResponse = await fetch(
-                //   "/api/user/image-post-request",
-                //   {
-                //     method: "POST",
-                //     headers: {
-                //       "Content-Type": "application/json",
-                //     },
-                //     body: JSON.stringify({
-                //       menuContent: accumulatedContent, // ✅ Use accumulated content
-                //     }),
-                //   }
-                // );
-
-                // if (imageResponse.ok) {
-                //   const imageData = await imageResponse.json();
-                //   setIsBckgroundPicture(imageData.backGroundPicture);
-                //   setIsImageGenerated(false);
-                // }
               }
               if (isAudioGenerated) {
                 if (isAudioGenerated) {
@@ -229,10 +218,12 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       toast("a menu has been genereated");
       return;
     }
-    const response: Response = await postJson("/api/user/nodemailer-post-request", {
-      menuContent,
-    });
-    
+    const response: Response = await postJson(
+      "/api/user/nodemailer-post-request",
+      {
+        menuContent,
+      }
+    );
 
     if (!response.ok) {
       toast("menu not sent to user's inbox");

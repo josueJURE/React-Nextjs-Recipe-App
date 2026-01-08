@@ -9,6 +9,8 @@ import { userPreference } from "@/lib/validations/user-choices";
 import type { UserPreference } from "@/lib/validations/user-choices";
 
 export async function PATCH(request: Request) {
+
+
   try {
     // Get the authenticated session
     const session = await auth.api.getSession({
@@ -55,3 +57,5 @@ export async function PATCH(request: Request) {
     );
   }
 }
+
+
