@@ -134,8 +134,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     const countrySchemaValidation = countrySchema.safeParse(selectedCountry);
 
     if (!countrySchemaValidation.success) {
-      
-      toast(`${countrySchemaValidation.error.issues[0]?.message ?? "Invalid input"}`);
+      toast(
+        `${countrySchemaValidation.error.issues[0]?.message ?? "Invalid input"}`
+      );
       throw new Error(" select a country");
     }
 
@@ -182,16 +183,22 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               if (isImageGenerated) {
                 const imageData = await postJson<{ backGroundPicture: string }>(
                   "/api/user/image-post-request",
-                  { menuContent: accumulatedContent }
+                  { menuContent: accumulatedContent,
+                    backgroundPicture
+                  }
                 );
 
                 setIsBckgroundPicture(imageData.backGroundPicture);
+                console.log(" backgroundPicture",typeof backgroundPicture)
+                backgroundPicture
               }
               if (isAudioGenerated) {
                 if (isAudioGenerated) {
                   const audioData = await postJson<{ audio: string }>(
                     "/api/user/audio-post-request",
-                    { menuContent: accumulatedContent }
+                    { menuContent: accumulatedContent,
+                      
+                     }
                   );
 
                   setRecipeAudio(audioData.audio);
@@ -213,15 +220,16 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   const handleEmailingUser = async () => {
-    const validation = userInbox.safeParse({ menuContent });
+    const validation = userInbox.safeParse({ menuContent, backgroundPicture });
     if (!validation.success) {
-      toast("a menu has been genereated");
+      toast(`${validation.error.message[0]}`);
       return;
     }
     const response: Response = await postJson(
       "/api/user/nodemailer-post-request",
       {
         menuContent,
+        backgroundPicture
       }
     );
 

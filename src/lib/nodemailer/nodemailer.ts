@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-export default async function processEmail(recipe: string) {
+export default async function processEmail(recipe: string, url?: string) {
   const transporter = nodemailer.createTransport({
     service: process.env.service,
     auth: {
@@ -39,6 +39,7 @@ export default async function processEmail(recipe: string) {
         <body class="preserve-line-breaks" >
           ${recipe}
           <br />
+             <img class="user-img" src="${url}"/>
         </body>
       </html>
     `;
@@ -48,7 +49,7 @@ export default async function processEmail(recipe: string) {
     to: String(userEmail),
     // to: "josue.jure@gmail.com",
     subject: "Your recipe",
-
     html: emailDocument,
+  
   });
 }

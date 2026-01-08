@@ -38,6 +38,8 @@ export const userPreference = userChoicesSchema.pick({
 
 export const userInbox = z.object({
   menuContent: z.string().trim().min(1, "Menu content cannot be empty"),
+  backgroundPicture: z.string()
+
 });
 
 export const menuContentForImageSchema = userInbox.pick({
