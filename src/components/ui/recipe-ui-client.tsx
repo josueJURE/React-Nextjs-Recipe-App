@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
-import { SpinnerButton } from "./spinnerButton";
+import { AudioSpinnerButton} from "./spinnerButton";
 import postJson from "@/lib/fetchFunction/fetchFunction";
 import { countrySchema } from "@/lib/validations/user-choices";
 
@@ -199,6 +199,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
                   setRecipeAudio(audioData.audio);
                   console.log("recipeAudio", typeof recipeAudio);
+                  setIsAudioGenerated(false)
                 }
               }
 
@@ -288,7 +289,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       : undefined,
                   }}
                 >
-                  {isImageGenerated && <SpinnerButton></SpinnerButton>}
+                  {isAudioGenerated && <AudioSpinnerButton/>}
                   {recipeAudio && (
                     <div className="border-black border-2 bg-white/80 rounded-lg p-4 mb-4">
                       <WavesurferPlayer
