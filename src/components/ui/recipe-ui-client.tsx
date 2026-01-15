@@ -280,8 +280,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               />
               {isMenuDisplayed && (
                 <div
-                  className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2 "
+                  className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2  bg-no-repeat bg-cover bg-center "
                   style={{
+                 
                     backgroundImage: backgroundPicture
                       ? `url(${backgroundPicture})`
                       : undefined,
