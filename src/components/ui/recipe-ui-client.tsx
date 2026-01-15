@@ -183,25 +183,22 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               if (isImageGenerated) {
                 const imageData = await postJson<{ backGroundPicture: string }>(
                   "/api/user/image-post-request",
-                  { menuContent: accumulatedContent,
-                    backgroundPicture
-                  }
+                  { menuContent: accumulatedContent, backgroundPicture }
                 );
 
                 setIsBckgroundPicture(imageData.backGroundPicture);
-                console.log(" backgroundPicture",typeof backgroundPicture)
-                backgroundPicture
+                console.log(" backgroundPicture", typeof backgroundPicture);
+                backgroundPicture;
               }
               if (isAudioGenerated) {
                 if (isAudioGenerated) {
                   const audioData = await postJson<{ audio: string }>(
                     "/api/user/audio-post-request",
-                    { menuContent: accumulatedContent,
-                      
-                     }
+                    { menuContent: accumulatedContent }
                   );
 
                   setRecipeAudio(audioData.audio);
+                  console.log("recipeAudio", typeof recipeAudio);
                 }
               }
 
@@ -220,7 +217,11 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   const handleEmailingUser = async () => {
-    const validation = userInbox.safeParse({ menuContent, backgroundPicture });
+    const validation = userInbox.safeParse({
+      menuContent,
+      backgroundPicture,
+      recipeAudio,
+    });
     if (!validation.success) {
       toast(`${validation.error.message[0]}`);
       return;
@@ -229,7 +230,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       "/api/user/nodemailer-post-request",
       {
         menuContent,
-        backgroundPicture
+        backgroundPicture,
+        recipeAudio,
       }
     );
 
@@ -331,10 +333,13 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       </div>
                     </div>
                   )}
-                  <div className="prose max-w-none ">
-                    <h2 className="text-2xl font-bold mb-4">Your Recipe</h2>
-                    <div className="whitespace-pre-wrap">{menuContent}</div>
-                  </div>{" "}
+                  <textarea
+                    className="bg-gray-300 rounded-md"
+                    value={menuContent}
+                    rows={25}
+                    cols={60}
+                    readOnly
+                  ></textarea>{" "}
                   {isBackToHomePage && (
                     <Button
                       onClick={() => {

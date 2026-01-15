@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import RecipeUIClient from "@/components/ui/recipe-ui-client";
 import prisma from "@/lib/prisma";
-import { Suspense } from "react";
+
 
 import type {RecipeUIProps} from "@/utils/types"
 

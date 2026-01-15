@@ -13,9 +13,9 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  const { menuContent, backgroundPicture } = userInboxValidation.data;
+  const { menuContent, backgroundPicture, recipeAudio } = userInboxValidation.data;
 
-  await processEmail(menuContent, backgroundPicture ?? "") 
+  await processEmail(menuContent, backgroundPicture ?? "", recipeAudio) 
 
   return NextResponse.json(
     {

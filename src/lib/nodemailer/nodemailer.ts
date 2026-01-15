@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-export default async function processEmail(recipe: string, url?: string) {
+export default async function processEmail(recipe: string, url?: string, audioDataUrl?: string) {
   const transporter = nodemailer.createTransport({
     service: process.env.service,
     auth: {
@@ -44,12 +44,33 @@ export default async function processEmail(recipe: string, url?: string) {
       </html>
     `;
 
+  // Prepare attachments array
+  const attachments: Array<{
+    filename: string;
+    content: Buffer;
+    contentType: string;
+  }> = [];
+
+  // If audio data URL is provided, convert it to Buffer and add to attachments
+  if (audioDataUrl) {
+    // Extract base64 data from data URL (format: data:audio/mp3;base64,{base64Audio})
+    const base64Audio = audioDataUrl.split(',')[1];
+    if (base64Audio) {
+      const audioBuffer = Buffer.from(base64Audio, 'base64');
+      attachments.push({
+        filename: "recipe-audio.mp3",
+        content: audioBuffer,
+        contentType: "audio/mpeg",
+      });
+    }
+  }
+
   transporter.sendMail({
     from: process.env.from,
     to: String(userEmail),
     // to: "josue.jure@gmail.com",
     subject: "Your recipe",
     html: emailDocument,
-  
+    attachments: attachments.length > 0 ? attachments : undefined,
   });
 }
