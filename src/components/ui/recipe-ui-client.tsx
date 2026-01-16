@@ -9,7 +9,6 @@ import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
 
-
 //
 import postJson from "@/lib/fetchFunction/fetchFunction";
 import { countrySchema } from "@/lib/validations/user-choices";
@@ -125,9 +124,11 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsMenuDisplayed((prev) => !prev);
   };
 
+  const handleSaveMenu = () => {
+    console.log("menu saved")
+  }
+
   const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
-
-
 
   const handleCountrySelection = async (e: React.FormEvent) => {
     e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
@@ -189,9 +190,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
                 setIsBckgroundPicture(imageData.backGroundPicture);
                 console.log(" backgroundPicture", typeof backgroundPicture);
-                
-                setIsImageGenerated(false)
-              
+
+                setIsImageGenerated(false);
               }
               if (isAudioGenerated) {
                 if (isAudioGenerated) {
@@ -344,23 +344,22 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                     cols={60}
                     readOnly
                   ></textarea>{" "}
-                  {isImageGenerated && (
-                    <SpinnerButton label="Loading Image"/>
-                  )}
+                  {isImageGenerated && <SpinnerButton label="Loading Image" />}
                   {isBackToHomePage && (
-                    <Button
-                      onClick={() => {
-                        handleMenuDislay();
-                        setIsBackToHomePage(false);
-                      }}
-                    >
-                      Back to home page
-                    </Button>
-                  )}
-                  {isBackToHomePage && (
-                    <Button type="button" onClick={handleEmailingUser}>
-                      send to my inbox
-                    </Button>
+                    <div  className="grid gap-2 justify-self-center ">
+                      <Button className="w-2xs"
+                        onClick={() => {
+                          handleMenuDislay();
+                          setIsBackToHomePage(false);
+                        }}
+                      >
+                        Back to home page
+                      </Button>
+                      <Button className="w-2xs" type="button" onClick={handleEmailingUser}>
+                        send to my inbox
+                      </Button>
+                      <Button type="button" onClick={handleSaveMenu}className="w-2xs">Save recipe</Button>
+                    </div>
                   )}
                 </div>
               )}
