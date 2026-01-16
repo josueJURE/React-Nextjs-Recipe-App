@@ -12,6 +12,7 @@ import { SpinnerButton } from "./spinnerButton";
 //
 import postJson from "@/lib/fetchFunction/fetchFunction";
 import { countrySchema } from "@/lib/validations/user-choices";
+import { recipeContentSchema } from "@/lib/validations/user-choices";
 
 import WavesurferPlayer from "@wavesurfer/react";
 import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
@@ -124,9 +125,41 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsMenuDisplayed((prev) => !prev);
   };
 
-  const handleSaveMenu = () => {
-    console.log("menu saved")
-  }
+  const handleSaveMenu = async () => {
+  
+    console.log("handleSaveMenu", menuContent)
+    console.log("menuContent.length", menuContent.length)
+    const recipeContentSchemaValidation =
+      recipeContentSchema.safeParse(menuContent);
+    if (!recipeContentSchemaValidation.success) {
+      toast("invalid input");
+      return
+      // throw new Error("Invalid Input");
+    }
+
+    const response = await fetch("/api/user/save-recipe-request", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        menuContent,
+      }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error response:", errorData);
+      toast("we couln't save this menu to your database");
+      return 
+    
+    }
+
+
+      toast("menu saved to your db");
+    
+
+
+  };
 
   const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
 
@@ -346,8 +379,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                   ></textarea>{" "}
                   {isImageGenerated && <SpinnerButton label="Loading Image" />}
                   {isBackToHomePage && (
-                    <div  className="grid gap-2 justify-self-center ">
-                      <Button className="w-2xs"
+                    <div className="grid gap-2 justify-self-center ">
+                      <Button
+                        className="w-2xs"
                         onClick={() => {
                           handleMenuDislay();
                           setIsBackToHomePage(false);
@@ -355,10 +389,20 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       >
                         Back to home page
                       </Button>
-                      <Button className="w-2xs" type="button" onClick={handleEmailingUser}>
+                      <Button
+                        className="w-2xs"
+                        type="button"
+                        onClick={handleEmailingUser}
+                      >
                         send to my inbox
                       </Button>
-                      <Button type="button" onClick={handleSaveMenu}className="w-2xs">Save recipe</Button>
+                      <Button
+                        type="button"
+                        onClick={handleSaveMenu}
+                        className="w-2xs"
+                      >
+                        Save recipe
+                      </Button>
                     </div>
                   )}
                 </div>
