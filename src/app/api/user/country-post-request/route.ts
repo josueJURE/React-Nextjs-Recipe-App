@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-
 import { userChoicesSchema } from "@/lib/validations/user-choices";
 
 // Import the TYPE (used at compile-time for type checking)
 
-import { chatCompletion} from "@/lib/chat-completions/openai"
+import { chatCompletion } from "@/lib/chat-completions/openai";
 
 
 
@@ -27,7 +26,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const { country, vegan, other } = userChoicesValidation.data;
+    const { country, vegan, other } =
+      userChoicesValidation.data;
 
     console.log("is other picked up", other);
 
@@ -62,6 +62,12 @@ Enjoy your vegan Russian borscht!`;
 
     let readableStream: ReadableStream;
 
+    // if (isImageGenerated) {
+    //   const aiImage = await imageGeneration(country);
+
+    //   console.log(aiImage);
+    // }
+
     if (!isProduction) {
       // Development: Use mock recipe
       readableStream = new ReadableStream({
@@ -73,14 +79,36 @@ Enjoy your vegan Russian borscht!`;
               const chunk = i === words.length - 1 ? words[i] : words[i] + " ";
               controller.enqueue(encoder.encode(chunk));
               // Add a small delay to simulate streaming
-              await new Promise(resolve => setTimeout(resolve, 20));
+              await new Promise((resolve) => setTimeout(resolve, 20));
             }
             controller.close();
           } catch (error) {
             controller.error(error);
           }
-        }
+        },
       });
+
+
+      // if (!userInboxValidation.success) {
+      //   return NextResponse.json({
+      //     success: false,
+      //     error: userInboxValidation.error.issues
+      //   });
+      // }
+
+      // if (isImageGenerated) {
+      //   const aiImage = await imageGeneration(country);
+
+      //   return NextResponse.json({
+      //     success: true,
+      //     image: aiImage
+
+      //   });
+  
+      //   console.log(aiImage);
+      // }
+
+     
     } else {
       // Production: Use actual OpenAI API
       const stream = await chatCompletion(country, vegan, other);
@@ -107,14 +135,14 @@ Enjoy your vegan Russian borscht!`;
           } catch (error) {
             controller.error(error);
           }
-        }
+        },
       });
     }
 
     return new Response(readableStream, {
       headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Transfer-Encoding': 'chunked',
+        "Content-Type": "text/plain; charset=utf-8",
+        "Transfer-Encoding": "chunked",
       },
     });
   } catch (error) {
@@ -123,7 +151,7 @@ Enjoy your vegan Russian borscht!`;
       {
         success: false,
         error: "Failed to process request",
-        details: error instanceof Error ? error.message : String(error)
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     );

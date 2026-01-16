@@ -1,6 +1,7 @@
 // types/forms.ts
 import { z } from "zod";
 import { registerFormSchema } from "@/lib/validations/user-choices";
+import { ReactNode } from "react";
 
 // ✅ inferred type from schema
 type RegisterFormValues = z.infer<typeof registerFormSchema>;
@@ -9,6 +10,10 @@ type RegisterFormValues = z.infer<typeof registerFormSchema>;
 export type RegisterFormWithHook = RegisterFormValues & {
   register?: (name: string) => void;
 };
+
+export type PostPayload = Record<string, unknown>;
+
+export type OnSwithch = { children: ReactNode; onChecked: boolean, onSwitch: ()=> void }
 
 export interface ApiResponse {
   recipe: string;

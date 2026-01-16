@@ -5,6 +5,17 @@
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { userInbox } from "@/lib/validations/user-choices";
+import { SwitchComponent } from "@/components/switchComponent";
+import { SpinnerButton } from "./spinnerButton";
+
+
+//
+import postJson from "@/lib/fetchFunction/fetchFunction";
+import { countrySchema } from "@/lib/validations/user-choices";
+
+import WavesurferPlayer from "@wavesurfer/react";
+import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
 
 import {
   Card,
@@ -18,7 +29,7 @@ import DietaryRequirements from "@/components/ui/dietary-requirements";
 import { Input } from "@/components/ui/input";
 import type { RecipeUIProps } from "@/utils/types";
 import { useRouter } from "next/navigation";
-import { Suspense } from "react";
+
 import { toast } from "sonner";
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
@@ -27,17 +38,54 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const handleSignOut = () => {
     router.push("/sign-in");
   };
+
+  ///// wave surfer
+  const [wavesurfer, setWavesurfer] = useState<any>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const onReady = (ws: any) => {
+    setWavesurfer(ws);
+    setIsPlaying(false);
+  };
+
+  const onPlayPause = () => {
+    wavesurfer && wavesurfer.playPause();
+  };
+
+  const onSkipForward = () => {
+    if (wavesurfer) {
+      const currentTime = wavesurfer.getCurrentTime();
+      wavesurfer.setTime(currentTime + 10); // Skip forward 10 seconds
+    }
+  };
+
+  const onSkipBack = () => {
+    if (wavesurfer) {
+      const currentTime = wavesurfer.getCurrentTime();
+      wavesurfer.setTime(Math.max(0, currentTime - 10)); // Skip back 10 seconds
+    }
+  };
+
+  ///// wave surfer
+
   const [selectedCountry, setSelectedCountry] = useState<string>("");
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [isMenuDisplayed, setIsMenuDisplayed] = useState<boolean>(false);
 
   const [menuContent, setMenuContent] = useState<string>("");
 
   const [isBackToHomePage, setIsBackToHomePage] = useState<boolean>(false);
+
+  const [isAudioGenerated, setIsAudioGenerated] = useState<boolean>(false);
+
+  // const [isDisplaySinner, setIsDisplaySinner] = useState<boolean>(false);
+
+  const [isImageGenerated, setIsImageGenerated] = useState<boolean>(false);
+  const [backgroundPicture, setIsBckgroundPicture] = useState<string>("");
 
   const [vegan, setVegan] = useState<boolean>(userProps.vegan);
 
@@ -47,12 +95,20 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const [userOtherDietaryRequirements, setuserOtherDietaryRequirements] =
     useState<string>("");
 
-  const handleVeganToggle = (checked: boolean) => {
-    setVegan(checked);
+  const handleVeganToggle = (onChecked: boolean) => {
+    setVegan(onChecked);
   };
 
-  const handleDietaryRequirements = (checked: boolean) => {
-    setOtherDietaryRequirements(checked);
+  const handleAudioGeneration = () => {
+    setIsAudioGenerated((onChecked) => !onChecked);
+  };
+
+  const handleImageGeneration = async () => {
+    setIsImageGenerated((onChecked) => !onChecked);
+  };
+
+  const handleDietaryRequirements = (onChecked: boolean) => {
+    setOtherDietaryRequirements(onChecked);
   };
 
   const handleCountrySelect = (countryName: string) => {
@@ -69,8 +125,21 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsMenuDisplayed((prev) => !prev);
   };
 
+  const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
+
+
+
   const handleCountrySelection = async (e: React.FormEvent) => {
     e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
+
+    const countrySchemaValidation = countrySchema.safeParse(selectedCountry);
+
+    if (!countrySchemaValidation.success) {
+      toast(
+        `${countrySchemaValidation.error.issues[0]?.message ?? "Invalid input"}`
+      );
+      throw new Error(" select a country");
+    }
 
     const response = await fetch("/api/user/country-post-request", {
       method: "POST",
@@ -81,6 +150,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
         country: selectedCountry,
         vegan: vegan,
         other: userOtherDietaryRequirements,
+        isImageGenerated,
       }),
     });
 
@@ -94,7 +164,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
     if (response.ok) {
       setIsMenuDisplayed(true);
-      setMenuContent(""); // Reset content before streaming
+      setMenuContent("");
+
+      // Create a local variable to accumulate the complete recipe
+      let accumulatedContent = "";
 
       // Read the stream
       const reader = response.body?.getReader();
@@ -106,11 +179,38 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             const { done, value } = await reader.read();
 
             if (done) {
+              console.log("value", value);
               setIsBackToHomePage(true);
+              if (isImageGenerated) {
+                const imageData = await postJson<{ backGroundPicture: string }>(
+                  "/api/user/image-post-request",
+                  { menuContent: accumulatedContent, backgroundPicture }
+                );
+
+                setIsBckgroundPicture(imageData.backGroundPicture);
+                console.log(" backgroundPicture", typeof backgroundPicture);
+                
+                setIsImageGenerated(false)
+              
+              }
+              if (isAudioGenerated) {
+                if (isAudioGenerated) {
+                  const audioData = await postJson<{ audio: string }>(
+                    "/api/user/audio-post-request",
+                    { menuContent: accumulatedContent }
+                  );
+
+                  setRecipeAudio(audioData.audio);
+                  console.log("recipeAudio", typeof recipeAudio);
+                  setIsAudioGenerated(false);
+                }
+              }
+
               break;
             }
 
             const text = decoder.decode(value, { stream: true });
+            accumulatedContent += text; // ✅ Accumulate in local variable
             setMenuContent((prev) => prev + text);
           }
         } catch (error) {
@@ -121,22 +221,29 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   const handleEmailingUser = async () => {
-    if (menuContent === "") return; /// perhaps use zod validation instead
-    const response = await fetch("/api/user/nodemailer-post-request", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ menuContent: menuContent }),
+    const validation = userInbox.safeParse({
+      menuContent,
+      backgroundPicture,
+      recipeAudio,
     });
+    if (!validation.success) {
+      toast(`${validation.error.message[0]}`);
+      return;
+    }
+    const response: Response = await postJson(
+      "/api/user/nodemailer-post-request",
+      {
+        menuContent,
+        backgroundPicture,
+        recipeAudio,
+      }
+    );
 
-    const data = await response
-    if (!data) {
-      toast("menu not sent to user's inbox")
+    if (!response.ok) {
+      toast("menu not sent to user's inbox");
     }
 
-    toast("menu send to user's inbox")
-   
+    toast("menu send to user's inbox");
   };
 
   // Wait for hydration to complete
@@ -176,11 +283,70 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                 isDarkMode={isDarkMode}
               />
               {isMenuDisplayed && (
-                <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2 rounded-md ">
-                  <div className="prose max-w-none ">
-                    <h2 className="text-2xl font-bold mb-4">Your Recipe</h2>
-                    <div className="whitespace-pre-wrap">{menuContent}</div>
-                  </div>{" "}
+                <div
+                  className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2  bg-no-repeat bg-cover bg-center "
+                  style={{
+                    backgroundImage: backgroundPicture
+                      ? `url(${backgroundPicture})`
+                      : undefined,
+                  }}
+                >
+                  {isAudioGenerated && <SpinnerButton label="Loading Audio" />}
+                  {recipeAudio && (
+                    <div className="border-black border-2 bg-white/80 rounded-lg p-4 mb-4">
+                      <WavesurferPlayer
+                        height={80}
+                        waveColor="rgb(139, 92, 246)"
+                        progressColor="rgb(109, 40, 217)"
+                        url={recipeAudio}
+                        onReady={onReady}
+                        onPlay={() => setIsPlaying(true)}
+                        onPause={() => setIsPlaying(false)}
+                      />
+                      <div className="flex items-center justify-center gap-4 mt-4">
+                        <Button
+                          type="button"
+                          onClick={onSkipBack}
+                          variant="outline"
+                          size="icon"
+                          className="h-10 w-10"
+                        >
+                          <SkipBack className="h-5 w-5" />
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={onPlayPause}
+                          size="icon"
+                          className="h-12 w-12"
+                        >
+                          {isPlaying ? (
+                            <Pause className="h-6 w-6" />
+                          ) : (
+                            <Play className="h-6 w-6" />
+                          )}
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={onSkipForward}
+                          variant="outline"
+                          size="icon"
+                          className="h-10 w-10"
+                        >
+                          <SkipForward className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  <textarea
+                    className="bg-gray-300 rounded-md"
+                    value={menuContent}
+                    rows={25}
+                    cols={60}
+                    readOnly
+                  ></textarea>{" "}
+                  {isImageGenerated && (
+                    <SpinnerButton label="Loading Image"/>
+                  )}
                   {isBackToHomePage && (
                     <Button
                       onClick={() => {
@@ -191,13 +357,28 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       Back to home page
                     </Button>
                   )}
-                  {isBackToHomePage && <Button type="button" onClick={handleEmailingUser}>
-                    send to my inbox
-                    
-                    </Button>}
+                  {isBackToHomePage && (
+                    <Button type="button" onClick={handleEmailingUser}>
+                      send to my inbox
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
+
+            <SwitchComponent
+              onSwitch={handleAudioGeneration}
+              onChecked={isAudioGenerated}
+            >
+              Generate Audio
+            </SwitchComponent>
+            <SwitchComponent
+              onSwitch={handleImageGeneration}
+              onChecked={isImageGenerated}
+            >
+              Generate Image
+            </SwitchComponent>
+
             <Button onClick={handleCountrySelection}>Submit</Button>
             <Button type="button" onClick={handleSignOut}>
               Sign out

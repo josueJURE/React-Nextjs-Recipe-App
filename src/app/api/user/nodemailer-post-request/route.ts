@@ -9,15 +9,18 @@ export async function POST(request: NextRequest) {
   if (!userInboxValidation.success) {
     return NextResponse.json({
       success: false,
-      error: userInboxValidation.error.flatten(),
+      error: userInboxValidation.error.issues,
     });
   }
 
-  const { menuContent } = userInboxValidation.data;
+  const { menuContent, backgroundPicture, recipeAudio } = userInboxValidation.data;
 
-  await processEmail(menuContent);
+  await processEmail(menuContent, backgroundPicture ?? "", recipeAudio) 
 
-  return NextResponse.json({
-    success: true,
-  });
+  return NextResponse.json(
+    {
+      success: true,
+    },
+    { status: 200 }
+  );
 }
