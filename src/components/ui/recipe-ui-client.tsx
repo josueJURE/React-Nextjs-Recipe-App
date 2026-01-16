@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
-import { AudioSpinnerButton} from "./spinnerButton";
+import { SpinnerButton } from "./spinnerButton";
+
+
+//
 import postJson from "@/lib/fetchFunction/fetchFunction";
 import { countrySchema } from "@/lib/validations/user-choices";
 
@@ -124,9 +127,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
 
-  console.log("isAudioGenerated", isAudioGenerated);
 
-  console.log("isImageGenerated", isImageGenerated);
 
   const handleCountrySelection = async (e: React.FormEvent) => {
     e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
@@ -188,7 +189,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
                 setIsBckgroundPicture(imageData.backGroundPicture);
                 console.log(" backgroundPicture", typeof backgroundPicture);
-                backgroundPicture;
+                
+                setIsImageGenerated(false)
+              
               }
               if (isAudioGenerated) {
                 if (isAudioGenerated) {
@@ -199,7 +202,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
                   setRecipeAudio(audioData.audio);
                   console.log("recipeAudio", typeof recipeAudio);
-                  setIsAudioGenerated(false)
+                  setIsAudioGenerated(false);
                 }
               }
 
@@ -283,13 +286,12 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                 <div
                   className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2  bg-no-repeat bg-cover bg-center "
                   style={{
-                 
                     backgroundImage: backgroundPicture
                       ? `url(${backgroundPicture})`
                       : undefined,
                   }}
                 >
-                  {isAudioGenerated && <AudioSpinnerButton/>}
+                  {isAudioGenerated && <SpinnerButton label="Loading Audio" />}
                   {recipeAudio && (
                     <div className="border-black border-2 bg-white/80 rounded-lg p-4 mb-4">
                       <WavesurferPlayer
@@ -342,6 +344,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                     cols={60}
                     readOnly
                   ></textarea>{" "}
+                  {isImageGenerated && (
+                    <SpinnerButton label="Loading Image"/>
+                  )}
                   {isBackToHomePage && (
                     <Button
                       onClick={() => {
