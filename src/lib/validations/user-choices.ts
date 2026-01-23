@@ -30,7 +30,7 @@ export const userChoicesSchema = z.object({
 export const countrySchema = z
   .string()
   .min(1, "Country is required")
-  .max(100);
+  .max(30000);
 
 export const userPreference = userChoicesSchema.pick({
   vegan: true,
@@ -46,6 +46,12 @@ export const menuContentForImageSchema = userInbox.pick({
   menuContent: true
 })
 
+export const recipeContentSchema = z
+.string()
+.trim()
+.min(1, "Recipe required")
+.max(50000);
+
 // Export types
 export type RegisterForm = z.infer<typeof registerFormSchema>;
 export type SignInForm = z.infer<typeof signInFormSchema>;
@@ -54,3 +60,4 @@ export type UserPreference = z.infer<typeof userPreference>;
 export type UserInbox = z.infer<typeof userInbox>;
 export type MenuContentForImageSchema= z.infer<typeof menuContentForImageSchema>
 export type CountrySchema = z.infer<typeof countrySchema>
+export type RecipeSchema = z.infer<typeof recipeContentSchema>

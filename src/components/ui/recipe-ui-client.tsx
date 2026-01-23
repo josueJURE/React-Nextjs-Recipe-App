@@ -1,7 +1,7 @@
 "use client";
 
 // #Gladiator2000
-
+import { z } from "zod";
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -9,10 +9,10 @@ import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
 
-
 //
 import postJson from "@/lib/fetchFunction/fetchFunction";
 import { countrySchema } from "@/lib/validations/user-choices";
+import { recipeContentSchema } from "@/lib/validations/user-choices";
 
 import WavesurferPlayer from "@wavesurfer/react";
 import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
@@ -107,6 +107,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsImageGenerated((onChecked) => !onChecked);
   };
 
+
+
   const handleDietaryRequirements = (onChecked: boolean) => {
     setOtherDietaryRequirements(onChecked);
   };
@@ -125,9 +127,43 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsMenuDisplayed((prev) => !prev);
   };
 
+  const handleSaveMenu = async () => {
+  
+    console.log("handleSaveMenu", menuContent)
+    console.log("menuContent.length", menuContent.length)
+    const recipeContentSchemaValidation =
+      recipeContentSchema.safeParse(menuContent);
+    if (!recipeContentSchemaValidation.success) {
+      toast("invalid input");
+      return
+      // throw new Error("Invalid Input");
+    }
+
+    const response = await fetch("/api/user/save-recipe-request", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(
+        menuContent,
+      ),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error response:", errorData);
+      toast("we couln't save this menu to your database");
+      return 
+    
+    }
+
+
+      toast("menu saved to your db");
+    
+
+
+  };
+
   const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
-
-
 
   const handleCountrySelection = async (e: React.FormEvent) => {
     e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
@@ -189,9 +225,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
                 setIsBckgroundPicture(imageData.backGroundPicture);
                 console.log(" backgroundPicture", typeof backgroundPicture);
-                
-                setIsImageGenerated(false)
-              
+
+                setIsImageGenerated(false);
               }
               if (isAudioGenerated) {
                 if (isAudioGenerated) {
@@ -219,6 +254,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       }
     }
   };
+
+
 
   const handleEmailingUser = async () => {
     const validation = userInbox.safeParse({
@@ -344,23 +381,33 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                     cols={60}
                     readOnly
                   ></textarea>{" "}
-                  {isImageGenerated && (
-                    <SpinnerButton label="Loading Image"/>
-                  )}
+                  {isImageGenerated && <SpinnerButton label="Loading Image" />}
                   {isBackToHomePage && (
-                    <Button
-                      onClick={() => {
-                        handleMenuDislay();
-                        setIsBackToHomePage(false);
-                      }}
-                    >
-                      Back to home page
-                    </Button>
-                  )}
-                  {isBackToHomePage && (
-                    <Button type="button" onClick={handleEmailingUser}>
-                      send to my inbox
-                    </Button>
+                    <div className="grid gap-2 justify-self-center ">
+                      <Button
+                        className="w-2xs"
+                        onClick={() => {
+                          handleMenuDislay();
+                          setIsBackToHomePage(false);
+                        }}
+                      >
+                        Back to home page
+                      </Button>
+                      <Button
+                        className="w-2xs"
+                        type="button"
+                        onClick={handleEmailingUser}
+                      >
+                        send to my inbox
+                      </Button>
+                      <Button 
+                        type="button"
+                        onClick={handleSaveMenu}
+                        className="w-2xs"
+                      >
+                        Save recipe
+                      </Button>
+                    </div>
                   )}
                 </div>
               )}

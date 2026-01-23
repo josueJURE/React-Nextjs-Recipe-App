@@ -13,6 +13,26 @@ datasource db {
   provider = "postgresql"
 }
 
+model Recipe {
+  id          String   @id @default(uuid())
+  title       String?
+  content     String
+  imageUrl    String?
+  audioUrl    String?
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@map("recipe")
+  @@unique([userId, content])
+
+}
+
+
 
 model User {
   id            String           @id
@@ -24,6 +44,8 @@ model User {
   updatedAt     DateTime         @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+    recipes       Recipe[]
 
   // 1-to-1 relation
   preferences   UserPreferences?
