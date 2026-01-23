@@ -1,7 +1,7 @@
 "use client";
 
 // #Gladiator2000
-
+import { z } from "zod";
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -107,6 +107,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsImageGenerated((onChecked) => !onChecked);
   };
 
+
+
   const handleDietaryRequirements = (onChecked: boolean) => {
     setOtherDietaryRequirements(onChecked);
   };
@@ -142,9 +144,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      body: JSON.stringify(
         menuContent,
-      }),
+      ),
     });
     if (!response.ok) {
       const errorData = await response.json();
@@ -252,6 +254,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       }
     }
   };
+
+
 
   const handleEmailingUser = async () => {
     const validation = userInbox.safeParse({
@@ -396,7 +400,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       >
                         send to my inbox
                       </Button>
-                      <Button
+                      <Button 
                         type="button"
                         onClick={handleSaveMenu}
                         className="w-2xs"

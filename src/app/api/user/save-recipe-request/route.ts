@@ -6,6 +6,7 @@ import { recipeContentSchema, RecipeSchema  } from "@/lib/validations/user-choic
 export async function PATCH(request: NextRequest) {
     try {
         const body = await request.json()
+        console.log("body", body)
         const recipeContentSchemaValidation = recipeContentSchema.safeParse(body)
 
         if(!recipeContentSchemaValidation.success) {
