@@ -70,6 +70,12 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const [selectedCountry, setSelectedCountry] = useState<string>("");
 
+  const [recipes, setRecipes] = useState([]);
+
+  const [error, setError] = useState<string | null>(null);
+
+  const [data, setData] = useState(null);
+
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -107,7 +113,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsImageGenerated((onChecked) => !onChecked);
   };
 
-
+  const handleRetrievingRecipes = () => {
+    const response = fetch("");
+    console.log("handleRetrievingRecipes");
+  };
 
   const handleDietaryRequirements = (onChecked: boolean) => {
     setOtherDietaryRequirements(onChecked);
@@ -128,14 +137,13 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   const handleSaveMenu = async () => {
-  
-    console.log("handleSaveMenu", menuContent)
-    console.log("menuContent.length", menuContent.length)
+    console.log("handleSaveMenu", menuContent);
+    console.log("menuContent.length", menuContent.length);
     const recipeContentSchemaValidation =
       recipeContentSchema.safeParse(menuContent);
     if (!recipeContentSchemaValidation.success) {
       toast("invalid input");
-      return
+      return;
       // throw new Error("Invalid Input");
     }
 
@@ -144,23 +152,16 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(
-        menuContent,
-      ),
+      body: JSON.stringify(menuContent),
     });
     if (!response.ok) {
       const errorData = await response.json();
       console.error("Error response:", errorData);
       toast("we couln't save this menu to your database");
-      return 
-    
+      return;
     }
 
-
-      toast("menu saved to your db");
-    
-
-
+    toast("menu saved to your db");
   };
 
   const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
@@ -255,8 +256,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     }
   };
 
-
-
   const handleEmailingUser = async () => {
     const validation = userInbox.safeParse({
       menuContent,
@@ -285,7 +284,24 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   // Wait for hydration to complete
   useEffect(() => {
-    setIsLoading(false);
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch("/api/user/recipe-get-request");
+        const data = await response.json();
+
+        if (data.success) {
+          setRecipes(data.recipes);
+          console.log("recipes", recipes);
+        } else {
+          setError(data.error ?? "Failed to fetch articles");
+        }
+      } catch (error) {
+        setError("Failed to connect to the server");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    void fetchRecipes();
   }, []);
 
   return (
@@ -313,6 +329,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
             <div>{`welcome back ${userProps.name}`}</div>
             <div>{selectedCountry}</div>
+            {/* <div>{recipes}</div> */}
+
 
             <div className="min-h-[500px] w-full flex items-center justify-center">
               <Map
@@ -340,6 +358,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                         onPlay={() => setIsPlaying(true)}
                         onPause={() => setIsPlaying(false)}
                       />
+
                       <div className="flex items-center justify-center gap-4 mt-4">
                         <Button
                           type="button"
@@ -400,7 +419,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       >
                         send to my inbox
                       </Button>
-                      <Button 
+                      <Button
                         type="button"
                         onClick={handleSaveMenu}
                         className="w-2xs"
@@ -425,6 +444,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             >
               Generate Image
             </SwitchComponent>
+            <Button type="button" onClick={handleRetrievingRecipes}>
+              Saved Recipe
+            </Button>
 
             <Button onClick={handleCountrySelection}>Submit</Button>
             <Button type="button" onClick={handleSignOut}>
