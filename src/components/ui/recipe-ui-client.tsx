@@ -113,9 +113,22 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsImageGenerated((onChecked) => !onChecked);
   };
 
-  const handleRetrievingRecipes = () => {
-    const response = fetch("");
+  const handleRetrievingRecipes = async() => {
+    const response = await fetch("/api/user/recipe-get-request", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  
+    );
+    
     console.log("handleRetrievingRecipes");
+    if(response.ok) {
+      const recipe = await response.json()
+
+      console.log("recipe", recipe)
+
+    }
   };
 
   const handleDietaryRequirements = (onChecked: boolean) => {
@@ -283,6 +296,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   // Wait for hydration to complete
+  
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
