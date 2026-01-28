@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
+import Link from "next/link";
 
 //
 import postJson from "@/lib/fetchFunction/fetchFunction";
@@ -113,7 +114,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsImageGenerated((onChecked) => !onChecked);
   };
 
-  const handleRetrievingRecipes = async() => {
+  const useRetrievingRecipes = async() => {
     const response = await fetch("/api/user/recipe-get-request", {
       headers: {
         "Content-Type": "application/json",
@@ -458,11 +459,16 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             >
               Generate Image
             </SwitchComponent>
-            <Button type="button" onClick={handleRetrievingRecipes}>
+            <Button asChild>
+            <Link href="/recipe-ui/saved">
               Saved Recipe
+            </Link>
             </Button>
 
-            <Button onClick={handleCountrySelection}>Submit</Button>
+            <Button type="button" onClick={handleCountrySelection}>Submit
+            
+
+            </Button>
             <Button type="button" onClick={handleSignOut}>
               Sign out
             </Button>
