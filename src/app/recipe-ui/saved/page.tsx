@@ -1,40 +1,56 @@
-"use client"
+"use client";
 
-import { getRetrievingRecipes } from "@/lib/queries/recipes"
-import { useEffect, useState } from "react"
+import { getRetrievingRecipes } from "@/lib/queries/recipes";
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function SavedRecipes() {
-    const [recipes, setRecipes] = useState<string[]>()
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [error, setError] = useState<unknown>()
+  interface Recipe {
+    content: string;
+    // Add other fields of the recipe object here
+  }
 
-    useEffect(() => {
-        (async () => {
-            try {
-                setIsLoading(true)
-                setRecipes(await getRetrievingRecipes())
-                setIsLoading(false)
-            } catch(error) {
-                setError(error ?? "An error has occurred")
-                setIsLoading(false)
-            }
-        })()
-    }, [])
+  const [recipes, setRecipes] = useState<{ recipes: Recipe[] } | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<unknown>();
 
-    if(isLoading){
-        return <p>Now loading</p>
-    }
+  useEffect(() => {
+    (async () => {
+      try {
+        setIsLoading(true);
+        setRecipes(await getRetrievingRecipes());
+        setIsLoading(false);
+      } catch (error) {
+        setError(error ?? "An error has occurred");
+        setIsLoading(false);
+      }
+    })();
+  }, []);
 
-    if(error){
-        return <p>{JSON.stringify(error)}</p>
-    }
+  if (isLoading) {
+    return <p>Now loading</p>;
+  }
 
-    console.log(recipes)
+  if (error) {
+    return <p>{JSON.stringify(error)}</p>;
+  }
+
+  if (recipes)
     return (
-        <>
-        hello
-        {JSON.stringify(recipes)}
-        </>
-    )
+      <>
+        {recipes.recipes.map((recipe) => {
+          return (
+            <Card>
+              <CardContent>{recipe.content}</CardContent>
+            </Card>
+          );
+        })}
+      </>
+    );
 }
-

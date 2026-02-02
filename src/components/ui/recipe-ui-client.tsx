@@ -114,21 +114,18 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsImageGenerated((onChecked) => !onChecked);
   };
 
-  const useRetrievingRecipes = async() => {
+  const useRetrievingRecipes = async () => {
     const response = await fetch("/api/user/recipe-get-request", {
       headers: {
         "Content-Type": "application/json",
       },
-    }
-  
-    );
-    
+    });
+
     console.log("handleRetrievingRecipes");
-    if(response.ok) {
-      const recipe = await response.json()
+    if (response.ok) {
+      const recipe = await response.json();
 
-      console.log("recipe", recipe)
-
+      console.log("recipe", recipe);
     }
   };
 
@@ -297,7 +294,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   // Wait for hydration to complete
-  
+
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
@@ -345,7 +342,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             <div>{`welcome back ${userProps.name}`}</div>
             <div>{selectedCountry}</div>
             {/* <div>{recipes}</div> */}
-
 
             <div className="min-h-[500px] w-full flex items-center justify-center">
               <Map
@@ -460,14 +456,11 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               Generate Image
             </SwitchComponent>
             <Button asChild>
-            <Link href="/recipe-ui/saved">
-              Saved Recipe
-            </Link>
+              <Link href="/recipe-ui/saved">Saved Recipe</Link>
             </Button>
 
-            <Button type="button" onClick={handleCountrySelection}>Submit
-            
-
+            <Button type="button" onClick={handleCountrySelection}>
+              Submit
             </Button>
             <Button type="button" onClick={handleSignOut}>
               Sign out
