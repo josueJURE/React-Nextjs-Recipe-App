@@ -13,7 +13,9 @@ import {
 export default function SavedRecipes() {
   interface Recipe {
     content: string;
-    id: string
+    id: string;
+    createdAt: string
+
     // Add other fields of the recipe object here
   }
 
@@ -42,18 +44,20 @@ export default function SavedRecipes() {
     return <p>{JSON.stringify(error)}</p>;
   }
 
-
-
   if (recipes)
     return (
-      <>
-        {recipes.recipes.map((recipe) => {
-          return (
-            <Card key={recipe.id} >
-              <CardContent>{recipe.content}</CardContent>
-            </Card>
-          );
-        })}
-      </>
+      <main className="min-h-screen w-full flex items-center justify-center p-4">
+        <div className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-screen">
+          <div className="space-y-4">
+            {recipes.recipes.map((recipe) => (
+              <Card key={recipe.id}>
+                <CardDescription>{recipe.createdAt.substring(0, 10)}</CardDescription>
+                <CardContent>{`${recipe.content.substring(0, 200)}...`}</CardContent>
+
+              </Card>
+            ))}
+          </div>
+        </div>
+      </main>
     );
 }
