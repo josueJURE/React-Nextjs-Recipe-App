@@ -14,7 +14,7 @@ export default function SavedRecipes() {
   interface Recipe {
     content: string;
     id: string;
-    createdAt: string
+    createdAt: string;
 
     // Add other fields of the recipe object here
   }
@@ -51,9 +51,17 @@ export default function SavedRecipes() {
           <div className="space-y-4">
             {recipes.recipes.map((recipe) => (
               <Card key={recipe.id}>
-                <CardDescription>{recipe.createdAt.substring(0, 10)}</CardDescription>
-                <CardContent>{`${recipe.content.substring(0, 200)}...`}</CardContent>
-
+                <CardDescription>
+                  {new Date(recipe.createdAt).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </CardDescription>
+                <CardContent>{`${recipe.content.substring(
+                  0,
+                  200
+                )}...`}</CardContent>
               </Card>
             ))}
           </div>
