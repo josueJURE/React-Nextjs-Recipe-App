@@ -13,6 +13,7 @@ import {
 export default function SavedRecipes() {
   interface Recipe {
     content: string;
+    id: string
     // Add other fields of the recipe object here
   }
 
@@ -41,12 +42,14 @@ export default function SavedRecipes() {
     return <p>{JSON.stringify(error)}</p>;
   }
 
+
+
   if (recipes)
     return (
       <>
         {recipes.recipes.map((recipe) => {
           return (
-            <Card>
+            <Card key={recipe.id} >
               <CardContent>{recipe.content}</CardContent>
             </Card>
           );
