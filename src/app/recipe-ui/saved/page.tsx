@@ -49,8 +49,8 @@ export default function SavedRecipes() {
 
   if (recipes)
     return (
-      <main className="min-h-screen w-full flex items-center justify-center p-4">
-        <div className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-screen">
+      <main className="min-h-screen w-full flex items-center justify-center p-4 ">
+        <div className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-screen ">
           <div className="space-y-4">
             {recipes.recipes.map((recipe) => (
               <Card key={recipe.id}>
@@ -66,7 +66,7 @@ export default function SavedRecipes() {
                   200
                 )}...`}</CardContent>
 
-                <DrawerScrollableContent text={recipe.content}  key={recipe.id} />
+                <DrawerScrollableContent text={recipe.content}   />
               </Card>
             ))}
           </div>
