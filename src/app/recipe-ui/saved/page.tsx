@@ -66,7 +66,7 @@ export default function SavedRecipes() {
                   200
                 )}...`}</CardContent>
 
-                <DrawerScrollableContent text={recipe.content}  />
+                <DrawerScrollableContent text={recipe.content}  key={recipe.id} />
               </Card>
             ))}
           </div>

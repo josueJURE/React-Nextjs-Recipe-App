@@ -10,7 +10,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
-export function DrawerScrollableContent(text: Record<string, string>) {
+export function DrawerScrollableContent({...props}: any) {
   return (
     <Drawer direction="bottom">
       <DrawerTrigger asChild>
@@ -18,18 +18,18 @@ export function DrawerScrollableContent(text: Record<string, string>) {
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>Move Goal</DrawerTitle>
-          <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+          <DrawerTitle>Your recipe</DrawerTitle>
+          <DrawerDescription>Your recipe.</DrawerDescription>
         </DrawerHeader>
         <div className="no-scrollbar overflow-y-auto px-4 ">
-          {Array.from({ length: 1 }).map((_, index) => (
+    
             <p
-              key={index}
+              key={props.key}
               className="style-lyra:mb-2 style-lyra:leading-relaxed mb-4 leading-normal"
-            > {text.text}
+            > {props.text}
          
             </p>
-          ))}
+ 
         </div>
         <DrawerFooter>
 
