@@ -15,6 +15,7 @@ export default function SavedRecipes() {
     content: string;
     id: string;
     createdAt: string;
+   
 
     // Add other fields of the recipe object here
   }
@@ -49,10 +50,12 @@ export default function SavedRecipes() {
       <main className="min-h-screen w-full flex items-center justify-center p-4">
         <div className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-screen">
           <div className="space-y-4">
+            <div>{recipes.recipes.length === 0 ? "You have 0 recipe saved" : `You have ${recipes.recipes.length} recipes saved`}</div>
+
             {recipes.recipes.map((recipe) => (
               <Card key={recipe.id}>
-                <CardDescription>
-                  {new Date(recipe.createdAt).toLocaleDateString("en-GB", {
+                  <CardTitle></CardTitle>
+                <CardDescription> Saved on {new Date(recipe.createdAt).toLocaleDateString("en-GB", {
                     day: "2-digit",
                     month: "long",
                     year: "numeric",
