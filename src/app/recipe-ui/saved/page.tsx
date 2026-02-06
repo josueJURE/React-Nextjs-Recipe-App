@@ -10,6 +10,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
 export default function SavedRecipes() {
   interface Recipe {
     content: string;
@@ -65,7 +76,11 @@ export default function SavedRecipes() {
               </Card>
             ))}
           </div>
+          <Drawer>
+            <DrawerDescription>This action can't be undone</DrawerDescription>
+          </Drawer>
         </div>
+       
       </main>
     );
 }
