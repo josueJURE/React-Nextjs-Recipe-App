@@ -10,16 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
+import { DrawerScrollableContent } from "@/components/drawer";
+import { Button } from "@/components/ui/button";
 
 export default function SavedRecipes() {
   interface Recipe {
@@ -61,7 +53,7 @@ export default function SavedRecipes() {
         <div className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-screen">
           <div className="space-y-4">
             {recipes.recipes.map((recipe) => (
-              <Card key={recipe.id}>
+              <Card className=" key={recipe.id}">
                 <CardDescription>
                   {new Date(recipe.createdAt).toLocaleDateString("en-GB", {
                     day: "2-digit",
@@ -73,14 +65,13 @@ export default function SavedRecipes() {
                   0,
                   200
                 )}...`}</CardContent>
+                <Button  asChild> 
+                  <DrawerScrollableContent />
+                </Button>
               </Card>
             ))}
           </div>
-          <Drawer>
-            <DrawerDescription>This action can't be undone</DrawerDescription>
-          </Drawer>
         </div>
-       
       </main>
     );
 }
