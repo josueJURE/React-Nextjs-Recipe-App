@@ -58,7 +58,7 @@ Instructions:
 4. Stir in the apple cider vinegar and dried dill. Season with salt and pepper to taste.
 5. Serve the borscht hot, garnished with a dollop of vegan sour cream and chopped fresh dill if desired.
 
-Enjoy your vegan Russian borscht!`;
+`;
 
     let readableStream: ReadableStream;
 

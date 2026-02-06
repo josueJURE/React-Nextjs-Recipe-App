@@ -52,6 +52,8 @@ export const recipeContentSchema = z
 .min(1, "Recipe required")
 .max(50000);
 
+export const retrieveRecipeSchema = z.boolean()
+
 // Export types
 export type RegisterForm = z.infer<typeof registerFormSchema>;
 export type SignInForm = z.infer<typeof signInFormSchema>;
@@ -61,3 +63,5 @@ export type UserInbox = z.infer<typeof userInbox>;
 export type MenuContentForImageSchema= z.infer<typeof menuContentForImageSchema>
 export type CountrySchema = z.infer<typeof countrySchema>
 export type RecipeSchema = z.infer<typeof recipeContentSchema>
+export type RetrieveRecipeSchema  = z.infer<typeof retrieveRecipeSchema>
+
