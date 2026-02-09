@@ -2,6 +2,7 @@
 
 import { getRetrievingRecipes } from "@/lib/queries/recipes";
 import { useEffect, useState } from "react";
+import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   Card,
   CardContent,
@@ -67,6 +68,9 @@ export default function SavedRecipes() {
                 )}...`}</CardContent>
 
                 <DrawerScrollableContent text={recipe.content}   />
+                < RiDeleteBin6Line/>
+                
+         
               </Card>
             ))}
           </div>
