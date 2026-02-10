@@ -1,6 +1,6 @@
 "use client";
 
-import { getRetrievingRecipes } from "@/lib/queries/recipes";
+import { getRetrievingRecipes, handleRecipeDeletion  } from "@/lib/queries/recipes";
 import { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
@@ -23,9 +23,12 @@ export default function SavedRecipes() {
     // Add other fields of the recipe object here
   }
 
+
+
   const [recipes, setRecipes] = useState<{ recipes: Recipe[] } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown>();
+  // const [recipeID, setRecipeID] = useState<string>("")
 
   useEffect(() => {
     (async () => {
@@ -67,10 +70,10 @@ export default function SavedRecipes() {
                   200
                 )}...`}</CardContent>
 
-                <DrawerScrollableContent text={recipe.content}   />
-                < RiDeleteBin6Line/>
-                
-         
+                <DrawerScrollableContent text={recipe.content} />
+                <div className="flex justify-end">
+                  <RiDeleteBin6Line onClick={() => handleRecipeDeletion(recipe.id)} />
+                </div>
               </Card>
             ))}
           </div>

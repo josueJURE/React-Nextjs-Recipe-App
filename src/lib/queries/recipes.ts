@@ -17,3 +17,19 @@ export const getRetrievingRecipes = async () => {
       console.error(error)
     }
   };
+
+
+  export const handleRecipeDeletion = async (id: string) => {
+    const response = await fetch(`/api/user/recipe-deletion?id=${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    if(!response.ok) {
+      // toast("recipe couldn't be deleted")
+      throw new Error("something has gone wrong")
+    }
+    console.log("delete")
+
+  }
