@@ -28,17 +28,18 @@ export async function DELETE(request: NextRequest) {
 
     const userId = session.user.id;
 
-    const deleteRecipes = await db.recipe.findMany({
+ 
+
+   await db.recipe.delete({
       where: {
-        userId,
-      },
-    });
+        id: id || undefined,
+      }
+    })
 
     return NextResponse.json(
       {
         success: true,
-        message:
-          deleteRecipes.length > 1 ? "recipes deleted" : "recipe deleted",
+        message: "recipe deleted",
       },
       { status: 200 }
     );
