@@ -52,6 +52,14 @@ export const recipeContentSchema = z
 .min(1, "Recipe required")
 .max(50000);
 
+
+
+export const recipeStandardUUIDv4Schema = z.uuid({ version: "v4" });
+
+
+
+
+
 export const retrieveRecipeSchema = z.boolean()
 
 // Export types
@@ -64,4 +72,5 @@ export type MenuContentForImageSchema= z.infer<typeof menuContentForImageSchema>
 export type CountrySchema = z.infer<typeof countrySchema>
 export type RecipeSchema = z.infer<typeof recipeContentSchema>
 export type RetrieveRecipeSchema  = z.infer<typeof retrieveRecipeSchema>
+export type RecipeStandardUUIDv4Schema  = z.infer<typeof retrieveRecipeSchema>
 

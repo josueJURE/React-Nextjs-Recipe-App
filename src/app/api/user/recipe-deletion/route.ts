@@ -1,17 +1,16 @@
 import { NextResponse, NextRequest } from "next/server";
+import { recipeStandardUUIDv4Schema } from "@/lib/validations/user-choices";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import db from "@/lib/prisma";
 
+
 export async function DELETE(request: NextRequest) {
-
-  const searchParams = request.nextUrl.searchParams
-  const id = searchParams.get("id")
-  console.log("console.log id", id)
-
+  const searchParams = request.nextUrl.searchParams;
+  const paramID = searchParams.get("id");
+  console.log("console.log id", paramID);
 
   try {
-  
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -28,13 +27,27 @@ export async function DELETE(request: NextRequest) {
 
     const userId = session.user.id;
 
- 
+    const recipeStandardUUIDv4SchemaValidation =
+      recipeStandardUUIDv4Schema.safeParse(paramID);
 
-   await db.recipe.delete({
+    if (!recipeStandardUUIDv4SchemaValidation.success) {
+      return NextResponse.json(
+        
+        {
+          message: "wrong id number",
+          error: recipeStandardUUIDv4SchemaValidation.error.issues,
+        },
+        { status: 400 }
+      );
+    }
+
+    const id = recipeStandardUUIDv4SchemaValidation.data;
+
+    await db.recipe.delete({
       where: {
-        id: id || undefined,
-      }
-    })
+        id: id,
+      },
+    });
 
     return NextResponse.json(
       {
