@@ -56,6 +56,22 @@ export const recipeContentSchema = z
 
 export const recipeStandardUUIDv4Schema = z.uuid({ version: "v4" });
 
+// for (const term of searchTerms) {
+//   await prisma.topicSearchTerm.upsert({
+//     where: {
+//       topicId_term: {
+//         topicId: topic.id,
+//         term,
+//       },
+//     },
+//     update: {},
+//     create: {
+//       topicId: topic.id,
+//       term,
+//     },
+//   });
+// }
+
 
 
 
