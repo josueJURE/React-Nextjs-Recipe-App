@@ -9,6 +9,7 @@ import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
 import Link from "next/link";
+import { handleSavedMenuResponse } from "@/lib/queries/recipes";
 
 //
 import postJson from "@/lib/fetchFunction/fetchFunction";
@@ -158,21 +159,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       // throw new Error("Invalid Input");
     }
 
-    const response = await fetch("/api/user/save-recipe-request", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(menuContent),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Error response:", errorData);
-      toast("we couln't save this menu to your database");
-      return;
-    }
+    handleSavedMenuResponse(menuContent)
 
-    toast("menu saved to your db");
+ 
   };
 
   const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
