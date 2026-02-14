@@ -1,16 +1,15 @@
 import { toast } from "sonner";
 
-// export const getRetrievingRecipes = async () => {
-//   const response = await fetch("/api/user/recipe-get-request");
-//   if (response.ok) {
-//     const recipe = await response.json();
-//     console.log("recipe", recipe);
-//     return recipe;
-//   } else {
-//     const error = await response.json();
-//     console.error(error);
-//   }
-// };
+const headers = {
+  "Content-Type": "application/json",
+}
+
+
+// ===============================================================================
+// If method is not provided, it defaults to "GET"
+// You typically don’t need "Content-Type": "application/json"
+// Content-Type is mainly relevant when sending a request body (POST, PUT, PATCH)
+// ===============================================================================
 
 export const getRetrievingRecipes = async () => {
   const response = await fetch("/api/user/recipe-get-request");
@@ -25,12 +24,17 @@ export const getRetrievingRecipes = async () => {
   return response.json();
 };
 
+
+// ======================================================================
+// You don’t need Content-Type
+// You are not sending a body, so this header is unnecessary:
+// Content-Type is only needed when you send: body: JSON.stringify(...)
+// =====================================================================
+
 export const handleRecipeDeletion = async (id: string) => {
   const response = await fetch(`/api/user/recipe-deletion?id=${id}`, {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-    },
+
   });
   if (!response.ok) {
     // toast("recipe couldn't be deleted")
@@ -42,9 +46,7 @@ export const handleRecipeDeletion = async (id: string) => {
 export const handleSavedMenuResponse = async (menuContent: string) => {
   const response = await fetch("/api/user/save-recipe-request", {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
+   headers,
     body: JSON.stringify(menuContent),
   });
   if (!response.ok) {
