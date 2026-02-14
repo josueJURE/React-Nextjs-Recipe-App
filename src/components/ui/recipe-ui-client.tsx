@@ -1,7 +1,7 @@
 "use client";
 
-// #Gladiator2000
-import { z } from "zod";
+
+
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -9,7 +9,8 @@ import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
 import Link from "next/link";
-import { handleSavedMenuResponse } from "@/lib/queries/recipes";
+import { handleSavedMenuResponse, handleCountrySelectionResponse } from "@/lib/queries/recipes";
+
 
 //
 import postJson from "@/lib/fetchFunction/fetchFunction";
@@ -115,20 +116,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsImageGenerated((onChecked) => !onChecked);
   };
 
-  const useRetrievingRecipes = async () => {
-    const response = await fetch("/api/user/recipe-get-request", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    console.log("handleRetrievingRecipes");
-    if (response.ok) {
-      const recipe = await response.json();
-
-      console.log("recipe", recipe);
-    }
-  };
 
   const handleDietaryRequirements = (onChecked: boolean) => {
     setOtherDietaryRequirements(onChecked);
@@ -149,8 +136,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   const handleSaveMenu = async () => {
-    console.log("handleSaveMenu", menuContent);
-    console.log("menuContent.length", menuContent.length);
+  
     const recipeContentSchemaValidation =
       recipeContentSchema.safeParse(menuContent);
     if (!recipeContentSchemaValidation.success) {
@@ -159,7 +145,12 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       // throw new Error("Invalid Input");
     }
 
-    handleSavedMenuResponse(menuContent)
+    try {
+      await handleSavedMenuResponse(menuContent);
+    } catch (error) {
+      console.error(error);
+      toast("Something went wrong");
+    }
 
  
   };
@@ -178,30 +169,14 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       throw new Error(" select a country");
     }
 
-    const response = await fetch("/api/user/country-post-request", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        country: selectedCountry,
-        vegan: vegan,
-        other: userOtherDietaryRequirements,
-        isImageGenerated,
-      }),
-    });
+   const response = await  handleCountrySelectionResponse({selectedCountry, vegan, userOtherDietaryRequirements, isImageGenerated})
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Error response:", errorData);
-      throw new Error(
-        `Failed to update preference: ${JSON.stringify(errorData)}`
-      );
-    }
+
 
     if (response.ok) {
       setIsMenuDisplayed(true);
       setMenuContent("");
+
 
       // Create a local variable to accumulate the complete recipe
       let accumulatedContent = "";

@@ -2,8 +2,7 @@ import { toast } from "sonner";
 
 const headers = {
   "Content-Type": "application/json",
-}
-
+};
 
 // ===============================================================================
 // If method is not provided, it defaults to "GET"
@@ -24,8 +23,7 @@ export const getRetrievingRecipes = async () => {
   return response.json();
 };
 
-
-// ======================================================================
+// =====================================================================
 // You don’t need Content-Type
 // You are not sending a body, so this header is unnecessary:
 // Content-Type is only needed when you send: body: JSON.stringify(...)
@@ -34,7 +32,6 @@ export const getRetrievingRecipes = async () => {
 export const handleRecipeDeletion = async (id: string) => {
   const response = await fetch(`/api/user/recipe-deletion?id=${id}`, {
     method: "DELETE",
-
   });
   if (!response.ok) {
     // toast("recipe couldn't be deleted")
@@ -46,8 +43,8 @@ export const handleRecipeDeletion = async (id: string) => {
 export const handleSavedMenuResponse = async (menuContent: string) => {
   const response = await fetch("/api/user/save-recipe-request", {
     method: "PATCH",
-   headers,
-    body: JSON.stringify(menuContent),
+    headers,
+    body: JSON.stringify(menuContent), // Sending raw string → works, but not ideal.  body: JSON.stringify({ menuContent }), would be better
   });
   if (!response.ok) {
     const errorData = await response.json();
@@ -57,4 +54,41 @@ export const handleSavedMenuResponse = async (menuContent: string) => {
   }
 
   toast("menu saved to your db");
+};
+
+
+type SelectedCountryPayload  = {
+  selectedCountry: string,
+  vegan: boolean,
+  userOtherDietaryRequirements: string,
+  isImageGenerated: boolean
+
+}
+
+export const handleCountrySelectionResponse = async ({
+  selectedCountry,
+  vegan,
+  userOtherDietaryRequirements,
+  isImageGenerated,
+} : SelectedCountryPayload ) => {
+  const response = await fetch("/api/user/country-post-request", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      country: selectedCountry,
+      vegan: vegan,
+      other: userOtherDietaryRequirements,
+      isImageGenerated,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    console.error("Error response:", errorData);
+    throw new Error(
+      `Failed to update preference: ${JSON.stringify(errorData)}`
+    );
+  }
+
+  return response
 };

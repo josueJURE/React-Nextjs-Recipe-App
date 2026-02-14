@@ -10,12 +10,10 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 
 import { DrawerScrollableContent } from "@/components/drawer";
-import { Button } from "@/components/ui/button";
+import { AlertDialogCompoment } from "@/components/dialog";
 
 export default function SavedRecipes() {
   interface Recipe {
@@ -29,6 +27,7 @@ export default function SavedRecipes() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<unknown>();
+
   // const [recipeID, setRecipeID] = useState<string>("")
 
   useEffect(() => {
@@ -74,13 +73,22 @@ export default function SavedRecipes() {
 
               <DrawerScrollableContent text={recipe.content} />
               <div className="flex justify-end">
-                <RiDeleteBin6Line
-                  onClick={async () => {
+                <AlertDialogCompoment
+                  onConfirm={async () => {
                     setRecipes((prev) =>
                       prev.filter((item) => item.id !== recipe.id)
                     );
                     await handleRecipeDeletion(recipe.id);
                   }}
+                  trigger={
+                    <button
+                      type="button"
+                      aria-label="Delete recipe"
+                      className="cursor-pointer"
+                    >
+                      <RiDeleteBin6Line />
+                    </button>
+                  }
                 />
               </div>
             </Card>
