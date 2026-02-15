@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 
 import {
   Form,
@@ -25,9 +26,11 @@ import { useForm } from "react-hook-form";
 import { signInFormSchema } from "@/lib/validations/user-choices";
 import type { SignInForm } from "@/lib/validations/user-choices";
 import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
+
+import { signIn } from "@/lib/auth-client";
 
 export default function SignIn() {
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<SignInForm>({
     resolver: zodResolver(signInFormSchema),
     defaultValues: {
@@ -36,13 +39,31 @@ export default function SignIn() {
     },
   });
 
+  const handleSignInWithGoogle = async (e: React.FormEvent) => {
+  
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      await signIn.social({
+        provider: 'google',
+        callbackURL: '/recipe-ui',
+      });
+      console.log("signed up with Google Credentials!!");
+    } catch (error) {
+      toast.error('Failed to Login with Google ');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // z.infer<typeof signInFormSchema>;
 
   async function onSubmit(values: SignInForm) {
-    console.log("this is called!!");
+    console.log("signed up with email and password!!");
     const { email, password } = values;
 
-    const { data, error } = await authClient.signIn.email(
+    const { data, error } = await signIn.email(
       {
         email,
         password,
@@ -110,6 +131,7 @@ export default function SignIn() {
             <Button className="w-full" type="submit">
               Submit
             </Button>
+            <Button onClick={handleSignInWithGoogle} className="w-full">Google Sign In</Button>
          
           </form>
         </Form>
