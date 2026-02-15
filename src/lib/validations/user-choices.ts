@@ -52,6 +52,30 @@ export const recipeContentSchema = z
 .min(1, "Recipe required")
 .max(50000);
 
+
+
+export const recipeStandardUUIDv4Schema = z.uuid({ version: "v4" });
+
+// for (const term of searchTerms) {
+//   await prisma.topicSearchTerm.upsert({
+//     where: {
+//       topicId_term: {
+//         topicId: topic.id,
+//         term,
+//       },
+//     },
+//     update: {},
+//     create: {
+//       topicId: topic.id,
+//       term,
+//     },
+//   });
+// }
+
+
+
+
+
 export const retrieveRecipeSchema = z.boolean()
 
 // Export types
@@ -64,4 +88,5 @@ export type MenuContentForImageSchema= z.infer<typeof menuContentForImageSchema>
 export type CountrySchema = z.infer<typeof countrySchema>
 export type RecipeSchema = z.infer<typeof recipeContentSchema>
 export type RetrieveRecipeSchema  = z.infer<typeof retrieveRecipeSchema>
+export type RecipeStandardUUIDv4Schema  = z.infer<typeof retrieveRecipeSchema>
 

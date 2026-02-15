@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     const isProduction = process.env.NODE_ENV === "production";
 
     // Mock recipe for development to save tokens
-    const mockRecipe = `(mockRecipe)One traditional Russian dish that can easily be made vegan is "Borscht."
+    const mockRecipe = `(mockRecipe aa)One traditional Russian dish that can easily be made vegan is "Borscht."
 
 Ingredients:
 - 2 tbsp olive oil
