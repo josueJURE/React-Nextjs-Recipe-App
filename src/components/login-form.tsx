@@ -40,18 +40,17 @@ export default function SignIn() {
   });
 
   const handleSignInWithGoogle = async (e: React.FormEvent) => {
-  
     e.preventDefault();
     setIsLoading(true);
 
     try {
       await signIn.social({
-        provider: 'google',
-        callbackURL: '/recipe-ui',
+        provider: "google",
+        callbackURL: "/recipe-ui",
       });
       console.log("signed up with Google Credentials!!");
     } catch (error) {
-      toast.error('Failed to Login with Google ');
+      toast.error("Failed to Login with Google ");
     } finally {
       setIsLoading(false);
     }
@@ -117,15 +116,12 @@ export default function SignIn() {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex space-x-55">
-                  <FormLabel>Password</FormLabel>
-                  <FormLabel>
-                  
-               
-                    
-                    Forogt password</FormLabel>
-
+                    <FormLabel>Password</FormLabel>
+                    <FormLabel>
+                      <Link href="/sign-up">Forogt password</Link>
+                    </FormLabel>
                   </div>
-                
+
                   <FormControl>
                     <Input
                       type="password"
@@ -140,8 +136,9 @@ export default function SignIn() {
             <Button className="w-full" type="submit">
               Submit
             </Button>
-            <Button onClick={handleSignInWithGoogle} className="w-full">Google Sign In</Button>
-         
+            <Button onClick={handleSignInWithGoogle} className="w-full">
+              Google Sign In
+            </Button>
           </form>
         </Form>
       </CardContent>
