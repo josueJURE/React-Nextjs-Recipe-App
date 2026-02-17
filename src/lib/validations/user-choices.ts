@@ -25,6 +25,8 @@ export const userChoicesSchema = z.object({
    isImageGenerated: z.boolean()
 });
 
+export const emailSchema = z.email()
+
 
 
 export const countrySchema = z
@@ -89,4 +91,5 @@ export type CountrySchema = z.infer<typeof countrySchema>
 export type RecipeSchema = z.infer<typeof recipeContentSchema>
 export type RetrieveRecipeSchema  = z.infer<typeof retrieveRecipeSchema>
 export type RecipeStandardUUIDv4Schema  = z.infer<typeof retrieveRecipeSchema>
+export type EmailSchema = z.infer<typeof  emailSchema >
 

@@ -30,9 +30,8 @@ export default async function sendEmail({ to, subject, text }: sendEmailType) {
   console.log("userEmail", userEmail);
 
   transporter.sendMail({
-    // from: process.env.from,
+    from: process.env.from,
     to: to,
-
     subject: subject,
     text: text,
   });
