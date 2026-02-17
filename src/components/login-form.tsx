@@ -116,7 +116,16 @@ export default function SignIn() {
               name="password"
               render={({ field }) => (
                 <FormItem>
+                  <div className="flex space-x-55">
                   <FormLabel>Password</FormLabel>
+                  <FormLabel>
+                  
+               
+                    
+                    Forogt password</FormLabel>
+
+                  </div>
+                
                   <FormControl>
                     <Input
                       type="password"
