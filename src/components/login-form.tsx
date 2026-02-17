@@ -118,7 +118,7 @@ export default function SignIn() {
                   <div className="flex space-x-55">
                     <FormLabel>Password</FormLabel>
                     <FormLabel>
-                      <Link href="/sign-up">Forogt password</Link>
+                      <Link href="/forgot-password">Forogt password</Link>
                     </FormLabel>
                   </div>
 
