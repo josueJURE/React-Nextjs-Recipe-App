@@ -19,6 +19,11 @@ import { recipeContentSchema } from "@/lib/validations/user-choices";
 
 import WavesurferPlayer from "@wavesurfer/react";
 import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
+import { signOut, useSession } from "@/lib/auth-client";
+
+
+
+
 
 import {
   Card,
@@ -37,10 +42,17 @@ import { toast } from "sonner";
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
+const { data: sessionData } = useSession();
+  console.log("data?.user.name", sessionData?.user.name)
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    await signOut()
     router.push("/sign-in");
   };
+
+
+
+
 
   ///// wave surfer
   const [wavesurfer, setWavesurfer] = useState<any>(null);
@@ -77,7 +89,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const [error, setError] = useState<string | null>(null);
 
-  const [data, setData] = useState(null);
+  const [fetchedData, setFetchedData] = useState(null);
 
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
@@ -303,7 +315,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               />
             )}
 
-            <div>{`welcome back ${userProps.name}`}</div>
+            <div>{`welcome back ${sessionData?.user.name}`}</div>
             <div>{selectedCountry}</div>
             {/* <div>{recipes}</div> */}
 
