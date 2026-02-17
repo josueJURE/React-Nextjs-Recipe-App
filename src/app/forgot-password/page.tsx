@@ -94,6 +94,9 @@
 //   )
 // }
 
-export default function ForgetPasswordPreview() {
+
+
+
+export default function ForgetPassword() {
   return <>User forgot password</>;
 }
