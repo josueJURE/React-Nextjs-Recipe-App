@@ -10,6 +10,24 @@ const headers = {
 // Content-Type is mainly relevant when sending a request body (POST, PUT, PATCH)
 // ===============================================================================
 
+export const fetchRecipes = async () => {
+  const response = await fetch("/api/user/recipe-get-request");
+ 
+
+  if (!response.ok) {
+    const error = new Error("An error occured while fetching the recipes");
+    error.message = "something has gone wrong"
+    throw error;
+  }
+
+  const { recipes } = await response.json();
+
+  return recipes
+
+
+
+};
+
 export const getRetrievingRecipes = async () => {
   const response = await fetch("/api/user/recipe-get-request");
 
@@ -56,21 +74,19 @@ export const handleSavedMenuResponse = async (menuContent: string) => {
   toast("menu saved to your db");
 };
 
-
-type SelectedCountryPayload  = {
-  selectedCountry: string,
-  vegan: boolean,
-  userOtherDietaryRequirements: string,
-  isImageGenerated: boolean
-
-}
+type SelectedCountryPayload = {
+  selectedCountry: string;
+  vegan: boolean;
+  userOtherDietaryRequirements: string;
+  isImageGenerated: boolean;
+};
 
 export const handleCountrySelectionResponse = async ({
   selectedCountry,
   vegan,
   userOtherDietaryRequirements,
   isImageGenerated,
-} : SelectedCountryPayload ) => {
+}: SelectedCountryPayload) => {
   const response = await fetch("/api/user/country-post-request", {
     method: "POST",
     headers,
@@ -90,5 +106,5 @@ export const handleCountrySelectionResponse = async ({
     );
   }
 
-  return response
+  return response;
 };

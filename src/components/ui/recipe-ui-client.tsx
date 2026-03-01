@@ -1,7 +1,5 @@
 "use client";
 
-
-
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -9,8 +7,14 @@ import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
 import Link from "next/link";
-import { handleSavedMenuResponse, handleCountrySelectionResponse } from "@/lib/queries/recipes";
+import {
+  handleSavedMenuResponse,
+  handleCountrySelectionResponse,
+} from "@/lib/queries/recipes";
 
+import { useQuery } from "@tanstack/react-query";
+
+import { fetchRecipes } from "@/lib//queries/recipes";
 
 //
 import postJson from "@/lib/fetchFunction/fetchFunction";
@@ -20,10 +24,6 @@ import { recipeContentSchema } from "@/lib/validations/user-choices";
 import WavesurferPlayer from "@wavesurfer/react";
 import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
 import { signOut, useSession } from "@/lib/auth-client";
-
-
-
-
 
 import {
   Card,
@@ -42,17 +42,13 @@ import { toast } from "sonner";
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
-const { data: sessionData } = useSession();
-  console.log("data?.user.name", sessionData?.user.name)
+  const { data: sessionData } = useSession();
+  console.log("data?.user.name", sessionData?.user.name);
 
   const handleSignOut = async () => {
-    await signOut()
+    await signOut();
     router.push("/sign-in");
   };
-
-
-
-
 
   ///// wave surfer
   const [wavesurfer, setWavesurfer] = useState<any>(null);
@@ -128,7 +124,6 @@ const { data: sessionData } = useSession();
     setIsImageGenerated((onChecked) => !onChecked);
   };
 
-
   const handleDietaryRequirements = (onChecked: boolean) => {
     setOtherDietaryRequirements(onChecked);
   };
@@ -148,7 +143,6 @@ const { data: sessionData } = useSession();
   };
 
   const handleSaveMenu = async () => {
-  
     const recipeContentSchemaValidation =
       recipeContentSchema.safeParse(menuContent);
     if (!recipeContentSchemaValidation.success) {
@@ -163,8 +157,6 @@ const { data: sessionData } = useSession();
       console.error(error);
       toast("Something went wrong");
     }
-
- 
   };
 
   const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
@@ -181,14 +173,16 @@ const { data: sessionData } = useSession();
       throw new Error(" select a country");
     }
 
-   const response = await  handleCountrySelectionResponse({selectedCountry, vegan, userOtherDietaryRequirements, isImageGenerated})
-
-
+    const response = await handleCountrySelectionResponse({
+      selectedCountry,
+      vegan,
+      userOtherDietaryRequirements,
+      isImageGenerated,
+    });
 
     if (response.ok) {
       setIsMenuDisplayed(true);
       setMenuContent("");
-
 
       // Create a local variable to accumulate the complete recipe
       let accumulatedContent = "";
@@ -271,26 +265,15 @@ const { data: sessionData } = useSession();
 
   // Wait for hydration to complete
 
-  useEffect(() => {
-    const fetchRecipes = async () => {
-      try {
-        const response = await fetch("/api/user/recipe-get-request");
-        const data = await response.json();
+  const {isError, isPending, isFetched, data} = useQuery({
+    queryKey: ["recipe.id"], 
+    queryFn: fetchRecipes,
+  });
 
-        if (data.success) {
-          setRecipes(data.recipes);
-          console.log("recipes", recipes);
-        } else {
-          setError(data.error ?? "Failed to fetch articles");
-        }
-      } catch (error) {
-        setError("Failed to connect to the server");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    void fetchRecipes();
-  }, []);
+  //   useEffect(() => {
+  // ;
+  //     void fetchRecipes();
+  //   }, []);
 
   return (
     <>
@@ -299,7 +282,7 @@ const { data: sessionData } = useSession();
         <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-[600px]">
           <Card
             className={`flex items-center min-h-[700px] transition-opacity duration-300 ${
-              isLoading ? "opacity-0" : "opacity-100"
+              isPending ? "opacity-0" : "opacity-100"
             }`}
           >
             <DietaryRequirements

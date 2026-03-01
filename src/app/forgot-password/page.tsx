@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import {
   Form,
@@ -12,51 +12,50 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
-
-import sendEmail from '@/lib/sendEmail/sendEmail'
-import { emailSchema } from '@/lib/validations/user-choices'
+import sendEmail from "@/lib/sendEmail/sendEmail";
+import { emailSchema } from "@/lib/validations/user-choices";
 
 // Schema for email validation
 const formSchema = z.object({
   email: emailSchema,
-})
+});
 
 export default function ForgetPasswordPreview() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: '',
+      email: "",
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       // Assuming a function to send reset email
-      const {  email } = values;
+      const { email } = values;
 
-      console.log("forgot email",email)
+      console.log("forgot email", email);
 
       const { data, error } = await authClient.requestPasswordReset({
         email, // required
-        redirectTo: "/forgot-password",
-    });
-      console.log(data?.status)
-      toast.success(data?.status)
+        redirectTo: "/reset-password",
+      });
+      console.log(data?.status);
+      toast.success(data?.status);
     } catch (error) {
-      console.error('Error sending password reset email', error)
-      toast.error('Failed to send password reset email. Please try again.')
+      console.error("Error sending password reset email", error);
+      toast.error("Failed to send password reset email. Please try again.");
     }
   }
 
@@ -64,7 +63,7 @@ export default function ForgetPasswordPreview() {
     <div className="flex min-h-[40vh] h-full w-full items-center justify-center px-4">
       <Card className="mx-auto max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Forgot Password</CardTitle>
+          <CardTitle className="text-2xl">Forgot Password test1924</CardTitle>
           <CardDescription>
             Enter your email address to receive a password reset link.
           </CardDescription>
@@ -81,7 +80,7 @@ export default function ForgetPasswordPreview() {
                     <FormItem className="grid gap-2">
                       <FormLabel htmlFor="email">Email</FormLabel>
                       <FormControl>
-                        <Input 
+                        <Input
                           id="email"
                           placeholder="johndoe@mail.co"
                           type="email"
@@ -93,7 +92,7 @@ export default function ForgetPasswordPreview() {
                     </FormItem>
                   )}
                 />
-                <Button  type="submit" className="w-full">
+                <Button type="submit" className="w-full">
                   Send Reset Link
                 </Button>
               </div>
@@ -102,11 +101,8 @@ export default function ForgetPasswordPreview() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-
-
-
 
 // export default function ForgetPassword() {
 //   return <>User forgot password</>;
