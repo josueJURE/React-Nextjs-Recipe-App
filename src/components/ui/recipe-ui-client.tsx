@@ -263,17 +263,14 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     toast("menu send to user's inbox");
   };
 
-  // Wait for hydration to complete
+  
 
   const {isError, isPending, isFetched, data} = useQuery({
-    queryKey: ["recipe.id"], 
+    queryKey: ["recipes"],
     queryFn: fetchRecipes,
   });
 
-  //   useEffect(() => {
-  // ;
-  //     void fetchRecipes();
-  //   }, []);
+
 
   return (
     <>

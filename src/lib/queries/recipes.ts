@@ -12,33 +12,16 @@ const headers = {
 
 export const fetchRecipes = async () => {
   const response = await fetch("/api/user/recipe-get-request");
- 
 
   if (!response.ok) {
     const error = new Error("An error occured while fetching the recipes");
-    error.message = "something has gone wrong"
+    error.message = "something has gone wrong";
     throw error;
   }
 
   const { recipes } = await response.json();
 
-  return recipes
-
-
-
-};
-
-export const getRetrievingRecipes = async () => {
-  const response = await fetch("/api/user/recipe-get-request");
-
-  if (!response.ok) {
-    const error = await response.json();
-    console.error(error);
-
-    return;
-  }
-
-  return response.json();
+  return recipes;
 };
 
 // =====================================================================

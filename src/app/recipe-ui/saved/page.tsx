@@ -1,16 +1,17 @@
 "use client";
 
 import {
-  getRetrievingRecipes,
+  fetchRecipes,
   handleRecipeDeletion,
 } from "@/lib/queries/recipes";
-import { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
   Card,
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
+
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { DrawerScrollableContent } from "@/components/drawer";
 import { AlertDialogCompoment } from "@/components/dialog";
@@ -20,44 +21,28 @@ export default function SavedRecipes() {
     content: string;
     id: string;
     createdAt: string;
-
-    // Add other fields of the recipe object here
   }
 
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<unknown>();
+  const queryClient = useQueryClient();
+  const { isError, isPending, data = [], error } = useQuery<Recipe[]>({
+    queryKey: ["recipes"],
+    queryFn: fetchRecipes,
+  });
 
-  // const [recipeID, setRecipeID] = useState<string>("")
-
-  useEffect(() => {
-    (async () => {
-      try {
-        setIsLoading(true);
-        const response = await getRetrievingRecipes();
-        setRecipes(response.recipes);
-        setIsLoading(false);
-      } catch (error) {
-        setError(error ?? "An error has occurred");
-        setIsLoading(false);
-      }
-    })();
-  }, []);
-
-  if (isLoading) {
+  if (isPending) {
     return <p>Now loading</p>;
   }
 
-  if (error) {
-    return <p>{JSON.stringify(error)}</p>;
+  if (isError) {
+    return <p>{(error as Error)?.message ?? "Failed to load recipes"}</p>;
   }
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center p-4 ">
       <div className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-screen ">
         <div className="space-y-4">
-          {recipes.length === 0 && <div>You have no recipe saved</div>}
-          {recipes.map((recipe) => (
+          {data.length === 0 && <div>You have no recipe saved</div>}
+          {data.map((recipe) => (
             <Card key={recipe.id}>
               <CardDescription>
                 {new Date(recipe.createdAt).toLocaleDateString("en-GB", {
@@ -75,10 +60,8 @@ export default function SavedRecipes() {
               <div className="flex justify-end">
                 <AlertDialogCompoment
                   onConfirm={async () => {
-                    setRecipes((prev) =>
-                      prev.filter((item) => item.id !== recipe.id)
-                    );
                     await handleRecipeDeletion(recipe.id);
+                    await queryClient.invalidateQueries({ queryKey: ["recipes"] });
                   }}
                   trigger={
                     <button
