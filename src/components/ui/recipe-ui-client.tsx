@@ -2,7 +2,7 @@
 
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { userInbox } from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
@@ -265,11 +265,12 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   
 
-  const {isError, isPending, isFetched, data} = useQuery({
+  const {isError, isPending, isFetched} = useQuery({
     queryKey: ["recipes"],
     queryFn: fetchRecipes,
   });
 
+ 
 
 
   return (

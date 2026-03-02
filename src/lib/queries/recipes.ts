@@ -91,3 +91,27 @@ export const handleCountrySelectionResponse = async ({
 
   return response;
 };
+
+type VeganPreferenceResponse = {
+  success: boolean;
+  vegan: boolean;
+};
+
+export const updateVeganPreference = async (
+  vegan: boolean
+): Promise<VeganPreferenceResponse> => {
+  const response = await fetch("/api/user/dietary-preferences", {
+    method: "PATCH",
+    headers,
+    body: JSON.stringify({ vegan }),
+  });
+
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => null);
+    throw new Error(
+      errorBody?.error ?? "Failed to update vegan preference"
+    );
+  }
+
+  return response.json();
+};

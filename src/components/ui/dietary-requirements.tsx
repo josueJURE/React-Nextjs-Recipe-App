@@ -1,50 +1,39 @@
+"use client";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import type { DietaryRequirementsProps } from "@/utils/types";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type {DietaryRequirementsProps} from "@/utils/types"
+import { updateVeganPreference } from "@/lib/queries/recipes";
 
+function DietaryRequirements({
+  vegan,
+  onVeganToggle,
+  onOtherToggle,
+}: DietaryRequirementsProps) {
+  const veganPreferenceMutation = useMutation({
+    mutationFn: updateVeganPreference,
+    onSuccess: (result, checked) => {
+      onVeganToggle(result.vegan);
+      toast.success(`Vegan preference ${checked ? "enabled" : "disabled"}`);
+    },
+    onError: (error, checked) => {
+      onVeganToggle(!checked);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to update vegan preference"
+      );
+    },
+  });
 
-function DietaryRequirements({ vegan, onVeganToggle, onOtherToggle }: DietaryRequirementsProps) {
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  const handleVeganChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVeganChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
 
-    try {
-      setIsUpdating(true);
-
-      // Call API to update the vegan preference
-      const response = await fetch("/api/user/dietary-preferences", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ vegan: checked }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update preference");
-      }
-
-      const data = await response.json();
-
-      // console.log(data.pays)
-
-
-
-      // Update the parent component's state
-      onVeganToggle(data.vegan);
-
-      toast.success(`Vegan preference ${checked ? "enabled" : "disabled"}`);
-    } catch (error) {
-      console.error("Error updating vegan preference:", error);
-      toast.error("Failed to update preference");
-      // Revert the checkbox if the API call fails
-      e.target.checked = !checked;
-    } finally {
-      setIsUpdating(false);
-    }
+    // Optimistic update so the toggle feels instant.
+    onVeganToggle(checked);
+    veganPreferenceMutation.mutate(checked);
   };
 
   return (
@@ -58,7 +47,7 @@ function DietaryRequirements({ vegan, onVeganToggle, onOtherToggle }: DietaryReq
           type="checkbox"
           checked={vegan}
           onChange={handleVeganChange}
-          disabled={isUpdating}
+          disabled={veganPreferenceMutation.isPending}
         />
         <Label htmlFor="other">Other</Label>
 
@@ -68,7 +57,6 @@ function DietaryRequirements({ vegan, onVeganToggle, onOtherToggle }: DietaryReq
           id="other"
           type="checkbox"
         />
-
       </div>
     </div>
   );
