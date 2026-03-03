@@ -134,6 +134,7 @@ const { data: sessionData } = useSession();
   };
 
   const handleCountrySelect = (countryName: string) => {
+    if (!countryName) return;
     setSelectedCountry(countryName);
   };
 
@@ -323,6 +324,7 @@ const { data: sessionData } = useSession();
               <Map
                 handleCountrySelect={handleCountrySelect}
                 isDarkMode={isDarkMode}
+                selectedCountry={selectedCountry}
               />
               {isMenuDisplayed && (
                 <div

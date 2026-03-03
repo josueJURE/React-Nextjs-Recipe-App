@@ -50,7 +50,7 @@ export default function ForgetPasswordPreview() {
 
       const { data, error } = await authClient.requestPasswordReset({
         email, // required
-        redirectTo: "/forgot-password",
+        redirectTo: "/reset-password",
     });
       console.log(data?.status)
       toast.success(data?.status)

@@ -39,6 +39,7 @@ export interface DietaryDataType {
 export interface MapProps {
   handleCountrySelect: (countryName: string) => void;
   isDarkMode: boolean;
+  selectedCountry: string;
 }
 
 export interface GeographyFeature {
