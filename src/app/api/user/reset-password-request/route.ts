@@ -1,9 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { resetPasswordSchema } from "@/lib/validations/user-choices";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+
+import prisma from "@/lib/prisma";
 
 export async function PATCH(request: NextRequest) {
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    console.log("session", session);
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+
     const body = await request.json();
     console.log("Received body:", body);
 
@@ -21,15 +37,22 @@ export async function PATCH(request: NextRequest) {
 
     const { newPassword, confirmPassword } = resetPasswordSchemaValidation.data;
 
-    
+    if (newPassword !== confirmPassword) {
+      return NextResponse.json(
+        { success: false, error: "Passwords do not match" },
+        { status: 400 }
+      );
+    }
 
+    const updatedUserPassword = await prisma.account.updateMany({
+      where: { userId },
+      data: { updatedAt: new Date() },
+    });
 
-    ///
-
-    console.log("newPassword", newPassword);
-    console.log("confirmPassword", confirmPassword);
-
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      updatedAccounts: updatedUserPassword.count,
+    });
   } catch (error) {
     console.error("Error in PATCH handler:", error);
     return NextResponse.json(

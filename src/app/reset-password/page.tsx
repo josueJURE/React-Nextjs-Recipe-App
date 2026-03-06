@@ -71,27 +71,27 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    const resetUserPasswordResponse = await fetch(
-      "/api/user/reset-password-request",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          newPassword: values.newPassword,
-          confirmPassword: values.confirmPassword,
-        }),
-      }
+    // const resetUserPasswordResponse = await fetch(
+    //   "/api/user/reset-password-request",
+    //   {
+    //     method: "PATCH",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       newPassword: values.newPassword,
+    //       confirmPassword: values.confirmPassword,
+    //     }),
+    //   }
       
-    );
+    // );
 
-    if (!resetUserPasswordResponse.ok) {
-      const errorData = await resetUserPasswordResponse.json().catch(() => null);
-      console.error("Error response:", errorData);
-      toast.error("Password reset succeeded, but post-reset sync failed.");
-      return;
-    }
+    // if (!resetUserPasswordResponse.ok) {
+    //   const errorData = await resetUserPasswordResponse.json().catch(() => null);
+    //   console.error("Error response:", errorData);
+    //   toast.error("Password reset succeeded, but post-reset sync failed.");
+    //   return;
+    // }
 
 
 
