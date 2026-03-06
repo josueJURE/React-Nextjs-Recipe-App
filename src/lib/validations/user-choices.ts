@@ -8,6 +8,11 @@ export const registerFormSchema = z.object({
   confirmPassword: z.string().min(2).max(50).optional(),
 });
 
+export const resetPasswordSchema = z.object({
+  newPassword: z.string().min(8).max(50),
+  confirmPassword: z.string().min(8).max(50),
+});
+
 export const signInFormSchema = registerFormSchema.pick({
   email: true,
   password: true,
@@ -22,12 +27,10 @@ export const userChoicesSchema = z.object({
     .max(100, "Country name is too long"),
   vegan: z.boolean(),
   other: z.string().max(56, "Additional note is too long").default(""),
-   isImageGenerated: z.boolean()
+  isImageGenerated: z.boolean(),
 });
 
-export const emailSchema = z.email()
-
-
+export const emailSchema = z.email();
 
 export const countrySchema = z
   .string()
@@ -41,20 +44,18 @@ export const userPreference = userChoicesSchema.pick({
 export const userInbox = z.object({
   menuContent: z.string().trim().min(1, "Menu content cannot be empty"),
   backgroundPicture: z.string(),
-  recipeAudio: z.string().optional()
+  recipeAudio: z.string().optional(),
 });
 
 export const menuContentForImageSchema = userInbox.pick({
-  menuContent: true
-})
+  menuContent: true,
+});
 
 export const recipeContentSchema = z
-.string()
-.trim()
-.min(1, "Recipe required")
-.max(50000);
-
-
+  .string()
+  .trim()
+  .min(1, "Recipe required")
+  .max(50000);
 
 export const recipeStandardUUIDv4Schema = z.uuid({ version: "v4" });
 
@@ -74,11 +75,7 @@ export const recipeStandardUUIDv4Schema = z.uuid({ version: "v4" });
 //   });
 // }
 
-
-
-
-
-export const retrieveRecipeSchema = z.boolean()
+export const retrieveRecipeSchema = z.boolean();
 
 // Export types
 export type RegisterForm = z.infer<typeof registerFormSchema>;
@@ -86,10 +83,12 @@ export type SignInForm = z.infer<typeof signInFormSchema>;
 export type UserChoices = z.infer<typeof userChoicesSchema>;
 export type UserPreference = z.infer<typeof userPreference>;
 export type UserInbox = z.infer<typeof userInbox>;
-export type MenuContentForImageSchema= z.infer<typeof menuContentForImageSchema>
-export type CountrySchema = z.infer<typeof countrySchema>
-export type RecipeSchema = z.infer<typeof recipeContentSchema>
-export type RetrieveRecipeSchema  = z.infer<typeof retrieveRecipeSchema>
-export type RecipeStandardUUIDv4Schema  = z.infer<typeof retrieveRecipeSchema>
-export type EmailSchema = z.infer<typeof  emailSchema >
-
+export type MenuContentForImageSchema = z.infer<
+  typeof menuContentForImageSchema
+>;
+export type CountrySchema = z.infer<typeof countrySchema>;
+export type RecipeSchema = z.infer<typeof recipeContentSchema>;
+export type RetrieveRecipeSchema = z.infer<typeof retrieveRecipeSchema>;
+export type RecipeStandardUUIDv4Schema = z.infer<typeof retrieveRecipeSchema>;
+export type EmailSchema = z.infer<typeof emailSchema>;
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;

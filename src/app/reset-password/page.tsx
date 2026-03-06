@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -72,6 +71,30 @@ export default function ResetPasswordPage() {
       return;
     }
 
+    const resetUserPasswordResponse = await fetch(
+      "/api/user/reset-password-request",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          newPassword: values.newPassword,
+          confirmPassword: values.confirmPassword,
+        }),
+      }
+      
+    );
+
+    if (!resetUserPasswordResponse.ok) {
+      const errorData = await resetUserPasswordResponse.json().catch(() => null);
+      console.error("Error response:", errorData);
+      toast.error("Password reset succeeded, but post-reset sync failed.");
+      return;
+    }
+
+
+
     toast.success("Password reset successful. Please sign in.");
     router.push("/sign-in");
   }
@@ -100,14 +123,19 @@ export default function ResetPasswordPage() {
               </div>
             ) : (
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
                   <div className="grid gap-4">
                     <FormField
                       control={form.control}
                       name="newPassword"
                       render={({ field }) => (
                         <FormItem className="grid gap-2">
-                          <FormLabel htmlFor="newPassword">New Password</FormLabel>
+                          <FormLabel htmlFor="newPassword">
+                            New Password
+                          </FormLabel>
                           <FormControl>
                             <PasswordInput
                               id="newPassword"
