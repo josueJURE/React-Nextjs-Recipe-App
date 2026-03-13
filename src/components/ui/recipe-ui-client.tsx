@@ -101,11 +101,11 @@ const { data: sessionData } = useSession();
 
   const [isBackToHomePage, setIsBackToHomePage] = useState<boolean>(false);
 
-  const [isAudioGenerated, setIsAudioGenerated] = useState<boolean>(false);
+  const [isAudioGenerated, setIsAudioGenerated] = useState<boolean>(true);
 
   // const [isDisplaySinner, setIsDisplaySinner] = useState<boolean>(false);
 
-  const [isImageGenerated, setIsImageGenerated] = useState<boolean>(false);
+  const [isImageGenerated, setIsImageGenerated] = useState<boolean>(true);
   const [backgroundPicture, setIsBckgroundPicture] = useState<string>("");
 
   const [vegan, setVegan] = useState<boolean>(userProps.vegan);
