@@ -1,133 +1,74 @@
 "use client";
 
-
-
 import Map from "@/components/map";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { userInbox } from "@/lib/validations/user-choices";
+import { lazy, Suspense, useEffect, useState } from "react";
+import {
+  countrySchema,
+  recipeContentSchema,
+  userInbox,
+} from "@/lib/validations/user-choices";
 import { SwitchComponent } from "@/components/switchComponent";
 import { SpinnerButton } from "./spinnerButton";
 import Link from "next/link";
-import { handleSavedMenuResponse, handleCountrySelectionResponse } from "@/lib/queries/recipes";
-
-
-//
-import postJson from "@/lib/fetchFunction/fetchFunction";
-import { countrySchema } from "@/lib/validations/user-choices";
-import { recipeContentSchema } from "@/lib/validations/user-choices";
-
-import WavesurferPlayer from "@wavesurfer/react";
-import { Play, Pause, SkipForward, SkipBack } from "lucide-react";
-import { signOut, useSession } from "@/lib/auth-client";
-
-
-
-
-
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
+  handleSavedMenuResponse,
+  handleCountrySelectionResponse,
+} from "@/lib/queries/recipes";
+import postJson from "@/lib/fetchFunction/fetchFunction";
+import { signOut, useSession } from "@/lib/auth-client";
+import { AudioSkeleton } from "./audio-skeleton";
+import { Card } from "@/components/ui/card";
 import DietaryRequirements from "@/components/ui/dietary-requirements";
 import { Input } from "@/components/ui/input";
 import type { RecipeUIProps } from "@/utils/types";
 import { useRouter } from "next/navigation";
-
 import { toast } from "sonner";
+
+const RecipeAudioPlayer = lazy(() => import("./recipe-audio-player"));
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
-const { data: sessionData } = useSession();
-  console.log("data?.user.name", sessionData?.user.name)
+  const { data: sessionData } = useSession();
 
   const handleSignOut = async () => {
-    await signOut()
+    await signOut();
     router.push("/sign-in");
   };
 
-
-
-
-
-  ///// wave surfer
-  const [wavesurfer, setWavesurfer] = useState<any>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const onReady = (ws: any) => {
-    setWavesurfer(ws);
-    setIsPlaying(false);
-  };
-
-  const onPlayPause = () => {
-    wavesurfer && wavesurfer.playPause();
-  };
-
-  const onSkipForward = () => {
-    if (wavesurfer) {
-      const currentTime = wavesurfer.getCurrentTime();
-      wavesurfer.setTime(currentTime + 10); // Skip forward 10 seconds
-    }
-  };
-
-  const onSkipBack = () => {
-    if (wavesurfer) {
-      const currentTime = wavesurfer.getCurrentTime();
-      wavesurfer.setTime(Math.max(0, currentTime - 10)); // Skip back 10 seconds
-    }
-  };
-
-  ///// wave surfer
-
   const [selectedCountry, setSelectedCountry] = useState<string>("");
-
-  const [recipes, setRecipes] = useState([]);
-
-  const [error, setError] = useState<string | null>(null);
-
-  const [fetchedData, setFetchedData] = useState(null);
-
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-
+  const [recipes, setRecipes] = useState<unknown[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
   const [isMenuDisplayed, setIsMenuDisplayed] = useState<boolean>(false);
-
   const [menuContent, setMenuContent] = useState<string>("");
-
   const [isBackToHomePage, setIsBackToHomePage] = useState<boolean>(false);
-
-  const [isAudioGenerated, setIsAudioGenerated] = useState<boolean>(true);
-
-  // const [isDisplaySinner, setIsDisplaySinner] = useState<boolean>(false);
-
-  const [isImageGenerated, setIsImageGenerated] = useState<boolean>(true);
+  const [shouldGenerateAudio, setShouldGenerateAudio] =
+    useState<boolean>(true);
+  const [shouldGenerateImage, setShouldGenerateImage] =
+    useState<boolean>(true);
+  const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
+  const [isGeneratingImage, setIsGeneratingImage] = useState<boolean>(false);
   const [backgroundPicture, setIsBckgroundPicture] = useState<string>("");
-
   const [vegan, setVegan] = useState<boolean>(userProps.vegan);
-
   const [otherDietaryRequirements, setOtherDietaryRequirements] =
     useState<boolean>(false);
-
   const [userOtherDietaryRequirements, setuserOtherDietaryRequirements] =
     useState<string>("");
+  const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
+  const isDarkMode = false;
 
   const handleVeganToggle = (onChecked: boolean) => {
     setVegan(onChecked);
   };
 
-  const handleAudioGeneration = () => {
-    setIsAudioGenerated((onChecked) => !onChecked);
+  const handleAudioGeneration = (checked: boolean) => {
+    setShouldGenerateAudio(checked);
   };
 
-  const handleImageGeneration = async () => {
-    setIsImageGenerated((onChecked) => !onChecked);
+  const handleImageGeneration = (checked: boolean) => {
+    setShouldGenerateImage(checked);
   };
-
 
   const handleDietaryRequirements = (onChecked: boolean) => {
     setOtherDietaryRequirements(onChecked);
@@ -149,13 +90,11 @@ const { data: sessionData } = useSession();
   };
 
   const handleSaveMenu = async () => {
-  
     const recipeContentSchemaValidation =
       recipeContentSchema.safeParse(menuContent);
     if (!recipeContentSchemaValidation.success) {
       toast("invalid input");
       return;
-      // throw new Error("Invalid Input");
     }
 
     try {
@@ -164,83 +103,104 @@ const { data: sessionData } = useSession();
       console.error(error);
       toast("Something went wrong");
     }
-
- 
   };
 
-  const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
-
-  const handleCountrySelection = async (e: React.FormEvent) => {
-    e.preventDefault(); // <-- REQUIRED: else would lead to SyntaxError: Unexpected end of JSON input on backend
-
+  const handleCountrySelection = async () => {
     const countrySchemaValidation = countrySchema.safeParse(selectedCountry);
 
     if (!countrySchemaValidation.success) {
       toast(
         `${countrySchemaValidation.error.issues[0]?.message ?? "Invalid input"}`
       );
-      throw new Error(" select a country");
+      return;
     }
 
-   const response = await  handleCountrySelectionResponse({selectedCountry, vegan, userOtherDietaryRequirements, isImageGenerated})
+    setIsMenuDisplayed(true);
+    setIsBackToHomePage(false);
+    setMenuContent("");
+    setRecipeAudio(null);
+    setIsBckgroundPicture("");
+    setIsGeneratingAudio(shouldGenerateAudio);
+    setIsGeneratingImage(shouldGenerateImage);
 
+    try {
+      const response = await handleCountrySelectionResponse({
+        selectedCountry,
+        vegan,
+        userOtherDietaryRequirements,
+        isImageGenerated: shouldGenerateImage,
+      });
 
-
-    if (response.ok) {
-      setIsMenuDisplayed(true);
-      setMenuContent("");
-
-
-      // Create a local variable to accumulate the complete recipe
       let accumulatedContent = "";
-
-      // Read the stream
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
 
-      if (reader) {
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-
-            if (done) {
-              console.log("value", value);
-              setIsBackToHomePage(true);
-              if (isImageGenerated) {
-                const imageData = await postJson<{ backGroundPicture: string }>(
-                  "/api/user/image-post-request",
-                  { menuContent: accumulatedContent, backgroundPicture }
-                );
-
-                setIsBckgroundPicture(imageData.backGroundPicture);
-                console.log(" backgroundPicture", typeof backgroundPicture);
-
-                setIsImageGenerated(false);
-              }
-              if (isAudioGenerated) {
-                if (isAudioGenerated) {
-                  const audioData = await postJson<{ audio: string }>(
-                    "/api/user/audio-post-request",
-                    { menuContent: accumulatedContent }
-                  );
-
-                  setRecipeAudio(audioData.audio);
-                  console.log("recipeAudio", typeof recipeAudio);
-                  setIsAudioGenerated(false);
-                }
-              }
-
-              break;
-            }
-
-            const text = decoder.decode(value, { stream: true });
-            accumulatedContent += text; // ✅ Accumulate in local variable
-            setMenuContent((prev) => prev + text);
-          }
-        } catch (error) {
-          console.error("Error reading stream:", error);
-        }
+      if (!reader) {
+        throw new Error("Recipe stream was not available");
       }
+
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          break;
+        }
+
+        const text = decoder.decode(value, { stream: true });
+        accumulatedContent += text;
+        setMenuContent((prev) => prev + text);
+      }
+
+      const finalText = decoder.decode();
+      if (finalText) {
+        accumulatedContent += finalText;
+        setMenuContent((prev) => prev + finalText);
+      }
+
+      const imageRequest = shouldGenerateImage
+        ? postJson<{ backGroundPicture: string }>(
+            "/api/user/image-post-request",
+            {
+              menuContent: accumulatedContent,
+            }
+          )
+            .then((imageData) => {
+              setIsBckgroundPicture(imageData.backGroundPicture);
+            })
+            .catch((imageError) => {
+              console.error(imageError);
+              toast("Image generation failed");
+            })
+            .finally(() => {
+              setIsGeneratingImage(false);
+            })
+        : Promise.resolve();
+
+      const audioRequest = shouldGenerateAudio
+        ? postJson<{ audio: string }>("/api/user/audio-post-request", {
+            menuContent: accumulatedContent,
+          })
+            .then((audioData) => {
+              setRecipeAudio(audioData.audio);
+            })
+            .catch((audioError) => {
+              console.error(audioError);
+              toast("Audio generation failed");
+            })
+            .finally(() => {
+              setIsGeneratingAudio(false);
+            })
+        : Promise.resolve();
+
+      await Promise.all([imageRequest, audioRequest]);
+      setIsBackToHomePage(true);
+    } catch (error) {
+      console.error("Error generating recipe:", error);
+      toast("Something went wrong while building your recipe");
+      setIsMenuDisplayed(false);
+    } finally {
+      setIsGeneratingAudio(false);
+      setIsGeneratingImage(false);
     }
   };
 
@@ -251,10 +211,11 @@ const { data: sessionData } = useSession();
       recipeAudio,
     });
     if (!validation.success) {
-      toast(`${validation.error.message[0]}`);
+      toast(validation.error.issues[0]?.message ?? "Invalid input");
       return;
     }
-    const response: Response = await postJson(
+
+    const response = await postJson<{ success: boolean }>(
       "/api/user/nodemailer-post-request",
       {
         menuContent,
@@ -263,14 +224,13 @@ const { data: sessionData } = useSession();
       }
     );
 
-    if (!response.ok) {
+    if (!response.success) {
       toast("menu not sent to user's inbox");
+      return;
     }
 
-    toast("menu send to user's inbox");
+    toast("menu sent to user's inbox");
   };
-
-  // Wait for hydration to complete
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -280,12 +240,12 @@ const { data: sessionData } = useSession();
 
         if (data.success) {
           setRecipes(data.recipes);
-          console.log("recipes", recipes);
         } else {
-          setError(data.error ?? "Failed to fetch articles");
+          setLoadError(data.error ?? "Failed to fetch articles");
         }
-      } catch (error) {
-        setError("Failed to connect to the server");
+      } catch (fetchError) {
+        console.error(fetchError);
+        setLoadError("Failed to connect to the server");
       } finally {
         setIsLoading(false);
       }
@@ -294,159 +254,115 @@ const { data: sessionData } = useSession();
   }, []);
 
   return (
-    <>
-      {/* <Suspense fallback={<div>Loading...</div>}> */}
-      <main className="min-h-screen w-full flex items-center justify-center p-4">
-        <form className="w-full max-w-xl p-6 relative bg-gray-700 rounded-2xl min-h-[600px]">
-          <Card
-            className={`flex items-center min-h-[700px] transition-opacity duration-300 ${
-              isLoading ? "opacity-0" : "opacity-100"
-            }`}
-          >
-            <DietaryRequirements
-              vegan={vegan}
-              onVeganToggle={handleVeganToggle}
-              onOtherToggle={handleDietaryRequirements}
+    <main className="min-h-screen w-full flex items-center justify-center p-4">
+      <form className="relative min-h-[600px] w-full max-w-xl rounded-2xl bg-gray-700 p-6">
+        <Card
+          className={`flex min-h-[700px] items-center transition-opacity duration-300 ${
+            isLoading ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          <DietaryRequirements
+            vegan={vegan}
+            onVeganToggle={handleVeganToggle}
+            onOtherToggle={handleDietaryRequirements}
+          />
+          {otherDietaryRequirements && (
+            <Input
+              type="text"
+              onChange={handleuserOtherDietaryRequirements}
+              className="w-0.25xl"
             />
-            {otherDietaryRequirements && (
-              <Input
-                type="text"
-                onChange={handleuserOtherDietaryRequirements}
-                className="w-0.25xl"
-              />
+          )}
+
+          <div>{`welcome back ${sessionData?.user.name}`}</div>
+          <div>{selectedCountry}</div>
+          {loadError && <div className="text-sm text-red-200">{loadError}</div>}
+
+          <div className="flex min-h-[500px] w-full items-center justify-center">
+            <Map
+              handleCountrySelect={handleCountrySelect}
+              isDarkMode={isDarkMode}
+              selectedCountry={selectedCountry}
+            />
+            {isMenuDisplayed && (
+              <div
+                className="absolute top-0 left-0 h-full w-full overflow-y-auto border-2 border-black bg-white bg-cover bg-center bg-no-repeat p-6"
+                style={{
+                  backgroundImage: backgroundPicture
+                    ? `url(${backgroundPicture})`
+                    : undefined,
+                }}
+              >
+                {isGeneratingAudio ? (
+                  <AudioSkeleton />
+                ) : recipeAudio ? (
+                  <Suspense fallback={<AudioSkeleton />}>
+                    <RecipeAudioPlayer url={recipeAudio} />
+                  </Suspense>
+                ) : null}
+                <textarea
+                  className="rounded-md bg-gray-300"
+                  value={menuContent}
+                  rows={25}
+                  cols={60}
+                  readOnly
+                />
+                {isGeneratingImage && <SpinnerButton label="Loading Image" />}
+                {isBackToHomePage && (
+                  <div className="grid justify-self-center gap-2">
+                    <Button
+                      className="w-2xs"
+                      onClick={() => {
+                        handleMenuDislay();
+                        setIsBackToHomePage(false);
+                      }}
+                    >
+                      Back to home page
+                    </Button>
+                    <Button
+                      className="w-2xs"
+                      type="button"
+                      onClick={handleEmailingUser}
+                    >
+                      send to my inbox
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleSaveMenu}
+                      className="w-2xs"
+                    >
+                      Save recipe
+                    </Button>
+                  </div>
+                )}
+              </div>
             )}
+          </div>
 
-            <div>{`welcome back ${sessionData?.user.name}`}</div>
-            <div>{selectedCountry}</div>
-            {/* <div>{recipes}</div> */}
+          <SwitchComponent
+            onSwitch={handleAudioGeneration}
+            onChecked={shouldGenerateAudio}
+          >
+            Generate Audio
+          </SwitchComponent>
+          <SwitchComponent
+            onSwitch={handleImageGeneration}
+            onChecked={shouldGenerateImage}
+          >
+            Generate Image
+          </SwitchComponent>
+          <Button asChild title={`Saved recipes: ${recipes.length}`}>
+            <Link href="/recipe-ui/saved">Saved Recipe</Link>
+          </Button>
 
-            <div className="min-h-[500px] w-full flex items-center justify-center">
-              <Map
-                handleCountrySelect={handleCountrySelect}
-                isDarkMode={isDarkMode}
-                selectedCountry={selectedCountry}
-              />
-              {isMenuDisplayed && (
-                <div
-                  className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-95 p-6 overflow-y-auto  border-black border-2  bg-no-repeat bg-cover bg-center "
-                  style={{
-                    backgroundImage: backgroundPicture
-                      ? `url(${backgroundPicture})`
-                      : undefined,
-                  }}
-                >
-                  {isAudioGenerated && <SpinnerButton label="Loading Audio" />}
-                  {recipeAudio && (
-                    <div className="border-black border-2 bg-white/80 rounded-lg p-4 mb-4">
-                      <WavesurferPlayer
-                        height={80}
-                        waveColor="rgb(139, 92, 246)"
-                        progressColor="rgb(109, 40, 217)"
-                        url={recipeAudio}
-                        onReady={onReady}
-                        onPlay={() => setIsPlaying(true)}
-                        onPause={() => setIsPlaying(false)}
-                      />
-
-                      <div className="flex items-center justify-center gap-4 mt-4">
-                        <Button
-                          type="button"
-                          onClick={onSkipBack}
-                          variant="outline"
-                          size="icon"
-                          className="h-10 w-10"
-                        >
-                          <SkipBack className="h-5 w-5" />
-                        </Button>
-                        <Button
-                          type="button"
-                          onClick={onPlayPause}
-                          size="icon"
-                          className="h-12 w-12"
-                        >
-                          {isPlaying ? (
-                            <Pause className="h-6 w-6" />
-                          ) : (
-                            <Play className="h-6 w-6" />
-                          )}
-                        </Button>
-                        <Button
-                          type="button"
-                          onClick={onSkipForward}
-                          variant="outline"
-                          size="icon"
-                          className="h-10 w-10"
-                        >
-                          <SkipForward className="h-5 w-5" />
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                  <textarea
-                    className="bg-gray-300 rounded-md"
-                    value={menuContent}
-                    rows={25}
-                    cols={60}
-                    readOnly
-                  ></textarea>{" "}
-                  {isImageGenerated && <SpinnerButton label="Loading Image" />}
-                  {isBackToHomePage && (
-                    <div className="grid gap-2 justify-self-center ">
-                      <Button
-                        className="w-2xs"
-                        onClick={() => {
-                          handleMenuDislay();
-                          setIsBackToHomePage(false);
-                        }}
-                      >
-                        Back to home page
-                      </Button>
-                      <Button
-                        className="w-2xs"
-                        type="button"
-                        onClick={handleEmailingUser}
-                      >
-                        send to my inbox
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={handleSaveMenu}
-                        className="w-2xs"
-                      >
-                        Save recipe
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <SwitchComponent
-              onSwitch={handleAudioGeneration}
-              onChecked={isAudioGenerated}
-            >
-              Generate Audio
-            </SwitchComponent>
-            <SwitchComponent
-              onSwitch={handleImageGeneration}
-              onChecked={isImageGenerated}
-            >
-              Generate Image
-            </SwitchComponent>
-            <Button asChild>
-              <Link href="/recipe-ui/saved">Saved Recipe</Link>
-            </Button>
-
-            <Button type="button" onClick={handleCountrySelection}>
-              Submit
-            </Button>
-            <Button type="button" onClick={handleSignOut}>
-              Sign out
-            </Button>
-          </Card>
-        </form>
-      </main>
-      {/* </Suspense> */}
-    </>
+          <Button type="button" onClick={handleCountrySelection}>
+            Submit
+          </Button>
+          <Button type="button" onClick={handleSignOut}>
+            Sign out
+          </Button>
+        </Card>
+      </form>
+    </main>
   );
 }

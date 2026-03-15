@@ -13,7 +13,11 @@ export type RegisterFormWithHook = RegisterFormValues & {
 
 export type PostPayload = Record<string, unknown>;
 
-export type OnSwithch = { children: ReactNode; onChecked: boolean, onSwitch: ()=> void }
+export type OnSwithch = {
+  children: ReactNode;
+  onChecked: boolean;
+  onSwitch: (checked: boolean) => void;
+};
 
 export interface ApiResponse {
   recipe: string;
