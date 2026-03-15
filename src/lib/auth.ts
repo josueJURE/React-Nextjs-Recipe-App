@@ -1,6 +1,8 @@
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
+import  sendEmail from '@/lib/sendEmail/sendEmail'
 import prisma from '@/lib/prisma'
+
 
 
 export const auth = betterAuth({
@@ -9,6 +11,18 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async({user, url, token}, request) => {
+      void sendEmail({
+        to: user.email,
+        subject: "Reset your password",
+        text: `Click the link to reset your password: ${url}`,
+   
+      })
+    },
+    onPasswordReset: async({user}, request) => {
+      // your logic here
+      console.log(`Password for user ${user.email} has been reset.`);
+    }
   },
   socialProviders: {
     google: {
@@ -24,5 +38,6 @@ export const auth = betterAuth({
       },
     },
   },
+
   trustedOrigins: ['http://localhost:3000'],
 })

@@ -29,7 +29,7 @@ import { useRouter } from "next/navigation";
 
 
 import { registerFormSchema } from "@/lib/validations/user-choices";
-import { authClient } from "@/lib/auth-client";
+import { signUp } from "@/lib/auth-client";
 
 
 const formSchema = registerFormSchema;
@@ -54,7 +54,7 @@ export default function Register() {
        
       const { name, email, password } = values;
       console.log(name, email, password)
-     const { data, error } = await authClient.signUp.email(
+     const { data, error } = await signUp.email(
         {
           name: name || "",
           email,
