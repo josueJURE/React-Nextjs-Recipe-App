@@ -1,4 +1,11 @@
 import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+} from "@/components/ui/card";
+
+import {Button} from "@/components/ui/button"
 
 interface ReadMoreProps {
   id: string;
@@ -15,14 +22,14 @@ export function ReadMore({ id, text, amountOfWords = 36 }: ReadMoreProps) {
     : text;
   const endText = splittedText.slice(amountOfWords - 1).join(" ");
 
-  const handleKeyboard = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyboard = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.code === "Space" || e.code === "Enter") {
       setIsExpanded(!isExpanded);
     }
   };
 
   return (
-    <p id={id}>
+    <Card id={id}>
       {beginText}
       {itCanOverFlow && (
         <>
@@ -33,7 +40,7 @@ export function ReadMore({ id, text, amountOfWords = 36 }: ReadMoreProps) {
           >
             {endText}
           </span>
-          <span
+          <Button
             className='text-violet-400 ml-2'
             role="button"
             tabIndex={0}
@@ -43,9 +50,9 @@ export function ReadMore({ id, text, amountOfWords = 36 }: ReadMoreProps) {
             onClick={() => setIsExpanded(!isExpanded)}
           >
             {isExpanded ? 'show less' : 'show more'}
-          </span>
+          </Button>
         </>
       )}
-    </p>
+    </Card>
   )
 }
