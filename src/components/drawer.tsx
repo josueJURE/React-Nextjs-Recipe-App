@@ -16,6 +16,7 @@ interface DrawerInterface {
 
 
 
+
 export function DrawerScrollableContent({ ...props }: DrawerInterface) {
     {console.log("split", props.text.split(""))}
   return (
