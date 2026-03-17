@@ -1,11 +1,7 @@
 import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-} from "@/components/ui/card";
 
-import {Button} from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 interface ReadMoreProps {
   id: string;
@@ -13,46 +9,42 @@ interface ReadMoreProps {
   amountOfWords?: number;
 }
 
-export function ReadMore({ id, text, amountOfWords = 36 }: ReadMoreProps) {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  const splittedText = text.split(" ");
-  const itCanOverFlow = splittedText.length > amountOfWords;
+export function ReadMore({
+  id,
+  text,
+  amountOfWords = 50,
+}: ReadMoreProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const words = text.trim().split(/\s+/);
+  const itCanOverFlow = words.length > amountOfWords;
   const beginText = itCanOverFlow
-    ? splittedText.slice(0, amountOfWords - 1).join(" ")
+    ? words.slice(0, amountOfWords).join(" ")
     : text;
-  const endText = splittedText.slice(amountOfWords - 1).join(" ");
-
-  const handleKeyboard = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.code === "Space" || e.code === "Enter") {
-      setIsExpanded(!isExpanded);
-    }
-  };
+  const endText = itCanOverFlow ? words.slice(amountOfWords).join(" ") : "";
+  const contentId = `${id}-content`;
 
   return (
     <Card id={id}>
-      {beginText}
+      <CardContent id={contentId}>
+        <p>
+          {beginText}
+          {itCanOverFlow && !isExpanded ? "..." : ""}
+          {itCanOverFlow && isExpanded && endText ? ` ${endText}` : ""}
+        </p>
+      </CardContent>
+
       {itCanOverFlow && (
-        <>
-          {!isExpanded && <span>... </span>}
-          <span 
-            className={`${!isExpanded && 'hidden'}`} 
-            aria-hidden={!isExpanded}
-          >
-            {endText}
-          </span>
+        <CardFooter>
           <Button
-            className='text-violet-400 ml-2'
-            role="button"
-            tabIndex={0}
+            className="text-blue-400"
             aria-expanded={isExpanded}
-            aria-controls={id}
-            onKeyDown={handleKeyboard}
-            onClick={() => setIsExpanded(!isExpanded)}
+            aria-controls={contentId}
+            onClick={() => setIsExpanded((expanded) => !expanded)}
           >
-            {isExpanded ? 'show less' : 'show more'}
+            {isExpanded ? "show less" : "show more"}
           </Button>
-        </>
+        </CardFooter>
       )}
     </Card>
-  )
+  );
 }
