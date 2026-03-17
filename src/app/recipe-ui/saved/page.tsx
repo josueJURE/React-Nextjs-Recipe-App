@@ -55,7 +55,7 @@ export default function SavedRecipes() {
         <div className="space-y-4">
           {recipes.length === 0 && <div>You have no recipe saved</div>}
           {recipes.map((recipe) => (
-            <ReadMore key={recipe.id} id={recipe.id} text={recipe.content} />
+            <ReadMore key={recipe.id} id={recipe.id} text={recipe.content} date={recipe.createdAt} />
           ))}
         </div>
       </div>

@@ -1,17 +1,25 @@
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 
 interface ReadMoreProps {
   id: string;
   text: string;
   amountOfWords?: number;
+  date: string;
 }
 
 export function ReadMore({
   id,
   text,
+  date,
   amountOfWords = 50,
 }: ReadMoreProps) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -22,9 +30,16 @@ export function ReadMore({
     : text;
   const endText = itCanOverFlow ? words.slice(amountOfWords).join(" ") : "";
   const contentId = `${id}-content`;
+  const parsedDate = new Date(date);
+  const displayDate = Number.isNaN(parsedDate.getTime())
+    ? date
+    : parsedDate.toLocaleString();
 
   return (
     <Card id={id}>
+      <CardHeader>
+        <CardDescription>{displayDate}</CardDescription>
+      </CardHeader>
       <CardContent id={contentId}>
         <p>
           {beginText}
