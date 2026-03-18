@@ -31,9 +31,18 @@ export function ReadMore({
   const endText = itCanOverFlow ? words.slice(amountOfWords).join(" ") : "";
   const contentId = `${id}-content`;
   const parsedDate = new Date(date);
-  const displayDate = Number.isNaN(parsedDate.getTime())
-    ? date
-    : parsedDate.toLocaleString();
+
+
+    function formatDatefunction(date: Date | string  ): string {
+      return new Date(date).toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric',
+        })
+  }
+
+
+  const displayDate = formatDatefunction(parsedDate)
 
   return (
     <Card id={id}>
