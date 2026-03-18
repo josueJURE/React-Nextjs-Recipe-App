@@ -70,4 +70,5 @@ export interface ReadMoreProps {
   text: string;
   amountOfWords?: number;
   date: string;
+  onDelete?: (id: string) => Promise<void> | void;
 }

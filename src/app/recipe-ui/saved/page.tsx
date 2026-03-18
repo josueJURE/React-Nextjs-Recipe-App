@@ -1,16 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import {
   getRetrievingRecipes,
   handleRecipeDeletion,
 } from "@/lib/queries/recipes";
-import { useEffect, useState } from "react";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { Card, CardContent, CardDescription } from "@/components/ui/card";
-
-import { DrawerScrollableContent } from "@/components/drawer";
 import { ReadMore } from "@/components/ui/read-more";
-import { AlertDialogCompoment } from "@/components/dialog";
 
 export default function SavedRecipes() {
   interface Recipe {
@@ -41,6 +37,13 @@ export default function SavedRecipes() {
     })();
   }, []);
 
+  const handleDeleteRecipe = async (id: string) => {
+    await handleRecipeDeletion(id);
+    setRecipes((currentRecipes) =>
+      currentRecipes.filter((recipe) => recipe.id !== id)
+    );
+  };
+
   if (isLoading) {
     return <p>Now loading</p>;
   }
@@ -55,7 +58,13 @@ export default function SavedRecipes() {
         <div className="space-y-4">
           {recipes.length === 0 && <div>You have no recipe saved</div>}
           {recipes.map((recipe) => (
-            <ReadMore key={recipe.id} id={recipe.id} text={recipe.content} date={recipe.createdAt} />
+            <ReadMore
+              key={recipe.id}
+              id={recipe.id}
+              text={recipe.content}
+              date={recipe.createdAt}
+              onDelete={handleDeleteRecipe}
+            />
           ))}
         </div>
       </div>
