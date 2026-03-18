@@ -9,12 +9,11 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 
-interface ReadMoreProps {
-  id: string;
-  text: string;
-  amountOfWords?: number;
-  date: string;
-}
+import { formatDatefunction } from "@/utils/helper-functions/helper-functions";
+
+import { ReadMoreProps  } from "@/utils/types";
+
+
 
 export function ReadMore({
   id,
@@ -32,17 +31,7 @@ export function ReadMore({
   const contentId = `${id}-content`;
   const parsedDate = new Date(date);
 
-
-    function formatDatefunction(date: Date | string  ): string {
-      return new Date(date).toLocaleDateString('en-GB', {
-          day: '2-digit',
-          month: 'long',
-          year: 'numeric',
-        })
-  }
-
-
-  const displayDate = formatDatefunction(parsedDate)
+  const displayDate = formatDatefunction(parsedDate);
 
   return (
     <Card id={id}>
