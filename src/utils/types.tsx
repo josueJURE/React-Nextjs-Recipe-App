@@ -63,3 +63,11 @@ export interface DietaryRequirementsProps {
   onVeganToggle: (checked: boolean) => void;
   onOtherToggle?: (checked: boolean) => void;
 }
+
+
+export interface ReadMoreProps {
+  id: string;
+  text: string;
+  amountOfWords?: number;
+  date: string;
+}

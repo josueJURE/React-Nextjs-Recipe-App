@@ -6,13 +6,10 @@ import {
 } from "@/lib/queries/recipes";
 import { useEffect, useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription } from "@/components/ui/card";
 
 import { DrawerScrollableContent } from "@/components/drawer";
+import { ReadMore } from "@/components/ui/read-more";
 import { AlertDialogCompoment } from "@/components/dialog";
 
 export default function SavedRecipes() {
@@ -58,40 +55,7 @@ export default function SavedRecipes() {
         <div className="space-y-4">
           {recipes.length === 0 && <div>You have no recipe saved</div>}
           {recipes.map((recipe) => (
-            <Card key={recipe.id}>
-              <CardDescription>
-                {new Date(recipe.createdAt).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </CardDescription>
-              <CardContent>{`${recipe.content.substring(
-                0,
-                200
-              )}...`}</CardContent>
-
-              <DrawerScrollableContent text={recipe.content} />
-              <div className="flex justify-end">
-                <AlertDialogCompoment
-                  onConfirm={async () => {
-                    setRecipes((prev) =>
-                      prev.filter((item) => item.id !== recipe.id)
-                    );
-                    await handleRecipeDeletion(recipe.id);
-                  }}
-                  trigger={
-                    <button
-                      type="button"
-                      aria-label="Delete recipe"
-                      className="cursor-pointer"
-                    >
-                      <RiDeleteBin6Line />
-                    </button>
-                  }
-                />
-              </div>
-            </Card>
+            <ReadMore key={recipe.id} id={recipe.id} text={recipe.content} date={recipe.createdAt} />
           ))}
         </div>
       </div>
