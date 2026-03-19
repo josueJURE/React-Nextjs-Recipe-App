@@ -16,6 +16,8 @@ import { formatDatefunction } from "@/utils/helper-functions/helper-functions";
 import type { ReadMoreProps } from "@/utils/types";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
+import { AlertDialogCompoment } from "@/components/dialog";
+
 export function ReadMore({
   id,
   text,
@@ -72,14 +74,18 @@ export function ReadMore({
           >
             {isExpanded ? "show less" : "show more"}
           </Button>
-          <button
-            type="button"
-            aria-label="Delete recipe"
-            disabled={isDeleting || !onDelete}
-            onClick={handleDeleteClick}
-          >
-            <RiDeleteBin6Line />
-          </button>
+          <AlertDialogCompoment
+            onConfirm={handleDeleteClick}
+            trigger={
+              <button
+                type="button"
+                aria-label="Delete recipe"
+                disabled={isDeleting || !onDelete}
+              >
+                <RiDeleteBin6Line />
+              </button>
+            }
+          />
         </CardFooter>
       )}
     </Card>
