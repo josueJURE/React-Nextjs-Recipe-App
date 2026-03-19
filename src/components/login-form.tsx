@@ -7,6 +7,7 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import {themeColor,  borderRadius } from "@/utils/const"
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +34,7 @@ import {
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
+
 
   const form = useForm<SignInForm>({
     resolver: zodResolver(signInFormSchema),
@@ -90,13 +92,14 @@ export default function SignIn() {
         <div className="flex flex-col items-center gap-6 text-center">
           <div className="flex size-28 items-center justify-center rounded-full bg-[#f7e8df] shadow-[0_18px_45px_-32px_rgba(81,52,34,0.9)] sm:size-32">
             <ChefHat
-              className="size-12 text-[#c65a2d] sm:size-14"
+              className="size-12 sm:size-14"
+              style={{ color: themeColor }}
               strokeWidth={2.4}
             />
           </div>
 
           <div className="space-y-4">
-            <h1 className="font-serif text-5xl font-semibold tracking-tight text-[#2f1d17] sm:text-6xl">
+            <h1 className="font-serif text-5xl font-semibold  ">
               Culinary Explorer
             </h1>
             <p className="mx-auto inline-block  px-4 py-1 text-lg text-[#756961] sm:text-2xl">
@@ -107,7 +110,7 @@ export default function SignIn() {
 
         <Card className="w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10">
           <CardHeader className="gap-3 px-6 sm:px-12">
-            <CardTitle className="font-serif text-4xl font-semibold text-[#2f1d17] sm:text-5xl">
+            <CardTitle className="font-serif text-5xl font-semibold text-[#2f1d17] sm:text-5xl">
               Welcome back
             </CardTitle>
             <CardDescription className="text-lg text-[#8b7d74] sm:text-2xl">
@@ -166,7 +169,11 @@ export default function SignIn() {
 
                 <div className="space-y-5 pt-2">
                   <Button
-                    className="h-15 w-full rounded-[1.35rem] bg-[#c8562a] text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
+                    className="h-15 w-full rounded-[1.35rem] text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
+                    style={{ background: themeColor,
+                      borderRadius 
+                     }}
+                    
                     type="submit"
                     disabled={isLoading}
                   >
@@ -176,7 +183,9 @@ export default function SignIn() {
                   <div className="space-y-4 pt-1 text-center">
                     <Link
                       href="/forgot-password"
-                      className="inline-block text-lg font-medium text-[#c8562a] transition-colors hover:text-[#a94520] sm:text-xl"
+                      className="inline-block text-lg font-medium transition-colors hover:text-[#a94520] sm:text-xl"
+                      style={{color: themeColor}}
+
                     >
                       Forgot password?
                     </Link>
@@ -185,7 +194,8 @@ export default function SignIn() {
                       Don&apos;t have an account?{" "}
                       <Link
                         href="/sign-up"
-                        className="font-medium text-[#c8562a] transition-colors hover:text-[#a94520]"
+                        className="font-medium  transition-colors hover:text-[#a94520]"
+                        style={{color: themeColor}}
                       >
                         Sign Up
                       </Link>
