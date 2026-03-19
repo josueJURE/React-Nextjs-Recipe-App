@@ -34,10 +34,11 @@ export const handleRecipeDeletion = async (id: string) => {
     method: "DELETE",
   });
   if (!response.ok) {
-    // toast("recipe couldn't be deleted")
+    toast("recipe couldn't be deleted");
     throw new Error("something has gone wrong");
   }
-  console.log("delete");
+
+  toast("recipe deleted");
 };
 
 export const handleSavedMenuResponse = async (menuContent: string) => {

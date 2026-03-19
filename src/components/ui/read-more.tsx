@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,17 +13,18 @@ import {
 
 import { formatDatefunction } from "@/utils/helper-functions/helper-functions";
 
-import { ReadMoreProps  } from "@/utils/types";
-
-
+import type { ReadMoreProps } from "@/utils/types";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export function ReadMore({
   id,
   text,
   date,
   amountOfWords = 50,
+  onDelete,
 }: ReadMoreProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const words = text.trim().split(/\s+/);
   const itCanOverFlow = words.length > amountOfWords;
   const beginText = itCanOverFlow
@@ -32,6 +35,19 @@ export function ReadMore({
   const parsedDate = new Date(date);
 
   const displayDate = formatDatefunction(parsedDate);
+
+  const handleDeleteClick = async () => {
+    if (!onDelete || isDeleting) {
+      return;
+    }
+
+    try {
+      setIsDeleting(true);
+      await onDelete(id);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <Card id={id}>
@@ -47,7 +63,7 @@ export function ReadMore({
       </CardContent>
 
       {itCanOverFlow && (
-        <CardFooter>
+        <CardFooter className="display: inline-flex space-x-80">
           <Button
             className="text-blue-400"
             aria-expanded={isExpanded}
@@ -56,6 +72,14 @@ export function ReadMore({
           >
             {isExpanded ? "show less" : "show more"}
           </Button>
+          <button
+            type="button"
+            aria-label="Delete recipe"
+            disabled={isDeleting || !onDelete}
+            onClick={handleDeleteClick}
+          >
+            <RiDeleteBin6Line />
+          </button>
         </CardFooter>
       )}
     </Card>
