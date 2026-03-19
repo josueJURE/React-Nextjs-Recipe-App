@@ -7,7 +7,7 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import {themeColor,  borderRadius } from "@/utils/const"
+import { themeColor, borderRadius } from "@/utils/const";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,7 +34,6 @@ import {
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
-
 
   const form = useForm<SignInForm>({
     resolver: zodResolver(signInFormSchema),
@@ -170,10 +169,7 @@ export default function SignIn() {
                 <div className="space-y-5 pt-2">
                   <Button
                     className="h-15 w-full rounded-[1.35rem] text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
-                    style={{ background: themeColor,
-                      borderRadius 
-                     }}
-                    
+                    style={{ background: themeColor, borderRadius }}
                     type="submit"
                     disabled={isLoading}
                   >
@@ -184,8 +180,7 @@ export default function SignIn() {
                     <Link
                       href="/forgot-password"
                       className="inline-block text-lg font-medium transition-colors hover:text-[#a94520] sm:text-xl"
-                      style={{color: themeColor}}
-
+                      style={{ color: themeColor }}
                     >
                       Forgot password?
                     </Link>
@@ -195,7 +190,7 @@ export default function SignIn() {
                       <Link
                         href="/sign-up"
                         className="font-medium  transition-colors hover:text-[#a94520]"
-                        style={{color: themeColor}}
+                        style={{ color: themeColor }}
                       >
                         Sign Up
                       </Link>
