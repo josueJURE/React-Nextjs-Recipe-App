@@ -26,6 +26,8 @@ import { authClient } from "@/lib/auth-client";
 
 import { emailSchema } from "@/lib/validations/user-choices";
 
+import {themeColor, borderRadius } from "@/utils/const"
+
 // Schema for email validation
 const formSchema = z.object({
   email: emailSchema,
@@ -59,7 +61,10 @@ export default function ForgetPasswordPreview() {
   }
 
   return (
-    <section className="min-h-screen w-2xl bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center">
+    <section className="min-h-screen w-2xl bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center"
+
+    
+    >
       <div className="mx-auto flex min-h-[80vh] w-full max-w-5xl items-center justify-center">
         <Card className="w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10">
           <CardHeader className="gap-3 px-6 sm:px-12">
@@ -103,7 +108,14 @@ export default function ForgetPasswordPreview() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full">
+                  <Button type="submit"
+                  className="h-15 w-full  text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
+                      style={{background: themeColor,
+                        borderRadius
+                      }}
+                  
+                  >
+                
                     Send Reset Link
                   </Button>
                 </div>
