@@ -7,6 +7,7 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import {themeColor} from "@/utils/const"
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +34,7 @@ import {
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
+
 
   const form = useForm<SignInForm>({
     resolver: zodResolver(signInFormSchema),
@@ -90,7 +92,8 @@ export default function SignIn() {
         <div className="flex flex-col items-center gap-6 text-center">
           <div className="flex size-28 items-center justify-center rounded-full bg-[#f7e8df] shadow-[0_18px_45px_-32px_rgba(81,52,34,0.9)] sm:size-32">
             <ChefHat
-              className="size-12 text-[#c65a2d] sm:size-14"
+              className="size-12 sm:size-14"
+              style={{ color: themeColor }}
               strokeWidth={2.4}
             />
           </div>
@@ -166,7 +169,9 @@ export default function SignIn() {
 
                 <div className="space-y-5 pt-2">
                   <Button
-                    className="h-15 w-full rounded-[1.35rem] bg-[#c8562a] text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
+                    className="h-15 w-full rounded-[1.35rem] text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
+                    style={{ background: themeColor }}
+                    
                     type="submit"
                     disabled={isLoading}
                   >
@@ -176,7 +181,9 @@ export default function SignIn() {
                   <div className="space-y-4 pt-1 text-center">
                     <Link
                       href="/forgot-password"
-                      className="inline-block text-lg font-medium text-[#c8562a] transition-colors hover:text-[#a94520] sm:text-xl"
+                      className="inline-block text-lg font-medium transition-colors hover:text-[#a94520] sm:text-xl"
+                      style={{color: themeColor}}
+
                     >
                       Forgot password?
                     </Link>
@@ -185,7 +192,8 @@ export default function SignIn() {
                       Don&apos;t have an account?{" "}
                       <Link
                         href="/sign-up"
-                        className="font-medium text-[#c8562a] transition-colors hover:text-[#a94520]"
+                        className="font-medium  transition-colors hover:text-[#a94520]"
+                        style={{color: themeColor}}
                       >
                         Sign Up
                       </Link>

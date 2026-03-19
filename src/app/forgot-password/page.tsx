@@ -24,7 +24,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 
-import sendEmail from "@/lib/sendEmail/sendEmail";
 import { emailSchema } from "@/lib/validations/user-choices";
 
 // Schema for email validation
@@ -47,7 +46,7 @@ export default function ForgetPasswordPreview() {
 
       console.log("forgot email", email);
 
-      const { data, error } = await authClient.requestPasswordReset({
+      const { data } = await authClient.requestPasswordReset({
         email, // required
         redirectTo: "/reset-password",
       });
@@ -60,14 +59,14 @@ export default function ForgetPasswordPreview() {
   }
 
   return (
-    <section className=" min-h-[100vh] w-2xl bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center">
-      <div className="flex min-h-[80vh] h-full w-full items-center  px-4 relative">
-        <Card className=" w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10 absolute  top-60 right-0 left-0">
+    <section className="min-h-screen w-2xl bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center">
+      <div className="mx-auto flex min-h-[80vh] w-full max-w-5xl items-center justify-center">
+        <Card className="w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10">
           <CardHeader className="gap-3 px-6 sm:px-12">
             <CardTitle className="font-serif text-4xl font-semibold text-[#2f1d17] sm:text-5xl text-center">
               Forgot Password
             </CardTitle>
-            <CardDescription className="text-nowrap text-lg text-[#8b7d74] sm:text-1xl text-center">
+            <CardDescription className="text-nowrap text-lg text-[#8b7d74] sm:text-xl text-center">
               Enter an email address to receive a password reset link.
             </CardDescription>
           </CardHeader>
