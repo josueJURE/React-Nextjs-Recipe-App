@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 
 interface AlertDialogCompomentProps {
   onConfirm: () => Promise<void> | void;
+
   trigger?: ReactNode;
 }
 
