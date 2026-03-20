@@ -109,10 +109,10 @@ export default function SignIn() {
 
         <Card className="w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10">
           <CardHeader className="gap-3 px-6 sm:px-12">
-            <CardTitle className="font-serif text-5xl font-semibold text-[#2f1d17] sm:text-5xl">
+            <CardTitle className="font-serif text-5xl font-semibold text-[#2f1d17] sm:text-5xl text-center">
               Welcome back
             </CardTitle>
-            <CardDescription className="text-lg text-[#8b7d74] sm:text-2xl">
+            <CardDescription className="text-lg text-[#8b7d74] sm:text-2xl text-center">
               Sign in to explore global cuisines
             </CardDescription>
           </CardHeader>
