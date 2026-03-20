@@ -1,7 +1,7 @@
 // types/forms.ts
 import { z } from "zod";
 import { registerFormSchema } from "@/lib/validations/user-choices";
-import { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 // ✅ inferred type from schema
 type RegisterFormValues = z.infer<typeof registerFormSchema>;
@@ -17,6 +17,7 @@ export type OnSwithch = {
   children: ReactNode;
   onChecked: boolean;
   onSwitch: (checked: boolean) => void;
+  style?: CSSProperties;
 };
 
 export interface ApiResponse {
@@ -60,6 +61,7 @@ export interface RecipeUIProps {
 
 export interface DietaryRequirementsProps {
   vegan: boolean;
+  otherChecked?: boolean;
   onVeganToggle: (checked: boolean) => void;
   onOtherToggle?: (checked: boolean) => void;
 }

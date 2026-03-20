@@ -1,40 +1,68 @@
 "use client";
 
-import Map from "@/components/map";
-import { Button } from "@/components/ui/button";
 import { lazy, Suspense, useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ChefHat } from "lucide-react";
+import { toast } from "sonner";
+
+import Map from "@/components/map";
+import { SwitchComponent } from "@/components/switchComponent";
+import { signOut, useSession } from "@/lib/auth-client";
+import postJson from "@/lib/fetchFunction/fetchFunction";
+import {
+  handleCountrySelectionResponse,
+  handleSavedMenuResponse,
+} from "@/lib/queries/recipes";
 import {
   countrySchema,
   recipeContentSchema,
   userInbox,
 } from "@/lib/validations/user-choices";
-import { SwitchComponent } from "@/components/switchComponent";
-import { SpinnerButton } from "./spinnerButton";
-import Link from "next/link";
-import {
-  handleSavedMenuResponse,
-  handleCountrySelectionResponse,
-} from "@/lib/queries/recipes";
-import postJson from "@/lib/fetchFunction/fetchFunction";
-import { signOut, useSession } from "@/lib/auth-client";
-import { AudioSkeleton } from "./audio-skeleton";
-import { Card } from "@/components/ui/card";
-import DietaryRequirements from "@/components/ui/dietary-requirements";
-import { Input } from "@/components/ui/input";
 import type { RecipeUIProps } from "@/utils/types";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import {
+  appSectionClassName,
+  appShellClassName,
+  bodyTextClassName,
+  cardClassName,
+  cardContentClassName,
+  cardDescriptionClassName,
+  cardHeaderClassName,
+  cardTitleClassName,
+  fieldLabelClassName,
+  heroContainerClassName,
+  heroIconContainerClassName,
+  heroSubtitleClassName,
+  heroTitleClassName,
+  infoPanelClassName,
+  inputClassName,
+  previewShellClassName,
+  previewSurfaceClassName,
+  previewTextareaClassName,
+  primaryButtonClassName,
+  primaryButtonStyle,
+  sectionHeadingClassName,
+  themeColor,
+} from "@/utils/const";
+
+import DietaryRequirements from "@/components/ui/dietary-requirements";
+import { AudioSkeleton } from "@/components/ui/audio-skeleton";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { SpinnerButton } from "@/components/ui/spinnerButton";
 
 const RecipeAudioPlayer = lazy(() => import("./recipe-audio-player"));
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
   const { data: sessionData } = useSession();
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.push("/sign-in");
-  };
 
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [recipes, setRecipes] = useState<unknown[]>([]);
@@ -43,10 +71,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const [isMenuDisplayed, setIsMenuDisplayed] = useState<boolean>(false);
   const [menuContent, setMenuContent] = useState<string>("");
   const [isBackToHomePage, setIsBackToHomePage] = useState<boolean>(false);
-  const [shouldGenerateAudio, setShouldGenerateAudio] =
-    useState<boolean>(true);
-  const [shouldGenerateImage, setShouldGenerateImage] =
-    useState<boolean>(true);
+  const [shouldGenerateAudio, setShouldGenerateAudio] = useState<boolean>(true);
+  const [shouldGenerateImage, setShouldGenerateImage] = useState<boolean>(true);
   const [isGeneratingAudio, setIsGeneratingAudio] = useState<boolean>(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState<boolean>(false);
   const [backgroundPicture, setIsBckgroundPicture] = useState<string>("");
@@ -57,6 +83,11 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     useState<string>("");
   const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
   const isDarkMode = false;
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/sign-in");
+  };
 
   const handleVeganToggle = (onChecked: boolean) => {
     setVegan(onChecked);
@@ -254,115 +285,257 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   }, []);
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center p-4">
-      <form className="relative min-h-[600px] w-full max-w-xl rounded-2xl bg-gray-700 p-6">
-        <Card
-          className={`flex min-h-[700px] items-center transition-opacity duration-300 ${
-            isLoading ? "opacity-0" : "opacity-100"
-          }`}
-        >
-          <DietaryRequirements
-            vegan={vegan}
-            onVeganToggle={handleVeganToggle}
-            onOtherToggle={handleDietaryRequirements}
-          />
-          {otherDietaryRequirements && (
-            <Input
-              type="text"
-              onChange={handleuserOtherDietaryRequirements}
-              className="w-0.25xl"
+    <section className={appSectionClassName}>
+      <div className={appShellClassName}>
+        <div className={heroContainerClassName}>
+          <div className={heroIconContainerClassName}>
+            <ChefHat
+              className="size-12 sm:size-14"
+              style={{ color: themeColor }}
+              strokeWidth={2.4}
             />
-          )}
-
-          <div>{`welcome back ${sessionData?.user.name}`}</div>
-          <div>{selectedCountry}</div>
-          {loadError && <div className="text-sm text-red-200">{loadError}</div>}
-
-          <div className="flex min-h-[500px] w-full items-center justify-center">
-            <Map
-              handleCountrySelect={handleCountrySelect}
-              isDarkMode={isDarkMode}
-              selectedCountry={selectedCountry}
-            />
-            {isMenuDisplayed && (
-              <div
-                className="absolute top-0 left-0 h-full w-full overflow-y-auto border-2 border-black bg-white bg-cover bg-center bg-no-repeat p-6"
-                style={{
-                  backgroundImage: backgroundPicture
-                    ? `url(${backgroundPicture})`
-                    : undefined,
-                }}
-              >
-                {isGeneratingAudio ? (
-                  <AudioSkeleton />
-                ) : recipeAudio ? (
-                  <Suspense fallback={<AudioSkeleton />}>
-                    <RecipeAudioPlayer url={recipeAudio} />
-                  </Suspense>
-                ) : null}
-                <textarea
-                  className="rounded-md bg-gray-300"
-                  value={menuContent}
-                  rows={25}
-                  cols={60}
-                  readOnly
-                />
-                {isGeneratingImage && <SpinnerButton label="Loading Image" />}
-                {isBackToHomePage && (
-                  <div className="grid justify-self-center gap-2">
-                    <Button
-                      className="w-2xs"
-                      onClick={() => {
-                        handleMenuDislay();
-                        setIsBackToHomePage(false);
-                      }}
-                    >
-                      Back to home page
-                    </Button>
-                    <Button
-                      className="w-2xs"
-                      type="button"
-                      onClick={handleEmailingUser}
-                    >
-                      send to my inbox
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={handleSaveMenu}
-                      className="w-2xs"
-                    >
-                      Save recipe
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
 
-          <SwitchComponent
-            onSwitch={handleAudioGeneration}
-            onChecked={shouldGenerateAudio}
-          >
-            Generate Audio
-          </SwitchComponent>
-          <SwitchComponent
-            onSwitch={handleImageGeneration}
-            onChecked={shouldGenerateImage}
-          >
-            Generate Image
-          </SwitchComponent>
-          <Button asChild title={`Saved recipes: ${recipes.length}`}>
-            <Link href="/recipe-ui/saved">Saved Recipe</Link>
-          </Button>
+          <div className="space-y-4">
+            <h1 className={heroTitleClassName}>Culinary Explorer</h1>
+            <p className={heroSubtitleClassName}>
+              Discover authentic recipes from around the world
+            </p>
+          </div>
+        </div>
 
-          <Button type="button" onClick={handleCountrySelection}>
-            Submit
-          </Button>
-          <Button type="button" onClick={handleSignOut}>
-            Sign out
-          </Button>
+        <Card className={`${cardClassName} max-w-5xl`}>
+          <CardHeader className={cardHeaderClassName}>
+            <CardTitle className={cardTitleClassName}>
+              Build your next menu
+            </CardTitle>
+            <CardDescription className={cardDescriptionClassName}>
+              Choose a country, set dietary preferences, and generate a recipe
+              with optional audio and imagery.
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className={`${cardContentClassName} space-y-8`}>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <div className={infoPanelClassName}>
+                <p className="text-sm uppercase tracking-[0.2em] text-[#a39186]">
+                  Welcome back
+                </p>
+                <p className="pt-2 font-serif text-3xl font-semibold text-[#2f1d17]">
+                  {sessionData?.user.name ?? userProps.name}
+                </p>
+              </div>
+
+              <div className={infoPanelClassName}>
+                <p className="text-sm uppercase tracking-[0.2em] text-[#a39186]">
+                  Selected country
+                </p>
+                <p className="pt-2 font-serif text-3xl font-semibold text-[#2f1d17]">
+                  {selectedCountry || "Choose a country on the map"}
+                </p>
+              </div>
+            </div>
+
+            {loadError && (
+              <div className="rounded-[1.35rem] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {loadError}
+              </div>
+            )}
+
+            <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
+              <div className="space-y-6">
+                <div className={infoPanelClassName}>
+                  <h2 className={sectionHeadingClassName}>Pick a country</h2>
+                  <p className={`${bodyTextClassName} pt-2`}>
+                    Select a cuisine region to tailor the recipe generation.
+                  </p>
+
+                  <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
+                    <div className="flex min-w-[500px] justify-center">
+                      <Map
+                        handleCountrySelect={handleCountrySelect}
+                        isDarkMode={isDarkMode}
+                        selectedCountry={selectedCountry}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className={infoPanelClassName}>
+                  <DietaryRequirements
+                    vegan={vegan}
+                    otherChecked={otherDietaryRequirements}
+                    onVeganToggle={handleVeganToggle}
+                    onOtherToggle={handleDietaryRequirements}
+                  />
+
+                  {otherDietaryRequirements && (
+                    <div className="space-y-3 pt-5">
+                      <label
+                        className={fieldLabelClassName}
+                        htmlFor="other-dietary-requirements"
+                      >
+                        Other dietary requirements
+                      </label>
+                      <Input
+                        id="other-dietary-requirements"
+                        type="text"
+                        onChange={handleuserOtherDietaryRequirements}
+                        placeholder="Allergies, ingredients to avoid, or serving notes"
+                        className={inputClassName}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className={infoPanelClassName}>
+                  <h2 className={sectionHeadingClassName}>
+                    Generation options
+                  </h2>
+                  <p className={`${bodyTextClassName} pt-2`}>
+                    Decide whether to create audio narration or an image for the
+                    generated recipe.
+                  </p>
+
+                  <div className="space-y-3 pt-5">
+                    <SwitchComponent
+                      style={{ backgroundColor: themeColor }}
+                      onSwitch={handleAudioGeneration}
+                      onChecked={shouldGenerateAudio}
+                    >
+                      Generate Audio
+                    </SwitchComponent>
+                    <SwitchComponent
+                      style={{ backgroundColor: themeColor }}
+                      onSwitch={handleImageGeneration}
+                      onChecked={shouldGenerateImage}
+                    >
+                      Generate Image
+                    </SwitchComponent>
+                  </div>
+                </div>
+
+                <div className={infoPanelClassName}>
+                  <h2 className={sectionHeadingClassName}>Actions</h2>
+                  <p className={`${bodyTextClassName} pt-2`}>
+                    Generate a new recipe, revisit saved menus, or sign out.
+                  </p>
+
+                  <div className="space-y-3 pt-5">
+                    <Button
+                      className={primaryButtonClassName}
+                      type="button"
+                      onClick={handleCountrySelection}
+                      style={primaryButtonStyle}
+                      disabled={isGeneratingAudio || isGeneratingImage}
+                    >
+                      Generate Recipe
+                    </Button>
+
+                    <Button
+                      asChild
+                      title={
+                        isLoading
+                          ? "Loading saved recipes"
+                          : `Saved recipes: ${recipes.length}`
+                      }
+                      style={primaryButtonStyle}
+                      className={primaryButtonClassName}
+                    >
+                      <Link href="/recipe-ui/saved">
+                        Saved Recipes ({isLoading ? "..." : recipes.length})
+                      </Link>
+                    </Button>
+
+                    <Button
+                      className={primaryButtonClassName}
+                      type="button"
+                      onClick={handleSignOut}
+                      style={primaryButtonStyle}
+                    >
+                      Sign out
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={previewShellClassName}>
+              {isMenuDisplayed ? (
+                <div
+                  className={previewSurfaceClassName}
+                  style={{
+                    backgroundImage: backgroundPicture
+                      ? `url(${backgroundPicture})`
+                      : undefined,
+                  }}
+                >
+                  {isGeneratingAudio ? (
+                    <AudioSkeleton />
+                  ) : recipeAudio ? (
+                    <Suspense fallback={<AudioSkeleton />}>
+                      <RecipeAudioPlayer url={recipeAudio} />
+                    </Suspense>
+                  ) : null}
+
+                  <textarea
+                    className={previewTextareaClassName}
+                    value={menuContent}
+                    rows={25}
+                    cols={60}
+                    readOnly
+                  />
+
+                  {isGeneratingImage && (
+                    <div className="pt-4">
+                      <SpinnerButton label="Loading Image" />
+                    </div>
+                  )}
+
+                  {isBackToHomePage && (
+                    <div className="grid gap-3 pt-4 md:grid-cols-3">
+                      <Button
+                        className={primaryButtonClassName}
+                        style={primaryButtonStyle}
+                        type="button"
+                        onClick={() => {
+                          handleMenuDislay();
+                          setIsBackToHomePage(false);
+                        }}
+                      >
+                        Back to home page
+                      </Button>
+                      <Button
+                        className={primaryButtonClassName}
+                        style={primaryButtonStyle}
+                        type="button"
+                        onClick={handleEmailingUser}
+                      >
+                        Send to my inbox
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={handleSaveMenu}
+                        className={primaryButtonClassName}
+                        style={primaryButtonStyle}
+                      >
+                        Save recipe
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex min-h-[460px] items-center justify-center text-center text-lg text-[#8b7d74] sm:text-xl">
+                  Your generated recipe preview will appear here after you pick
+                  a country and start generation.
+                </div>
+              )}
+            </div>
+          </CardContent>
         </Card>
-      </form>
-    </main>
+      </div>
+    </section>
   );
 }

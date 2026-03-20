@@ -7,7 +7,26 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { themeColor, borderRadius } from "@/utils/const";
+import {
+  accentLinkClassName,
+  appSectionClassName,
+  appShellClassName,
+  cardClassName,
+  cardContentClassName,
+  cardDescriptionClassName,
+  cardHeaderClassName,
+  cardTitleClassName,
+  fieldLabelClassName,
+  heroContainerClassName,
+  heroIconContainerClassName,
+  heroSubtitleClassName,
+  heroTitleClassName,
+  inputClassName,
+  primaryButtonClassName,
+  primaryButtonStyle,
+  secondaryButtonClassName,
+  themeColor,
+} from "@/utils/const";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -86,10 +105,10 @@ export default function SignIn() {
   };
 
   return (
-    <section className=" min-h-[80vh] w-2xl bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center">
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-center justify gap-10 md:gap-14 ">
-        <div className="flex flex-col items-center gap-6 text-center">
-          <div className="flex size-28 items-center justify-center rounded-full bg-[#f7e8df] shadow-[0_18px_45px_-32px_rgba(81,52,34,0.9)] sm:size-32">
+    <section className={appSectionClassName}>
+      <div className={appShellClassName}>
+        <div className={heroContainerClassName}>
+          <div className={heroIconContainerClassName}>
             <ChefHat
               className="size-12 sm:size-14"
               style={{ color: themeColor }}
@@ -98,26 +117,24 @@ export default function SignIn() {
           </div>
 
           <div className="space-y-4">
-            <h1 className="font-serif text-5xl font-semibold  ">
-              Culinary Explorer
-            </h1>
-            <p className="mx-auto inline-block  px-4 py-1 text-lg text-[#756961] sm:text-2xl">
+            <h1 className={heroTitleClassName}>Culinary Explorer</h1>
+            <p className={heroSubtitleClassName}>
               Discover authentic recipes from around the world
             </p>
           </div>
         </div>
 
-        <Card className="w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10">
-          <CardHeader className="gap-3 px-6 sm:px-12">
-            <CardTitle className="font-serif text-5xl font-semibold text-[#2f1d17] sm:text-5xl text-center">
+        <Card className={cardClassName}>
+          <CardHeader className={cardHeaderClassName}>
+            <CardTitle className={cardTitleClassName}>
               Welcome back
             </CardTitle>
-            <CardDescription className="text-lg text-[#8b7d74] sm:text-2xl text-center">
+            <CardDescription className={cardDescriptionClassName}>
               Sign in to explore global cuisines
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="px-6 sm:px-12">
+          <CardContent className={cardContentClassName}>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -128,14 +145,14 @@ export default function SignIn() {
                   name="email"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel className="text-xl font-semibold text-[#2f1d17] sm:text-2xl">
+                      <FormLabel className={fieldLabelClassName}>
                         Email
                       </FormLabel>
                       <FormControl>
                         <Input
                           placeholder="chef@example.com"
                           disabled={isLoading}
-                          className="h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl"
+                          className={inputClassName}
                           {...field}
                         />
                       </FormControl>
@@ -149,7 +166,7 @@ export default function SignIn() {
                   name="password"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel className="text-xl font-semibold text-[#2f1d17] sm:text-2xl">
+                      <FormLabel className={fieldLabelClassName}>
                         Password
                       </FormLabel>
                       <FormControl>
@@ -157,7 +174,7 @@ export default function SignIn() {
                           type="password"
                           placeholder="........"
                           disabled={isLoading}
-                          className="h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl"
+                          className={inputClassName}
                           {...field}
                         />
                       </FormControl>
@@ -168,8 +185,8 @@ export default function SignIn() {
 
                 <div className="space-y-5 pt-2">
                   <Button
-                    className="h-15 w-full rounded-[1.35rem] text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
-                    style={{ background: themeColor, borderRadius }}
+                    className={primaryButtonClassName}
+                    style={primaryButtonStyle}
                     type="submit"
                     disabled={isLoading}
                   >
@@ -179,7 +196,7 @@ export default function SignIn() {
                   <div className="space-y-4 pt-1 text-center">
                     <Link
                       href="/forgot-password"
-                      className="inline-block text-lg font-medium transition-colors hover:text-[#a94520] sm:text-xl"
+                      className={accentLinkClassName}
                       style={{ color: themeColor }}
                     >
                       Forgot password?
@@ -189,7 +206,7 @@ export default function SignIn() {
                       Don&apos;t have an account?{" "}
                       <Link
                         href="/sign-up"
-                        className="font-medium  transition-colors hover:text-[#a94520]"
+                        className="font-medium transition-colors hover:text-[#a94520]"
                         style={{ color: themeColor }}
                       >
                         Sign Up
@@ -209,7 +226,7 @@ export default function SignIn() {
                       variant="outline"
                       onClick={handleSignInWithGoogle}
                       disabled={isLoading}
-                      className="h-13 w-full rounded-[1.2rem] border-[#eadfd6] bg-white text-base font-medium text-[#4c372d] hover:bg-[#fcf5ef] sm:h-14 sm:text-lg"
+                      className={secondaryButtonClassName}
                     >
                       <FcGoogle className="size-5" />
                       Continue with Google
