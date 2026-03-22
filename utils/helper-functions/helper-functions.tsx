@@ -11,12 +11,10 @@ export function formatDatefunction(date: Date | string  ): string {
 // }
 
 
-  export function retrieveUserFirstName(
-    param: string | undefined
-  ): string | undefined {
 
 
-    let emptyStringIndex = param?.indexOf(" ");
-    let splitAtEmpyString = param?.substring(0, emptyStringIndex);
-    return splitAtEmpyString;
+  export function retrieveUserFirstName(userName?: string): string | undefined {
+    const firstName = userName?.trim().split(/\s+/)[0];
+    return firstName || undefined;
   }
+  
