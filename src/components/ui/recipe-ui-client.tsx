@@ -297,9 +297,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
           </div>
 
           <div className="space-y-4">
-            <h1 className={heroTitleClassName}>Culinary Explorer</h1>
-            <p className={heroSubtitleClassName}>
-              Discover authentic recipes from around the world
+            {/* <h1 className={heroTitleClassName}>Culinary Explorer</h1> */}
+            <p className={cardTitleClassName}>
+              Welcome back {sessionData?.user.name ?? userProps.name}
             </p>
           </div>
         </div>
@@ -315,17 +315,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             </CardDescription>
           </CardHeader>
 
-          <CardContent className={`${cardContentClassName} space-y-8`}>
-            <div className="grid gap-4 lg:grid-cols-2">
-              <div className={infoPanelClassName}>
-                <p className="text-sm uppercase tracking-[0.2em] text-[#a39186]">
-                  Welcome back
-                </p>
-                <p className="pt-2 font-serif text-3xl font-semibold text-[#2f1d17]">
-                  {sessionData?.user.name ?? userProps.name}
-                </p>
-              </div>
-
+          <CardContent className={`${cardContentClassName} space-y-8 `}>
+            {/* <div className="w-full">
               <div className={infoPanelClassName}>
                 <p className="text-sm uppercase tracking-[0.2em] text-[#a39186]">
                   Selected country
@@ -334,7 +325,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                   {selectedCountry || "Choose a country on the map"}
                 </p>
               </div>
-            </div>
+            </div> */}
 
             {loadError && (
               <div className="rounded-[1.35rem] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
@@ -345,10 +336,20 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
             <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
               <div className="space-y-6">
                 <div className={infoPanelClassName}>
-                  <h2 className={sectionHeadingClassName}>Pick a country</h2>
-                  <p className={`${bodyTextClassName} pt-2`}>
-                    Select a cuisine region to tailor the recipe generation.
-                  </p>
+                  {!selectedCountry ? (
+                    <>
+                      <h2 className={sectionHeadingClassName}>
+                        Pick a country
+                      </h2>
+                      <p className={`${bodyTextClassName} pt-2`}>
+                        Select a cuisine region to tailor the recipe generation.
+                      </p>
+                    </>
+                  ) : (
+                    <p className={sectionHeadingClassName}>
+                      {`You picked ${selectedCountry}`}
+                    </p>
+                  )}
 
                   <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
                     <div className="flex min-w-[500px] justify-center">
