@@ -45,6 +45,8 @@ import {
   themeColor,
 } from "@/utils/const";
 
+import {retrieveUserFirstName} from "@/utils/helper-functions/helper-functions"
+
 import DietaryRequirements from "@/components/ui/dietary-requirements";
 import { AudioSkeleton } from "@/components/ui/audio-skeleton";
 import { Button } from "@/components/ui/button";
@@ -63,6 +65,10 @@ const RecipeAudioPlayer = lazy(() => import("./recipe-audio-player"));
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
   const { data: sessionData } = useSession();
+
+
+
+  console.log("sessionData", typeof sessionData?.user.name);
 
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [recipes, setRecipes] = useState<unknown[]>([]);
@@ -299,14 +305,15 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
           <div className="space-y-4">
             {/* <h1 className={heroTitleClassName}>Culinary Explorer</h1> */}
             <p className={cardTitleClassName}>
-              Welcome back {sessionData?.user.name ?? userProps.name}
+              Welcome back{" "}
+              {retrieveUserFirstName(sessionData?.user.name) ?? userProps.name}
             </p>
           </div>
         </div>
 
         <Card className={`${cardClassName} max-w-5xl`}>
           <CardHeader className={cardHeaderClassName}>
-            <CardTitle className={cardTitleClassName}>
+            <CardTitle className={`${cardTitleClassName} text-nowrap`}>
               Build your next menu
             </CardTitle>
             <CardDescription className={cardDescriptionClassName}>

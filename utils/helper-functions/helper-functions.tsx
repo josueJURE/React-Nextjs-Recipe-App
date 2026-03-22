@@ -5,3 +5,18 @@ export function formatDatefunction(date: Date | string  ): string {
         year: 'numeric',
       })
 }
+
+// type retrieveUserFirstNameProps = {
+//   param2: string | undefined
+// }
+
+
+  export function retrieveUserFirstName(
+    param: string | undefined
+  ): string | undefined {
+
+
+    let emptyStringIndex = param?.indexOf(" ");
+    let splitAtEmpyString = param?.substring(0, emptyStringIndex);
+    return splitAtEmpyString;
+  }
