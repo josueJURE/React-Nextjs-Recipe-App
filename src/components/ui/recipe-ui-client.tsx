@@ -309,167 +309,175 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               strokeWidth={2.4}
             />
           </div>
-
-          <div className="space-y-4">
-            {/* <h1 className={heroTitleClassName}>Culinary Explorer</h1> */}
-            <p className={cardTitleClassName}>
-              Welcome back{" "}
-              {retrieveUserFirstName(sessionData?.user.name) ?? userProps.name}
-            </p>
-          </div>
+          {!isMenuDisplayed && (
+            <div className="space-y-4">
+              {/* <h1 className={heroTitleClassName}>Culinary Explorer</h1> */}
+              <p className={cardTitleClassName}>
+                Welcome back{" "}
+                {retrieveUserFirstName(sessionData?.user.name) ??
+                  userProps.name}
+              </p>
+            </div>
+          )}
         </div>
 
-        <Card className={`${cardClassName} max-w-5xl`}>
-          <CardHeader className={cardHeaderClassName}>
-            <CardTitle className={`${cardTitleClassName} text-nowrap`}>
-              Build your next menu
-            </CardTitle>
-            <CardDescription className={cardDescriptionClassName}>
-              Choose a country, set dietary preferences, and generate a recipe
-              with optional audio and imagery.
-            </CardDescription>
-          </CardHeader>
+        {!isMenuDisplayed && (
+          <Card className={`${cardClassName} max-w-5xl`}>
+            <CardHeader className={cardHeaderClassName}>
+              <CardTitle className={`${cardTitleClassName} text-nowrap`}>
+                Build your next menu
+              </CardTitle>
+              <CardDescription className={cardDescriptionClassName}>
+                Choose a country, set dietary preferences, and generate a recipe
+                with optional audio and imagery.
+              </CardDescription>
+            </CardHeader>
 
-          <CardContent className={`${cardContentClassName} space-y-8 `}>
-            {loadError && (
-              <div className="rounded-[1.35rem] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                {loadError}
-              </div>
-            )}
+            <CardContent className={`${cardContentClassName} space-y-8 `}>
+              {loadError && (
+                <div className="rounded-[1.35rem] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {loadError}
+                </div>
+              )}
 
-            <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-              <div className="space-y-6">
-                <div className={infoPanelClassName}>
-                  {!selectedCountry ? (
-                    <>
-                      <h2 className={sectionHeadingClassName}>
-                        Pick a country
-                      </h2>
-                      <p className={`${bodyTextClassName} pt-2`}>
-                        Select a cuisine region to tailor the recipe generation.
+              <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
+                <div className="space-y-6">
+                  <div className={infoPanelClassName}>
+                    {!selectedCountry ? (
+                      <>
+                        <h2 className={sectionHeadingClassName}>
+                          Pick a country
+                        </h2>
+                        <p className={`${bodyTextClassName} pt-2`}>
+                          Select a cuisine region to tailor the recipe
+                          generation.
+                        </p>
+                      </>
+                    ) : (
+                      <p className={sectionHeadingClassName}>
+                        {`You picked ${selectedCountry}`}
                       </p>
-                    </>
-                  ) : (
-                    <p className={sectionHeadingClassName}>
-                      {`You picked ${selectedCountry}`}
+                    )}
+
+                    <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
+                      <div className="flex min-w-[500px] justify-center">
+                        <Map
+                          handleCountrySelect={handleCountrySelect}
+                          isDarkMode={isDarkMode}
+                          selectedCountry={selectedCountry}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={infoPanelClassName}>
+                    <DietaryRequirements
+                      vegan={vegan}
+                      otherChecked={otherDietaryRequirements}
+                      onVeganToggle={handleVeganToggle}
+                      onOtherToggle={handleDietaryRequirements}
+                    />
+
+                    {otherDietaryRequirements && (
+                      <div className="space-y-3 pt-5">
+                        <label
+                          className={fieldLabelClassName}
+                          htmlFor="other-dietary-requirements"
+                        >
+                          Other dietary requirements
+                        </label>
+                        <Input
+                          id="other-dietary-requirements"
+                          type="text"
+                          onChange={handleuserOtherDietaryRequirements}
+                          placeholder="Allergies, ingredients to avoid, or serving notes"
+                          className={inputClassName}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className={infoPanelClassName}>
+                    <h2 className={sectionHeadingClassName}>
+                      Generation options
+                    </h2>
+                    <p className={`${bodyTextClassName} pt-2`}>
+                      Decide whether to create audio narration or an image for
+                      the generated recipe.
                     </p>
-                  )}
 
-                  <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
-                    <div className="flex min-w-[500px] justify-center">
-                      <Map
-                        handleCountrySelect={handleCountrySelect}
-                        isDarkMode={isDarkMode}
-                        selectedCountry={selectedCountry}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className={infoPanelClassName}>
-                  <DietaryRequirements
-                    vegan={vegan}
-                    otherChecked={otherDietaryRequirements}
-                    onVeganToggle={handleVeganToggle}
-                    onOtherToggle={handleDietaryRequirements}
-                  />
-
-                  {otherDietaryRequirements && (
                     <div className="space-y-3 pt-5">
-                      <label
-                        className={fieldLabelClassName}
-                        htmlFor="other-dietary-requirements"
+                      <SwitchComponent
+                        style={{ backgroundColor: themeColor }}
+                        onSwitch={handleAudioGeneration}
+                        onChecked={shouldGenerateAudio}
                       >
-                        Other dietary requirements
-                      </label>
-                      <Input
-                        id="other-dietary-requirements"
-                        type="text"
-                        onChange={handleuserOtherDietaryRequirements}
-                        placeholder="Allergies, ingredients to avoid, or serving notes"
-                        className={inputClassName}
-                      />
+                        Generate Audio
+                      </SwitchComponent>
+                      <SwitchComponent
+                        style={{ backgroundColor: themeColor }}
+                        onSwitch={handleImageGeneration}
+                        onChecked={shouldGenerateImage}
+                      >
+                        Generate Image
+                      </SwitchComponent>
                     </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div className={infoPanelClassName}>
-                  <h2 className={sectionHeadingClassName}>
-                    Generation options
-                  </h2>
-                  <p className={`${bodyTextClassName} pt-2`}>
-                    Decide whether to create audio narration or an image for the
-                    generated recipe.
-                  </p>
-
-                  <div className="space-y-3 pt-5">
-                    <SwitchComponent
-                      style={{ backgroundColor: themeColor }}
-                      onSwitch={handleAudioGeneration}
-                      onChecked={shouldGenerateAudio}
-                    >
-                      Generate Audio
-                    </SwitchComponent>
-                    <SwitchComponent
-                      style={{ backgroundColor: themeColor }}
-                      onSwitch={handleImageGeneration}
-                      onChecked={shouldGenerateImage}
-                    >
-                      Generate Image
-                    </SwitchComponent>
                   </div>
-                </div>
 
-                <div className={infoPanelClassName}>
-                  <h2 className={sectionHeadingClassName}>Actions</h2>
-                  <p className={`${bodyTextClassName} pt-2`}>
-                    Generate a new recipe, revisit saved menus, or sign out.
-                  </p>
+                  <div className={infoPanelClassName}>
+                    <h2 className={sectionHeadingClassName}>Actions</h2>
+                    <p className={`${bodyTextClassName} pt-2`}>
+                      Generate a new recipe, revisit saved menus, or sign out.
+                    </p>
 
-                  <div className="space-y-3 pt-5">
-                    <Button
-                      className={primaryButtonClassName}
-                      type="button"
-                      onClick={handleCountrySelection}
-                      style={primaryButtonStyle}
-                      disabled={isGeneratingAudio || isGeneratingImage}
-                    >
-                      Generate Recipe
-                    </Button>
+                    <div className="space-y-3 pt-5">
+                      <Button
+                        className={primaryButtonClassName}
+                        type="button"
+                        onClick={handleCountrySelection}
+                        style={primaryButtonStyle}
+                        disabled={isGeneratingAudio || isGeneratingImage}
+                      >
+                        Generate Recipe
+                      </Button>
 
-                    <Button
-                      asChild
-                      title={
-                        isLoading
-                          ? "Loading saved recipes"
-                          : `Saved recipes: ${recipes.length}`
-                      }
-                      style={primaryButtonStyle}
-                      className={primaryButtonClassName}
-                    >
-                      <Link href="/recipe-ui/saved">Saved Recipes</Link>
-                    </Button>
+                      <Button
+                        asChild
+                        title={
+                          isLoading
+                            ? "Loading saved recipes"
+                            : `Saved recipes: ${recipes.length}`
+                        }
+                        style={primaryButtonStyle}
+                        className={primaryButtonClassName}
+                      >
+                        <Link href="/recipe-ui/saved">Saved Recipes</Link>
+                      </Button>
 
-                    <Button
-                      className={primaryButtonClassName}
-                      type="button"
-                      onClick={handleSignOut}
-                      style={primaryButtonStyle}
-                    >
-                      Sign out
-                    </Button>
+                      <Button
+                        className={primaryButtonClassName}
+                        type="button"
+                        onClick={handleSignOut}
+                        style={primaryButtonStyle}
+                      >
+                        Sign out
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <MenuPreview
-              preview={menuPreviewState}
-              actions={menuPreviewActions}
-            />
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
+
+        {isMenuDisplayed && (
+          <MenuPreview
+            preview={menuPreviewState}
+            actions={menuPreviewActions}
+          />
+        )}
       </div>
     </section>
   );

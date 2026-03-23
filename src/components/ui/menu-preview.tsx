@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, Suspense, lazy } from "react";
 import {
   previewShellClassName,
   previewSurfaceClassName,
+  cardClassName,
   previewTextareaClassName,
   primaryButtonClassName,
   primaryButtonStyle,
@@ -56,7 +57,8 @@ export function MenuPreview({
       <div className={previewShellClassName}>
         {isMenuDisplayed ? (
           <div
-            className={previewSurfaceClassName}
+           className={`${cardClassName} w-5xl`}
+            // className={previewSurfaceClassName}
             style={{
               backgroundImage: backgroundPicture
                 ? `url(${backgroundPicture})`
@@ -86,7 +88,7 @@ export function MenuPreview({
             )}
 
             {isBackToHomePage && (
-              <div className="grid gap-3 pt-4 md:grid-cols-3">
+              <div className="flex-row-reverse space-y-7">
                 <Button
                   className={primaryButtonClassName}
                   style={primaryButtonStyle}
