@@ -6,12 +6,6 @@ export function formatDatefunction(date: Date | string  ): string {
       })
 }
 
-// type retrieveUserFirstNameProps = {
-//   param2: string | undefined
-// }
-
-
-
 
   export function retrieveUserFirstName(userName?: string): string | undefined {
     const firstName = userName?.trim().split(/\s+/)[0];

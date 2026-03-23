@@ -5,7 +5,7 @@ export const themeHoverColor = "#b24c24";
 export const borderRadius = "10.5rem";
 
 export const appSectionClassName =
-  "min-h-[80vh] w-2xl bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center";
+  "min-h-[80vh] w-full bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center";
 export const appShellClassName =
   "mx-auto flex w-full max-w-5xl flex-col items-center gap-10 md:gap-14";
 export const heroContainerClassName =
@@ -40,7 +40,7 @@ export const primaryButtonStyle: CSSProperties = {
 export const accentLinkClassName =
   "inline-block text-lg font-medium transition-colors hover:text-[#a94520] sm:text-xl";
 export const infoPanelClassName =
-  "rounded-[1.5rem] border border-[#efe5dc] bg-[#fcf6f0] p-5";
+  "rounded-[1.5rem] border border-[#efe5dc] bg-[#fcf6f0] p-5 w-auto";
 export const switchRowClassName =
   "flex items-center justify-between gap-4 rounded-[1.35rem] border border-[#efe5dc] bg-white px-5 py-4";
 export const switchLabelClassName =
