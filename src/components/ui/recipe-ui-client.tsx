@@ -1,6 +1,6 @@
 "use client";
 
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChefHat } from "lucide-react";
@@ -281,6 +281,23 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     void fetchRecipes();
   }, []);
 
+  const menuPreviewState = {
+    isMenuDisplayed,
+    isGeneratingAudio,
+    isGeneratingImage,
+    isBackToHomePage,
+    backgroundPicture,
+    recipeAudio,
+    menuContent,
+  };
+
+  const menuPreviewActions = {
+    handleMenuDislay,
+    setIsBackToHomePage,
+    handleEmailingUser,
+    handleSaveMenu,
+  };
+
   return (
     <section className={appSectionClassName}>
       <div className={appShellClassName}>
@@ -448,17 +465,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               </div>
             </div>
             <MenuPreview
-              isMenuDisplayed={isMenuDisplayed}
-              isGeneratingAudio={isGeneratingAudio}
-              backgroundPicture={backgroundPicture}
-              recipeAudio={recipeAudio}
-              menuContent={menuContent}
-              isGeneratingImage={isGeneratingImage}
-              isBackToHomePage={isBackToHomePage}
-              handleMenuDislay={handleMenuDislay}
-              setIsBackToHomePage={setIsBackToHomePage}
-              handleEmailingUser={handleEmailingUser}
-              handleSaveMenu={handleSaveMenu}
+              preview={menuPreviewState}
+              actions={menuPreviewActions}
             />
           </CardContent>
         </Card>

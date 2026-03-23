@@ -1,4 +1,4 @@
-import { lazy, SetStateAction } from "react";
+import { Dispatch, SetStateAction, Suspense, lazy } from "react";
 import {
   previewShellClassName,
   previewSurfaceClassName,
@@ -7,13 +7,12 @@ import {
   primaryButtonStyle,
 } from "@/utils/const";
 import { AudioSkeleton } from "@/components/ui/audio-skeleton";
-import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/spinnerButton";
 
 const RecipeAudioPlayer = lazy(() => import("./recipe-audio-player"));
 
-type MenuPreviewProps = {
+type MenuPreviewState = {
   isMenuDisplayed: boolean;
   isGeneratingAudio: boolean;
   isGeneratingImage: boolean;
@@ -21,25 +20,36 @@ type MenuPreviewProps = {
   backgroundPicture: string;
   recipeAudio: string | null;
   menuContent: string;
+};
 
+type MenuPreviewActions = {
   handleMenuDislay: () => void;
-  setIsBackToHomePage: (value: SetStateAction<boolean>) => void;
+  setIsBackToHomePage: Dispatch<SetStateAction<boolean>>;
   handleEmailingUser: () => Promise<void>;
   handleSaveMenu: () => Promise<void>;
 };
 
+type MenuPreviewProps = {
+  preview: MenuPreviewState;
+  actions: MenuPreviewActions;
+};
+
 export function MenuPreview({
-  isMenuDisplayed,
-  isGeneratingAudio,
-  backgroundPicture,
-  recipeAudio,
-  menuContent,
-  isGeneratingImage,
-  isBackToHomePage,
-  handleMenuDislay,
-  setIsBackToHomePage,
-  handleEmailingUser,
-  handleSaveMenu,
+  preview: {
+    isMenuDisplayed,
+    isGeneratingAudio,
+    backgroundPicture,
+    recipeAudio,
+    menuContent,
+    isGeneratingImage,
+    isBackToHomePage,
+  },
+  actions: {
+    handleMenuDislay,
+    setIsBackToHomePage,
+    handleEmailingUser,
+    handleSaveMenu,
+  },
 }: MenuPreviewProps) {
   return (
     <>
