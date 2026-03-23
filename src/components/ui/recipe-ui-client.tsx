@@ -453,7 +453,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       className={primaryButtonClassName}
                     >
                       <Link href="/recipe-ui/saved">
-                        Saved Recipes ({isLoading ? "..." : recipes.length})
+                        Saved Recipes
                       </Link>
                     </Button>
 
