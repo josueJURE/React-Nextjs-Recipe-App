@@ -1,10 +1,11 @@
 "use client";
 
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChefHat } from "lucide-react";
 import { toast } from "sonner";
+import { MenuPreview } from "./menu-preview";
 
 import Map from "@/components/map";
 import { SwitchComponent } from "@/components/switchComponent";
@@ -32,23 +33,18 @@ import {
   fieldLabelClassName,
   heroContainerClassName,
   heroIconContainerClassName,
-  heroSubtitleClassName,
-  heroTitleClassName,
   infoPanelClassName,
   inputClassName,
-  previewShellClassName,
-  previewSurfaceClassName,
-  previewTextareaClassName,
   primaryButtonClassName,
   primaryButtonStyle,
   sectionHeadingClassName,
   themeColor,
 } from "@/utils/const";
 
-import {retrieveUserFirstName} from "@/utils/helper-functions/helper-functions"
+import { retrieveUserFirstName } from "@/utils/helper-functions/helper-functions";
 
 import DietaryRequirements from "@/components/ui/dietary-requirements";
-import { AudioSkeleton } from "@/components/ui/audio-skeleton";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -58,15 +54,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { SpinnerButton } from "@/components/ui/spinnerButton";
-
-const RecipeAudioPlayer = lazy(() => import("./recipe-audio-player"));
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
   const { data: sessionData } = useSession();
-
-
 
   console.log("sessionData", typeof sessionData?.user.name);
 
@@ -323,17 +314,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
           </CardHeader>
 
           <CardContent className={`${cardContentClassName} space-y-8 `}>
-            {/* <div className="w-full">
-              <div className={infoPanelClassName}>
-                <p className="text-sm uppercase tracking-[0.2em] text-[#a39186]">
-                  Selected country
-                </p>
-                <p className="pt-2 font-serif text-3xl font-semibold text-[#2f1d17]">
-                  {selectedCountry || "Choose a country on the map"}
-                </p>
-              </div>
-            </div> */}
-
             {loadError && (
               <div className="rounded-[1.35rem] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                 {loadError}
@@ -452,9 +432,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       style={primaryButtonStyle}
                       className={primaryButtonClassName}
                     >
-                      <Link href="/recipe-ui/saved">
-                        Saved Recipes
-                      </Link>
+                      <Link href="/recipe-ui/saved">Saved Recipes</Link>
                     </Button>
 
                     <Button
@@ -469,78 +447,19 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                 </div>
               </div>
             </div>
-
-            <div className={previewShellClassName}>
-              {isMenuDisplayed ? (
-                <div
-                  className={previewSurfaceClassName}
-                  style={{
-                    backgroundImage: backgroundPicture
-                      ? `url(${backgroundPicture})`
-                      : undefined,
-                  }}
-                >
-                  {isGeneratingAudio ? (
-                    <AudioSkeleton />
-                  ) : recipeAudio ? (
-                    <Suspense fallback={<AudioSkeleton />}>
-                      <RecipeAudioPlayer url={recipeAudio} />
-                    </Suspense>
-                  ) : null}
-
-                  <textarea
-                    className={previewTextareaClassName}
-                    value={menuContent}
-                    rows={25}
-                    cols={60}
-                    readOnly
-                  />
-
-                  {isGeneratingImage && (
-                    <div className="pt-4">
-                      <SpinnerButton label="Loading Image" />
-                    </div>
-                  )}
-
-                  {isBackToHomePage && (
-                    <div className="grid gap-3 pt-4 md:grid-cols-3">
-                      <Button
-                        className={primaryButtonClassName}
-                        style={primaryButtonStyle}
-                        type="button"
-                        onClick={() => {
-                          handleMenuDislay();
-                          setIsBackToHomePage(false);
-                        }}
-                      >
-                        Back to home page
-                      </Button>
-                      <Button
-                        className={primaryButtonClassName}
-                        style={primaryButtonStyle}
-                        type="button"
-                        onClick={handleEmailingUser}
-                      >
-                        Send to my inbox
-                      </Button>
-                      <Button
-                        type="button"
-                        onClick={handleSaveMenu}
-                        className={primaryButtonClassName}
-                        style={primaryButtonStyle}
-                      >
-                        Save recipe
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="flex min-h-[460px] items-center justify-center text-center text-lg text-[#8b7d74] sm:text-xl">
-                  Your generated recipe preview will appear here after you pick
-                  a country and start generation.
-                </div>
-              )}
-            </div>
+            <MenuPreview
+              isMenuDisplayed={isMenuDisplayed}
+              isGeneratingAudio={isGeneratingAudio}
+              backgroundPicture={backgroundPicture}
+              recipeAudio={recipeAudio}
+              menuContent={menuContent}
+              isGeneratingImage={isGeneratingImage}
+              isBackToHomePage={isBackToHomePage}
+              handleMenuDislay={handleMenuDislay}
+              setIsBackToHomePage={setIsBackToHomePage}
+              handleEmailingUser={handleEmailingUser}
+              handleSaveMenu={handleSaveMenu}
+            />
           </CardContent>
         </Card>
       </div>
