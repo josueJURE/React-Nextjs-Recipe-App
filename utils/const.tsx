@@ -56,8 +56,8 @@ export const previewTextareaClassName =
   export const checkboxTexts = [
     { id: "1", text: "AI-Generated menus from any country in the world" },
     { id: "2", text: "AI-Generated audio" },
-    { id: "3", text: "Save your favorite menu" },
-    { id: "4", text: "Share your favorite menu" },
+    { id: "3", text: "Save your favorite menus" },
+    { id: "4", text: "Share your favorite menus" },
     { id: "5", text: "Send email to your inbox" },
     { id: "6", text: "AI-powered nutrution insights" },
   ];

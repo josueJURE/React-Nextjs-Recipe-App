@@ -28,11 +28,14 @@ import {
   checkboxTexts,
 } from "@/utils/const";
 
+import {currentYear} from "@/utils/helper-functions/helper-functions"
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -51,6 +54,8 @@ import {
   type SignInForm,
 } from "@/lib/validations/user-choices";
 import { CheckBox } from "@/components/ui/checkbox";
+
+const year = new Date()
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
@@ -109,29 +114,27 @@ export default function SignIn() {
     <section className={`${appSectionClassName} h-screen`}>
       <div className="flex justify-evenly">
         <Card className={cardClassName}>
-        <div className={`${heroContainerClassName} max-w-2xl `}>
-          <div className={heroIconContainerClassName}>
-            <ChefHat
-              className="size-12 sm:size-14"
-              style={{ color: themeColor }}
-              strokeWidth={2.4}
-            />
+          <div className={`${heroContainerClassName} max-w-2xl `}>
+            <div className={heroIconContainerClassName}>
+              <ChefHat
+                className="size-12 sm:size-14"
+                style={{ color: themeColor }}
+                strokeWidth={2.4}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <h1 className={heroTitleClassName}>Culinary Explorer</h1>
+              <p className={heroSubtitleClassName}>
+                Discover authentic recipes from around the world
+              </p>
+
+              {checkboxTexts.map((text) => {
+                return <CheckBox key={text.id} text={text.text} />;
+              })}
+            </div>
           </div>
-
-          <div className="space-y-4">
-            <h1 className={heroTitleClassName}>Culinary Explorer</h1>
-            <p className={heroSubtitleClassName}>
-              Discover authentic recipes from around the world
-            </p>
-
-            {checkboxTexts.map((text) => {
-              return <CheckBox  key={text.id} text={text.text} />;
-            })}
-          </div>
-        </div>
-
         </Card>
-      
 
         <Card className={cardClassName}>
           <CardHeader className={cardHeaderClassName}>
@@ -238,6 +241,9 @@ export default function SignIn() {
                       <FcGoogle className="size-5" />
                       Continue with Google
                     </Button>
+                    <div className="flex justify-center mt-2.5">
+                      <CardFooter className="text-center">{`${currentYear( year )} Culinary Explorer. All Rights Reserved`}</CardFooter>
+                    </div>
                   </div>
                 </div>
               </form>
