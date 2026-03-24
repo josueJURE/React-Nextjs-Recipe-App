@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import {
   accentLinkClassName,
   appSectionClassName,
-  appShellClassName,
   cardClassName,
   cardContentClassName,
   cardDescriptionClassName,
@@ -50,6 +49,7 @@ import {
   signInFormSchema,
   type SignInForm,
 } from "@/lib/validations/user-choices";
+import { CheckBox } from "@/components/ui/checkbox";
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
@@ -105,9 +105,9 @@ export default function SignIn() {
   };
 
   return (
-    <section className={appSectionClassName}>
-      <div className={appShellClassName}>
-        <div className={heroContainerClassName}>
+    <section className={`${appSectionClassName} h-screen`}>
+      <div className="flex justify-evenly">
+        <div className={`${heroContainerClassName} max-w-2xl `}>
           <div className={heroIconContainerClassName}>
             <ChefHat
               className="size-12 sm:size-14"
@@ -121,14 +121,18 @@ export default function SignIn() {
             <p className={heroSubtitleClassName}>
               Discover authentic recipes from around the world
             </p>
+            <CheckBox text="AI-Generated menus from any country in the world" />
+            <CheckBox text="AI-Generated audio" />
+            <CheckBox text="Save your favorite menu" />
+            <CheckBox text="Share your favorite menu" />
+            <CheckBox text="Send email to your inbox" />
+            <CheckBox text ="AI-powered nutrution insights" />
           </div>
         </div>
 
         <Card className={cardClassName}>
           <CardHeader className={cardHeaderClassName}>
-            <CardTitle className={cardTitleClassName}>
-              Welcome back
-            </CardTitle>
+            <CardTitle className={cardTitleClassName}>Welcome back</CardTitle>
             <CardDescription className={cardDescriptionClassName}>
               Sign in to explore global cuisines
             </CardDescription>

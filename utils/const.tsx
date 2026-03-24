@@ -17,7 +17,7 @@ export const heroTitleClassName = `${displayFontClassName} text-5xl font-semibol
 export const heroSubtitleClassName =
   "mx-auto inline-block px-4 py-1 text-lg text-[#756961] sm:text-2xl";
 export const cardClassName =
-  "w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10";
+  "w-full max-w-2xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10";
 export const cardHeaderClassName = "gap-3 px-6 sm:px-12";
 export const cardTitleClassName = `${displayFontClassName} text-center text-5xl font-semibold text-[#2f1d17] sm:text-5xl`;
 export const cardDescriptionClassName =
