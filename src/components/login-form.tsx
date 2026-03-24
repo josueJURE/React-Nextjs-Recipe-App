@@ -108,6 +108,7 @@ export default function SignIn() {
   return (
     <section className={`${appSectionClassName} h-screen`}>
       <div className="flex justify-evenly">
+        <Card className={cardClassName}>
         <div className={`${heroContainerClassName} max-w-2xl `}>
           <div className={heroIconContainerClassName}>
             <ChefHat
@@ -124,10 +125,13 @@ export default function SignIn() {
             </p>
 
             {checkboxTexts.map((text) => {
-              return <CheckBox key={text.id} text={text.text} />;
+              return <CheckBox  key={text.id} text={text.text} />;
             })}
           </div>
         </div>
+
+        </Card>
+      
 
         <Card className={cardClassName}>
           <CardHeader className={cardHeaderClassName}>

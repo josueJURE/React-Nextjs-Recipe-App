@@ -1,7 +1,14 @@
 import { IoCheckmarkCircleSharp } from "react-icons/io5";
 
+import {
+
+  heroSubtitleClassName
+} from "@/utils/const";
+
+
 type CheckBoxProps = {
   text: string;
+  
 };
 
 export function CheckBox({ text }: CheckBoxProps) {
@@ -12,3 +19,6 @@ export function CheckBox({ text }: CheckBoxProps) {
     </div>
   );
 }
+
+
+heroSubtitleClassName
