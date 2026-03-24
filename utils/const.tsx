@@ -51,3 +51,13 @@ export const previewSurfaceClassName =
   "h-full overflow-y-auto rounded-[1.35rem] border border-[#e7d7ca] bg-white bg-cover bg-center bg-no-repeat p-5";
 export const previewTextareaClassName =
   "min-h-[420px] w-full rounded-[1.35rem] border border-[#e6ddd5] bg-[#fffdfa] p-5 text-base leading-7 text-[#4c372d] shadow-none outline-none";
+
+
+  export const checkboxTexts = [
+    { id: "1", text: "AI-Generated menus from any country in the world" },
+    { id: "2", text: "AI-Generated audio" },
+    { id: "3", text: "Save your favorite menu" },
+    { id: "4", text: "Share your favorite menu" },
+    { id: "5", text: "Send email to your inbox" },
+    { id: "6", text: "AI-powered nutrution insights" },
+  ];

@@ -25,6 +25,7 @@ import {
   primaryButtonStyle,
   secondaryButtonClassName,
   themeColor,
+  checkboxTexts,
 } from "@/utils/const";
 
 import { Button } from "@/components/ui/button";
@@ -121,12 +122,10 @@ export default function SignIn() {
             <p className={heroSubtitleClassName}>
               Discover authentic recipes from around the world
             </p>
-            <CheckBox text="AI-Generated menus from any country in the world" />
-            <CheckBox text="AI-Generated audio" />
-            <CheckBox text="Save your favorite menu" />
-            <CheckBox text="Share your favorite menu" />
-            <CheckBox text="Send email to your inbox" />
-            <CheckBox text ="AI-powered nutrution insights" />
+
+            {checkboxTexts.map((text) => {
+              return <CheckBox key={text.id} text={text.text} />;
+            })}
           </div>
         </div>
 
