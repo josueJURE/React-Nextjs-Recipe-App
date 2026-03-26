@@ -473,10 +473,12 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
         )}
 
         {isMenuDisplayed && (
-          <MenuPreview
-            preview={menuPreviewState}
-            actions={menuPreviewActions}
-          />
+         
+            <MenuPreview 
+              preview={menuPreviewState}
+              actions={menuPreviewActions}
+            />
+     
         )}
       </div>
     </section>

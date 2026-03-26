@@ -61,3 +61,27 @@ export const previewTextareaClassName =
     { id: "5", text: "Send email to your inbox" },
     { id: "6", text: "AI-powered nutrution insights" },
   ];
+
+export const formFields = [
+  {
+    id: 0,
+    name: "email",
+    label: "Email",
+    placeholder: "chef@example.com",
+    type: "text",
+  },
+  {
+    id: 1,
+    name: "password",
+    label: "Password",
+    placeholder: "enter your password",
+    type: "password",
+  },
+  {
+    id: 2,
+    name: "password",
+    label: "Password",
+    placeholder: "enter your password",
+    type: "password",
+  },
+] ;

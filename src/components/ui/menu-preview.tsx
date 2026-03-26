@@ -10,6 +10,7 @@ import {
 import { AudioSkeleton } from "@/components/ui/audio-skeleton";
 import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/spinnerButton";
+import { Card } from "@/components/ui/card";
 
 const RecipeAudioPlayer = lazy(() => import("./recipe-audio-player"));
 
@@ -54,10 +55,10 @@ export function MenuPreview({
 }: MenuPreviewProps) {
   return (
     <>
-      <div className={previewShellClassName}>
+      <div className="flex justify-center">
         {isMenuDisplayed ? (
           <div
-           className={`${cardClassName} w-5xl`}
+            className={`${cardClassName} w-5xl`}
             // className={previewSurfaceClassName}
             style={{
               backgroundImage: backgroundPicture
@@ -88,9 +89,9 @@ export function MenuPreview({
             )}
 
             {isBackToHomePage && (
-              <div className="flex-row-reverse space-y-7">
+              <div className="space-y-3  flex flex-col items-center ">
                 <Button
-                  className={primaryButtonClassName}
+                  className={`${primaryButtonClassName} size-[400px] `}
                   style={primaryButtonStyle}
                   type="button"
                   onClick={() => {
@@ -101,7 +102,7 @@ export function MenuPreview({
                   Back to home page
                 </Button>
                 <Button
-                  className={primaryButtonClassName}
+                  className={`${primaryButtonClassName} size-[400px]`}
                   style={primaryButtonStyle}
                   type="button"
                   onClick={handleEmailingUser}
@@ -111,7 +112,7 @@ export function MenuPreview({
                 <Button
                   type="button"
                   onClick={handleSaveMenu}
-                  className={primaryButtonClassName}
+                  className={`${primaryButtonClassName} size-[400px]`}
                   style={primaryButtonStyle}
                 >
                   Save recipe

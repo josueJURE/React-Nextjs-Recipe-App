@@ -26,9 +26,10 @@ import {
   secondaryButtonClassName,
   themeColor,
   checkboxTexts,
+  formFields,
 } from "@/utils/const";
 
-import {currentYear} from "@/utils/helper-functions/helper-functions"
+import { currentYear } from "@/utils/helper-functions/helper-functions";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -54,8 +55,9 @@ import {
   type SignInForm,
 } from "@/lib/validations/user-choices";
 import { CheckBox } from "@/components/ui/checkbox";
+import { validateAuthorizationCode } from "better-auth";
 
-const year = new Date()
+const year = new Date();
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
@@ -112,7 +114,7 @@ export default function SignIn() {
 
   return (
     <section className={`${appSectionClassName} h-screen`}>
-      <div className="flex justify-evenly">
+      <div className="flex justify-evenly items-center">
         <Card className={cardClassName}>
           <div className={`${heroContainerClassName} max-w-2xl `}>
             <div className={heroIconContainerClassName}>
@@ -171,6 +173,8 @@ export default function SignIn() {
                   )}
                 />
 
+            
+
                 <FormField
                   control={form.control}
                   name="password"
@@ -182,7 +186,7 @@ export default function SignIn() {
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="........"
+                          placeholder="enter your password"
                           disabled={isLoading}
                           className={inputClassName}
                           {...field}
@@ -242,7 +246,9 @@ export default function SignIn() {
                       Continue with Google
                     </Button>
                     <div className="flex justify-center mt-2.5">
-                      <CardFooter className="text-center">{`${currentYear( year )} Culinary Explorer. All Rights Reserved`}</CardFooter>
+                      <CardFooter className="text-center">{`${currentYear(
+                        year
+                      )} Culinary Explorer. All Rights Reserved`}</CardFooter>
                     </div>
                   </div>
                 </div>

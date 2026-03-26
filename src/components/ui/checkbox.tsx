@@ -4,6 +4,7 @@ import {
 
   heroSubtitleClassName
 } from "@/utils/const";
+import { ReactNode } from "react";
 
 
 type CheckBoxProps = {
@@ -21,4 +22,8 @@ export function CheckBox({ text }: CheckBoxProps) {
 }
 
 
-heroSubtitleClassName
+
+
+
+
+
