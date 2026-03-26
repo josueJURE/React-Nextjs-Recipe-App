@@ -23,11 +23,7 @@ import {
     handleEmailingUser: () => Promise<void>;
     handleSaveMenu: () => Promise<void>;
   };
-  
-  type MenuPreviewProps = {
-    preview: MenuPreviewState;
-    actions: MenuPreviewActions;
-  };
+
 
 
 export  function MenuPreviewButtons({handleMenuDislay, setIsBackToHomePage, handleEmailingUser, handleSaveMenu} : MenuPreviewActions  ) {

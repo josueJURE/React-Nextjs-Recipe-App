@@ -1,16 +1,14 @@
 import { Dispatch, SetStateAction, Suspense, lazy } from "react";
 import {
-
   cardClassName,
   previewTextareaClassName,
-  primaryButtonClassName,
-  primaryButtonStyle,
+
 } from "@/utils/const";
 import { AudioSkeleton } from "@/components/ui/audio-skeleton";
-import { Button } from "@/components/ui/button";
-import { SpinnerButton } from "@/components/ui/spinnerButton";
-import {MenuPreviewButtons} from "@/components/ui/menu-preview-btn"
+import { MenuPreviewButtonsSkeleton} from "@/components/ui/menu-preview-skeleton"
 
+import { SpinnerButton } from "@/components/ui/spinnerButton";
+import { MenuPreviewButtons } from "@/components/ui/menu-preview-btn";
 
 const RecipeAudioPlayer = lazy(() => import("./recipe-audio-player"));
 
@@ -82,21 +80,21 @@ export function MenuPreview({
               readOnly
             />
 
-            {isGeneratingImage && (
-              <div className="pt-4">
-                <SpinnerButton label="Loading Image" />
-              </div>
-            )}
 
-            {isBackToHomePage && (
-              <MenuPreviewButtons handleMenuDislay={handleMenuDislay}
-              setIsBackToHomePage={setIsBackToHomePage}
-              handleEmailingUser={handleEmailingUser}
-              handleSaveMenu={handleSaveMenu}
+            
 
-              />
-          
-            )}
+            {isGeneratingAudio ? (
+              <MenuPreviewButtonsSkeleton />
+            ) : recipeAudio ? (
+              <Suspense fallback={<MenuPreviewButtonsSkeleton />}>
+                <MenuPreviewButtons
+                  handleMenuDislay={handleMenuDislay}
+                  setIsBackToHomePage={setIsBackToHomePage}
+                  handleEmailingUser={handleEmailingUser}
+                  handleSaveMenu={handleSaveMenu}
+                />
+              </Suspense>
+            ) : null}
           </div>
         ) : (
           <div className="flex min-h-[460px] items-center justify-center text-center text-lg text-[#8b7d74] sm:text-xl">
