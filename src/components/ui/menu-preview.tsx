@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, Suspense, lazy } from "react";
 import {
-  previewShellClassName,
-  previewSurfaceClassName,
+
   cardClassName,
   previewTextareaClassName,
   primaryButtonClassName,
@@ -10,7 +9,8 @@ import {
 import { AudioSkeleton } from "@/components/ui/audio-skeleton";
 import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/spinnerButton";
-import { Card } from "@/components/ui/card";
+import {MenuPreviewButtons} from "@/components/ui/menu-preview-btn"
+
 
 const RecipeAudioPlayer = lazy(() => import("./recipe-audio-player"));
 
@@ -55,7 +55,7 @@ export function MenuPreview({
 }: MenuPreviewProps) {
   return (
     <>
-      <div className="flex justify-center">
+      <div className="flex justify-center h-screen">
         {isMenuDisplayed ? (
           <div
             className={`${cardClassName} w-5xl`}
@@ -77,7 +77,7 @@ export function MenuPreview({
             <textarea
               className={previewTextareaClassName}
               value={menuContent}
-              rows={25}
+              rows={1}
               cols={60}
               readOnly
             />
@@ -89,35 +89,13 @@ export function MenuPreview({
             )}
 
             {isBackToHomePage && (
-              <div className="space-y-3  flex flex-col items-center ">
-                <Button
-                  className={`${primaryButtonClassName} size-[400px] `}
-                  style={primaryButtonStyle}
-                  type="button"
-                  onClick={() => {
-                    handleMenuDislay();
-                    setIsBackToHomePage(false);
-                  }}
-                >
-                  Back to home page
-                </Button>
-                <Button
-                  className={`${primaryButtonClassName} size-[400px]`}
-                  style={primaryButtonStyle}
-                  type="button"
-                  onClick={handleEmailingUser}
-                >
-                  Send to my inbox
-                </Button>
-                <Button
-                  type="button"
-                  onClick={handleSaveMenu}
-                  className={`${primaryButtonClassName} size-[400px]`}
-                  style={primaryButtonStyle}
-                >
-                  Save recipe
-                </Button>
-              </div>
+              <MenuPreviewButtons handleMenuDislay={handleMenuDislay}
+              setIsBackToHomePage={setIsBackToHomePage}
+              handleEmailingUser={handleEmailingUser}
+              handleSaveMenu={handleSaveMenu}
+
+              />
+          
             )}
           </div>
         ) : (

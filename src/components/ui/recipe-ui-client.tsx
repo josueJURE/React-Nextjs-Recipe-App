@@ -299,16 +299,19 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   return (
-    <section className={appSectionClassName}>
+    <section className={appSectionClassName}  >
       <div className={appShellClassName}>
         <div className={heroContainerClassName}>
-          <div className={heroIconContainerClassName}>
-            <ChefHat
-              className="size-12 sm:size-14"
-              style={{ color: themeColor }}
-              strokeWidth={2.4}
-            />
-          </div>
+          {!isMenuDisplayed && (
+            <div className={heroIconContainerClassName}>
+              <ChefHat
+                className="size-12 sm:size-14"
+                style={{ color: themeColor }}
+                strokeWidth={2.4}
+              />
+            </div>
+          )}
+
           {!isMenuDisplayed && (
             <div className="space-y-4">
               {/* <h1 className={heroTitleClassName}>Culinary Explorer</h1> */}
@@ -473,12 +476,10 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
         )}
 
         {isMenuDisplayed && (
-         
-            <MenuPreview 
-              preview={menuPreviewState}
-              actions={menuPreviewActions}
-            />
-     
+          <MenuPreview
+            preview={menuPreviewState}
+            actions={menuPreviewActions}
+          />
         )}
       </div>
     </section>
