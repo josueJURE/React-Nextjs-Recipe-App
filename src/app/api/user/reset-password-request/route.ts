@@ -4,7 +4,7 @@ import { resetPasswordSchema } from "@/lib/validations/user-choices";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-import prisma from "@/lib/prisma";
+import { sql } from "@/lib/db";
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -44,14 +44,14 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const updatedUserPassword = await prisma.account.updateMany({
-      where: { userId },
-      data: { updatedAt: new Date() },
-    });
+    const updatedUserPassword = await sql(
+      'UPDATE "account" SET "updatedAt" = CURRENT_TIMESTAMP WHERE "userId" = $1',
+      [userId]
+    );
 
     return NextResponse.json({
       success: true,
-      updatedAccounts: updatedUserPassword.count,
+      updatedAccounts: updatedUserPassword.rowCount,
     });
   } catch (error) {
     console.error("Error in PATCH handler:", error);

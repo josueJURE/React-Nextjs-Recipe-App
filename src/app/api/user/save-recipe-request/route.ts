@@ -1,11 +1,10 @@
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import db from "@/lib/prisma";
+import { sql } from "@/lib/db";
 
 import { NextRequest, NextResponse } from "next/server";
 import {
   recipeContentSchema,
-  RecipeSchema,
 } from "@/lib/validations/user-choices";
 
 export async function PATCH(request: NextRequest) {
@@ -40,19 +39,15 @@ export async function PATCH(request: NextRequest) {
 
     const userId = session.user.id
 
-    const savedRecipe = await db.recipe.upsert({
-        where: {
-          userId_content: {
-            userId,
-            content: menuContent
-          }
-        },
-        update: {},
-        create: {
-          content: menuContent,
-          userId
-        }
-      });
+    const savedRecipeResult = await sql(
+      `INSERT INTO "recipe" ("id", "content", "userId", "createdAt", "updatedAt")
+       VALUES (gen_random_uuid()::text, $1, $2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+       ON CONFLICT ("userId", "content")
+       DO UPDATE SET "updatedAt" = "recipe"."updatedAt"
+       RETURNING "id", "title", "content", "imageUrl", "audioUrl", "userId", "createdAt", "updatedAt"`,
+      [menuContent, userId]
+    );
+    const savedRecipe = savedRecipeResult.rows[0];
       
       
 
@@ -66,6 +61,7 @@ export async function PATCH(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    console.error("Error saving recipe:", error);
     return NextResponse.json({ error: "Invalid request" }, { status: 500 });
   }
 }
