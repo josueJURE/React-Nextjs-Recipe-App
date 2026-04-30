@@ -5,3 +5,14 @@ export function formatDatefunction(date: Date | string  ): string {
         year: 'numeric',
       })
 }
+
+
+  export function retrieveUserFirstName(userName?: string): string | undefined {
+    const firstName = userName?.trim().split(/\s+/)[0];
+    return firstName || undefined;
+  }
+
+  export function currentYear(date: Date | number) : number {
+    return new Date(date).getFullYear()
+  }
+  

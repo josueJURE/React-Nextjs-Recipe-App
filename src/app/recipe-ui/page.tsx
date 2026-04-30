@@ -2,14 +2,9 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import RecipeUIClient from "@/components/ui/recipe-ui-client";
-import prisma from "@/lib/prisma";
+import { sql } from "@/lib/db";
 
-
-import type {RecipeUIProps} from "@/utils/types"
-
-
-
-export default async function RecipeUIPage(userProps: RecipeUIProps) {
+export default async function RecipeUIPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -27,17 +22,18 @@ export default async function RecipeUIPage(userProps: RecipeUIProps) {
   // console.log("Full user object:", JSON.stringify(user, null, 2));
   // console.log("user.name:", user?.name);
 
-  // Fetch user's dietary preferences from database
-  const recipeAppUser = await prisma.user.findUnique({
-    where: { id: user.id },
-    select: { email: true, name: true},
-    
-  });
+  const recipeAppUserResult = await sql<{ email: string; name: string }>(
+    'SELECT "email", "name" FROM "user" WHERE "id" = $1 LIMIT 1',
+    [user.id]
+  );
 
-  const recipeAppUserPreferences = await prisma.userPreferences.findUnique({
-    where: {userId: user.id},
-    select: {vegan: true}
-  })
+  const recipeAppUserPreferencesResult = await sql<{ vegan: boolean }>(
+    'SELECT "vegan" FROM "user_preferences" WHERE "userId" = $1 LIMIT 1',
+    [user.id]
+  );
+
+  const recipeAppUser = recipeAppUserResult.rows[0];
+  const recipeAppUserPreferences = recipeAppUserPreferencesResult.rows[0];
 
   if (!recipeAppUser && !recipeAppUserPreferences) {
     return redirect("/");

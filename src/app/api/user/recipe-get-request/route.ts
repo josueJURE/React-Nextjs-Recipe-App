@@ -1,11 +1,9 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import db from "@/lib/prisma";
-import { retrieveRecipeSchema } from "@/lib/validations/user-choices";
-import { success } from "zod";
+import { sql } from "@/lib/db";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
@@ -23,11 +21,14 @@ export async function GET(request: NextRequest) {
 
     const userId = session.user.id;
 
-    const savedRecipes = await db.recipe.findMany({
-      where: {
-        userId,
-      },
-    });
+    const savedRecipesResult = await sql(
+      `SELECT "id", "title", "content", "imageUrl", "audioUrl", "userId", "createdAt", "updatedAt"
+       FROM "recipe"
+       WHERE "userId" = $1
+       ORDER BY "createdAt" DESC`,
+      [userId]
+    );
+    const savedRecipes = savedRecipesResult.rows;
 
     return NextResponse.json(
       {
@@ -38,6 +39,7 @@ export async function GET(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    console.error("Error fetching recipes:", error);
     return NextResponse.json(
       { success: false, error: "Failed to fetch articles" },
       { status: 500 }

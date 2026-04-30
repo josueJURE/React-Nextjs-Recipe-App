@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { recipeStandardUUIDv4Schema } from "@/lib/validations/user-choices";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
-import db from "@/lib/prisma";
+import { sql } from "@/lib/db";
 
 
 export async function DELETE(request: NextRequest) {
@@ -43,11 +43,17 @@ export async function DELETE(request: NextRequest) {
 
     const id = recipeStandardUUIDv4SchemaValidation.data;
 
-    await db.recipe.delete({
-      where: {
-        id: id,
-      },
-    });
+    const deletedRecipeResult = await sql(
+      'DELETE FROM "recipe" WHERE "id" = $1 AND "userId" = $2 RETURNING "id"',
+      [id, userId]
+    );
+
+    if (deletedRecipeResult.rowCount === 0) {
+      return NextResponse.json(
+        { success: false, message: "recipe not found" },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json(
       {
@@ -57,6 +63,7 @@ export async function DELETE(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    console.error("Error deleting recipe:", error);
     return NextResponse.json(
       { success: false, error: "Failed to  delete recipe(s)" },
       { status: 500 }

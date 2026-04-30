@@ -1,17 +1,14 @@
 import { betterAuth } from 'better-auth'
-import { prismaAdapter } from 'better-auth/adapters/prisma'
 import  sendEmail from '@/lib/sendEmail/sendEmail'
-import prisma from '@/lib/prisma'
+import db from '@/lib/db'
 
 
 
 export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
-    provider: 'postgresql',
-  }),
+  database: db,
   emailAndPassword: {
     enabled: true,
-    sendResetPassword: async({user, url, token}, request) => {
+    sendResetPassword: async({user, url}) => {
       void sendEmail({
         to: user.email,
         subject: "Reset your password",
@@ -19,7 +16,7 @@ export const auth = betterAuth({
    
       })
     },
-    onPasswordReset: async({user}, request) => {
+    onPasswordReset: async({user}) => {
       // your logic here
       console.log(`Password for user ${user.email} has been reset.`);
     }

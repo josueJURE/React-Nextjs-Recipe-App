@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import prisma from "@/lib/prisma";
+import { sql } from "@/lib/db";
 // The headers function allows you to read the HTTP incoming request headers from a Server Component.
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -37,13 +37,15 @@ export async function PATCH(request: Request) {
     const validatedData: UserPreference = userPreferencesValidation.data;
     const { vegan } = validatedData;
 
-    // Update or create the user's vegan preference
-    const updatedUser = await prisma.userPreferences.upsert({
-      where: { userId: userId },
-      update: { vegan },
-      create: { userId, vegan },
-      select: { userId: true, vegan: true }, // It limits how much data Prisma sends back. Without select, Prisma would return the entire user record, including fields you don't need (email, createdAt, etc.)
-    });
+    const updatedUserResult = await sql<{ userId: string; vegan: boolean }>(
+      `INSERT INTO "user_preferences" ("userId", "vegan")
+       VALUES ($1, $2)
+       ON CONFLICT ("userId")
+       DO UPDATE SET "vegan" = EXCLUDED."vegan"
+       RETURNING "userId", "vegan"`,
+      [userId, vegan]
+    );
+    const updatedUser = updatedUserResult.rows[0];
 
     return NextResponse.json({
       success: true,
@@ -57,5 +59,4 @@ export async function PATCH(request: Request) {
     );
   }
 }
-
 
