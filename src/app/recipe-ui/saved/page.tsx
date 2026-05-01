@@ -36,7 +36,8 @@ export default function SavedRecipes() {
 
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<unknown>();
+  const [error, setError] = useState<string>()
+
 
   // const [recipeID, setRecipeID] = useState<string>("")
 
@@ -48,7 +49,7 @@ export default function SavedRecipes() {
         setRecipes(response.recipes);
         setIsLoading(false);
       } catch (error) {
-        setError(error ?? "An error has occurred");
+        setError(error instanceof Error ? error.message : "An error has occured");
         setIsLoading(false);
       }
     })();
@@ -104,7 +105,7 @@ export default function SavedRecipes() {
 
             {error && (
               <div className="rounded-[1.35rem] border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
-                {JSON.stringify(error)}
+                {error}
               </div>
             )}
 
