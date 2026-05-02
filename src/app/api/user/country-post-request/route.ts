@@ -1,15 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-
+import { auth } from "@/lib/auth";
 import { userChoicesSchema } from "@/lib/validations/user-choices";
+import { sql } from "@/lib/db";
+import { headers } from "next/headers";
 
 // Import the TYPE (used at compile-time for type checking)
 
+type UpdatedPinnedCountriesRow = {
+  selectedCountries: string[];
+};
+
 import { chatCompletion } from "@/lib/chat-completions/openai";
-
-
 
 export async function POST(request: NextRequest) {
   try {
+       const session = await auth.api.getSession({
+          headers: await headers(),
+        });
     const body = await request.json();
     console.log("Received body:", body);
 
@@ -26,8 +33,44 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const { country, vegan, other } =
-      userChoicesValidation.data;
+    const { country, vegan, other } = userChoicesValidation.data;
+
+    if (!session) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized: User lacks credential" },
+        { status: 401 }
+      );
+    }
+    
+
+
+    const userId = session?.user.id;
+
+
+
+        const updatedPinnedCountries = await sql<UpdatedPinnedCountriesRow>(
+          `
+          UPDATE "user"
+          SET
+            "selectedCountries" = CASE
+              WHEN $1 = ANY("selectedCountries") THEN "selectedCountries"
+              ELSE array_append("selectedCountries", $1)
+            END,
+            "updatedAt" = CURRENT_TIMESTAMP
+          WHERE "id" = $2
+          RETURNING "selectedCountries"
+          `,
+          [country, userId]
+        );
+
+        if (updatedPinnedCountries.rowCount === 0) {
+          return NextResponse.json(
+            { success: false, message: "User not found" },
+            { status: 404 }
+          );
+        }
+    
+    
 
     console.log("is other picked up", other);
 
@@ -62,12 +105,6 @@ Instructions:
 
     let readableStream: ReadableStream;
 
-    // if (isImageGenerated) {
-    //   const aiImage = await imageGeneration(country);
-
-    //   console.log(aiImage);
-    // }
-
     if (!isProduction) {
       // Development: Use mock recipe
       readableStream = new ReadableStream({
@@ -87,28 +124,6 @@ Instructions:
           }
         },
       });
-
-
-      // if (!userInboxValidation.success) {
-      //   return NextResponse.json({
-      //     success: false,
-      //     error: userInboxValidation.error.issues
-      //   });
-      // }
-
-      // if (isImageGenerated) {
-      //   const aiImage = await imageGeneration(country);
-
-      //   return NextResponse.json({
-      //     success: true,
-      //     image: aiImage
-
-      //   });
-  
-      //   console.log(aiImage);
-      // }
-
-     
     } else {
       // Production: Use actual OpenAI API
       const stream = await chatCompletion(country, vegan, other);

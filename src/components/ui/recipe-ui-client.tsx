@@ -152,6 +152,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsGeneratingImage(shouldGenerateImage);
 
     try {
+  
+
       const response = await handleCountrySelectionResponse({
         selectedCountry,
         vegan,
