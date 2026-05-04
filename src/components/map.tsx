@@ -9,6 +9,10 @@ import World from "@react-map/world";
 function Map({ handleCountrySelect, isDarkMode, selectedCountry }: MapProps) {
   const pinnedCountryColor = selectedCountry ? { [selectedCountry]: "#DC2626" } : {};
 
+
+
+  console.log("pinnedCountryColor", pinnedCountryColor)
+
   return (
     <World
       type="select-single"

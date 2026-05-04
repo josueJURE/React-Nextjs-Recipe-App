@@ -20,6 +20,42 @@ export async function GET() {
     }
 
     const userId = session.user.id;
+    const selectedCountriesResult = await sql(
+      `SELECT "selectedCountries"
+       FROM "user"
+       WHERE "id" = $1
+       ORDER BY "createdAt" DESC`,
+      [userId]
+    );
+    const savedSelectedCountries = selectedCountriesResult.rows
+
+    /*
+    const selectedCountriesResult = await sql(
+      `SELECT "selectedCountries"
+       FROM "user"
+       WHERE "id" = $1
+       ORDER BY "createdAt" DESC`,
+      [userId]
+    );
+    const savedSelectedCountries = selectedCountriesResult.rows
+  
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "recipe retrieved",
+        recipes: savedRecipes,
+        selectedCountries: savedSelectedCountries
+      },
+      { status: 200 }
+    );
+
+  //use : const [arraySelectedCountries, setArraySelectedCountries] = useState<unknown[]>([]); in recipe-ui-client.tsx file
+
+
+
+*/
+    
 
     const savedRecipesResult = await sql(
       `SELECT "id", "title", "content", "imageUrl", "audioUrl", "userId", "createdAt", "updatedAt"
@@ -35,6 +71,7 @@ export async function GET() {
         success: true,
         message: "recipe retrieved",
         recipes: savedRecipes,
+        savedSelectedCountries: savedSelectedCountries
       },
       { status: 200 }
     );
