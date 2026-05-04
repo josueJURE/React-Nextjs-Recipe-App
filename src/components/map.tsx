@@ -6,10 +6,10 @@ import World from "@react-map/world";
 
 
 
-function Map({ handleCountrySelect, isDarkMode, selectedCountry }: MapProps) {
+function Map({ handleCountrySelect, isDarkMode, selectedCountry, arrayselectedCountry}: MapProps) {
   const pinnedCountryColor = selectedCountry ? { [selectedCountry]: "#DC2626" } : {};
 
-
+  // implement functionality to retrieve array of alreday selected countires from db and pin them
 
   console.log("pinnedCountryColor", pinnedCountryColor)
 
@@ -26,6 +26,7 @@ function Map({ handleCountrySelect, isDarkMode, selectedCountry }: MapProps) {
       onSelect={(state) => {
         if (!state) return;
         handleCountrySelect(state);
+        arrayselectedCountry
       }}
       />
   );

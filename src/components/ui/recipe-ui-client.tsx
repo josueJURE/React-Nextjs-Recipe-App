@@ -63,7 +63,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [recipes, setRecipes] = useState<unknown[]>([]);
-  const [arraySelectedCountries, setArraySelectedCountries] = useState<unknown[]>([]);
+  const [arraySelectedCountries, setArraySelectedCountries] = useState<
+    string[]
+  >([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isMenuDisplayed, setIsMenuDisplayed] = useState<boolean>(false);
@@ -153,8 +155,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     setIsGeneratingImage(shouldGenerateImage);
 
     try {
-  
-
       const response = await handleCountrySelectionResponse({
         selectedCountry,
         vegan,
@@ -271,9 +271,12 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
         if (data.success) {
           setRecipes(data.recipes);
-          setArraySelectedCountries(data.selectedCountries)
-          console.log("data.savedSelectedCountries", data.savedSelectedCountries)
-          
+          setArraySelectedCountries(data.selectedCountries);
+          console.log(
+            "data.savedSelectedCountries",
+            data.savedSelectedCountries
+          );
+          console.log("arraySelectedCountries", arraySelectedCountries)
         } else {
           setLoadError(data.error ?? "Failed to fetch articles");
         }
@@ -305,7 +308,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   return (
-    <section className={appSectionClassName}  >
+    <section className={appSectionClassName}>
       <div className={appShellClassName}>
         <div className={heroContainerClassName}>
           {!isMenuDisplayed && (
@@ -371,6 +374,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                     <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
                       <div className="flex min-w-[500px] justify-center">
                         <Map
+                          arrayselectedCountry={arraySelectedCountries}
                           handleCountrySelect={handleCountrySelect}
                           isDarkMode={isDarkMode}
                           selectedCountry={selectedCountry}
