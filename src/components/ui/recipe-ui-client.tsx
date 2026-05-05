@@ -72,8 +72,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   const [recipes, setRecipes] = useState<unknown[]>([]);
   // const [arraySelectedCountries, setArraySelectedCountries] =
   //   useState<GroupedSettings>({});
-    const [arraySelectedCountries, setArraySelectedCountries] =
-    useState<string[]>([]);
+  const [arraySelectedCountries, setArraySelectedCountries] = useState<
+    string[]
+  >([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isMenuDisplayed, setIsMenuDisplayed] = useState<boolean>(false);
@@ -298,14 +299,20 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     "arraySelectedCountries",
     arraySelectedCountries
   ); // this is an array
-  // console.table({
-  //   arraySelectedCountries: arraySelectedCountries[0]?.selectedCountries,
-  // });
 
-  // if(Object.keys(arraySelectedCountries[0]?.selectedCountries) !== undefined ) {
-  //     console.log(Object.keys(arraySelectedCountries[0]?.selectedCountries));
+  function arrayIntoObject(array: string[]): Record<string, string> {
+    const result: Record<string, string> = {};
 
-  // }
+    for (let i = 0; i < array.length; i++) {
+      result[array[i]] = "#22C55E";
+    }
+
+    return result;
+  }
+
+  const objectOfSelectedCountries = arrayIntoObject(arraySelectedCountries);
+
+  console.log("arrayIntoObject", objectOfSelectedCountries);
 
   const menuPreviewState = {
     isMenuDisplayed,
@@ -392,7 +399,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                     <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
                       <div className="flex min-w-[500px] justify-center">
                         <Map
-                          arrayselectedCountry={arraySelectedCountries}
+                          alreadySelectedCountryObject={objectOfSelectedCountries}
                           handleCountrySelect={handleCountrySelect}
                           isDarkMode={isDarkMode}
                           selectedCountry={selectedCountry}

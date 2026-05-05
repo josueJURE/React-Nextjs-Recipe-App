@@ -1,17 +1,21 @@
-
-
 import { MapProps } from "@/utils/types";
-
 import World from "@react-map/world";
 
+function Map({
+  handleCountrySelect,
+  isDarkMode,
+  selectedCountry,
+  alreadySelectedCountryObject,
+}: MapProps) {
+  const pinnedCountryColor = selectedCountry
+    ? { [selectedCountry]: "#DC2626" }
+    : {};
+  const countryColors = {
+    ...alreadySelectedCountryObject,
+    ...pinnedCountryColor,
+  };
 
-
-function Map({ handleCountrySelect, isDarkMode, selectedCountry, arrayselectedCountry}: MapProps) {
-  const pinnedCountryColor = selectedCountry ? { [selectedCountry]: "#DC2626" } : {};
-
-  // implement functionality to retrieve array of alreday selected countires from db and pin them
-
-  console.log("pinnedCountryColor", pinnedCountryColor)
+  console.log("pinnedCountryColor", pinnedCountryColor);
 
   return (
     <World
@@ -21,14 +25,13 @@ function Map({ handleCountrySelect, isDarkMode, selectedCountry, arrayselectedCo
       mapColor={isDarkMode ? "#374151" : "#EAEAEC"}
       hoverColor="#F53"
       selectColor="#DC2626"
-      cityColors={pinnedCountryColor}
+      cityColors={countryColors}
       size={500}
       onSelect={(state) => {
         if (!state) return;
         handleCountrySelect(state);
-        arrayselectedCountry
       }}
-      />
+    />
   );
 }
 

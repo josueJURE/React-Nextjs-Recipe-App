@@ -45,7 +45,7 @@ export interface MapProps {
   handleCountrySelect: (countryName: string) => void;
   isDarkMode: boolean;
   selectedCountry: string;
-  arrayselectedCountry: string[]
+  alreadySelectedCountryObject: Record<string, string>;
 }
 
 export interface GeographyFeature {
