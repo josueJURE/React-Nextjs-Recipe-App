@@ -29,6 +29,8 @@ export async function GET() {
     );
     const savedSelectedCountries = selectedCountriesResult.rows
 
+    
+
     /*
     const selectedCountriesResult = await sql(
       `SELECT "selectedCountries"
@@ -66,12 +68,13 @@ export async function GET() {
     );
     const savedRecipes = savedRecipesResult.rows;
 
+
     return NextResponse.json(
       {
         success: true,
         message: "recipe retrieved",
         recipes: savedRecipes,
-        savedSelectedCountries: savedSelectedCountries
+        savedSelectedCountries: savedSelectedCountries[0].selectedCountries
       },
       { status: 200 }
     );

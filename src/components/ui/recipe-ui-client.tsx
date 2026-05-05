@@ -61,11 +61,19 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   console.log("sessionData", typeof sessionData?.user.name);
 
+  // interface SystemSetting {
+  //   savedSelectedCountries: string[];
+  //   // selectedCountries: string[]
+  // }
+
+  // type GroupedSettings = Record<string, SystemSetting[]>;
+
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [recipes, setRecipes] = useState<unknown[]>([]);
-  const [arraySelectedCountries, setArraySelectedCountries] = useState<
-    string[]
-  >([]);
+  // const [arraySelectedCountries, setArraySelectedCountries] =
+  //   useState<GroupedSettings>({});
+    const [arraySelectedCountries, setArraySelectedCountries] =
+    useState<string[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isMenuDisplayed, setIsMenuDisplayed] = useState<boolean>(false);
@@ -271,12 +279,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
         if (data.success) {
           setRecipes(data.recipes);
-          setArraySelectedCountries(data.selectedCountries);
-          console.log(
-            "data.savedSelectedCountries",
-            data.savedSelectedCountries
-          );
-          console.log("arraySelectedCountries", arraySelectedCountries)
+
+          setArraySelectedCountries(data.savedSelectedCountries);
         } else {
           setLoadError(data.error ?? "Failed to fetch articles");
         }
@@ -289,6 +293,19 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     };
     void fetchRecipes();
   }, []);
+
+  console.log(
+    "arraySelectedCountries",
+    arraySelectedCountries
+  ); // this is an array
+  // console.table({
+  //   arraySelectedCountries: arraySelectedCountries[0]?.selectedCountries,
+  // });
+
+  // if(Object.keys(arraySelectedCountries[0]?.selectedCountries) !== undefined ) {
+  //     console.log(Object.keys(arraySelectedCountries[0]?.selectedCountries));
+
+  // }
 
   const menuPreviewState = {
     isMenuDisplayed,
@@ -354,6 +371,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
               <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
                 <div className="space-y-6">
+                  {/* <div>{arraySelectedCountries[0]?.selectedCountries}</div> */}
                   <div className={infoPanelClassName}>
                     {!selectedCountry ? (
                       <>
