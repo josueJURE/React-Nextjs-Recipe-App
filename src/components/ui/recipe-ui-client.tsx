@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState,  } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChefHat } from "lucide-react";
@@ -56,19 +56,17 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
+
+
+
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
   const { data: sessionData } = useSession();
 
+
+
   console.log("sessionData", typeof sessionData?.user.name);
-
-  // interface SystemSetting {
-  //   savedSelectedCountries: string[];
-  //   // selectedCountries: string[]
-  // }
-
-  // type GroupedSettings = Record<string, SystemSetting[]>;
-
+  const [isSetMap, setIsSetMap] = useState<boolean>(false)
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [recipes, setRecipes] = useState<unknown[]>([]);
   // const [arraySelectedCountries, setArraySelectedCountries] =
@@ -297,15 +295,55 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   }, []);
 
 
-  const arrayIntoObject = (array: string[]): Record<string, string> => {
+
+  // const [data, setData] = useState<string | null>(null);
+
+  async function resetMap() {
+    try {
+      const response = await fetch('/api/user/reset-map', {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({selectedCountry: []})
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "Failed to reset map");
+      }
+
+      setSelectedCountry("");
+      setArraySelectedCountries(data.selectedCountries ?? []);
+
+      console.log(data);
+      console.log("resetMap")
+
+    } catch (error) {
+      console.error("Error  trying to reset map", error)
+      toast.error("Failed to reset map");
+    } finally {
+      console.log("hello")
+    }
+ 
+  }
+
+
+
+
+  
+
+
+  const selectedCountriesObject = useMemo((): Record<string, string> => {
     const result: Record<string, string> = {};
 
-    for (let i = 0; i < array.length; i++) {
-      result[array[i]] = "#1F2937";
+    for (let i = 0; i < arraySelectedCountries.length; i++) {
+      result[arraySelectedCountries[i]] = "#1F2937";
     }
 
     return result;
-  }
+  }, [arraySelectedCountries]);
 
   /*
 
@@ -322,7 +360,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
 
   */
-
 
   const menuPreviewState = {
     isMenuDisplayed,
@@ -392,13 +429,20 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                   <div className={infoPanelClassName}>
                     {!selectedCountry ? (
                       <>
-                        <h2 className={sectionHeadingClassName}>
+                      <div className=" flex flex-wrap justify-between ">
+
+                      <h2 className={sectionHeadingClassName}>
                           Pick a country
                         </h2>
+                        {/* <Button>Reset Map</Button> */}
+                        <Button onClick={resetMap}>Reset Map</Button>
                         <p className={`${bodyTextClassName} pt-2`}>
                           Select a cuisine region to tailor the recipe
                           generation.
                         </p>
+
+                      </div>
+                  
                       </>
                     ) : (
                       <p className={sectionHeadingClassName}>
@@ -409,9 +453,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                     <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
                       <div className="flex min-w-[500px] justify-center">
                         <Map
-                          alreadySelectedCountryObject={
-                            arrayIntoObject(arraySelectedCountries)
-                          }
+                          alreadySelectedCountryObject={selectedCountriesObject}
                           handleCountrySelect={handleCountrySelect}
                           isDarkMode={isDarkMode}
                           selectedCountry={selectedCountry}
@@ -460,14 +502,26 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
                     <div className="space-y-3 pt-5">
                       <SwitchComponent
-                        style={{ backgroundColor: toggleColor(shouldGenerateAudio, "red", themeColor) }}
+                        style={{
+                          backgroundColor: toggleColor(
+                            shouldGenerateAudio,
+                            "red",
+                            themeColor
+                          ),
+                        }}
                         onSwitch={handleAudioGeneration}
                         onChecked={shouldGenerateAudio}
                       >
                         Generate Audio
                       </SwitchComponent>
                       <SwitchComponent
-                        style={{ backgroundColor: toggleColor(shouldGenerateImage, "red", themeColor) }}
+                        style={{
+                          backgroundColor: toggleColor(
+                            shouldGenerateImage,
+                            "red",
+                            themeColor
+                          ),
+                        }}
                         onSwitch={handleImageGeneration}
                         onChecked={shouldGenerateImage}
                       >
