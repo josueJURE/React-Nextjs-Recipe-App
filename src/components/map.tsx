@@ -23,8 +23,8 @@ function Map({
       hints
       strokeColor={isDarkMode ? "#4B5563" : "#D6D6DA"}
       mapColor={isDarkMode ? "#374151" : "#EAEAEC"}
-      hoverColor="#F53"
-      selectColor="#DC2626"
+      hoverColor="#9CA3AF"
+      selectColor=" #c75a2d"
       cityColors={countryColors}
       size={500}
       onSelect={(state) => {
@@ -36,3 +36,17 @@ function Map({
 }
 
 export default Map;
+
+
+/*
+
+| Shade          | Hex       |
+| -------------- | --------- |
+| Light grey     | `#D1D5DB` |
+| Medium grey    | `#9CA3AF` |
+| Dark grey      | `#4B5563` |
+| Very dark grey | `#1F2937` |
+
+
+
+*/

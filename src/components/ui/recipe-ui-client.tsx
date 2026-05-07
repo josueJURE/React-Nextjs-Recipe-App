@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState,  } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChefHat } from "lucide-react";
@@ -295,24 +295,32 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     void fetchRecipes();
   }, []);
 
-  console.log(
-    "arraySelectedCountries",
-    arraySelectedCountries
-  ); // this is an array
 
-  function arrayIntoObject(array: string[]): Record<string, string> {
+  const arrayIntoObject = (array: string[]): Record<string, string> => {
     const result: Record<string, string> = {};
 
     for (let i = 0; i < array.length; i++) {
-      result[array[i]] = "#22C55E";
+      result[array[i]] = "#1F2937";
     }
 
     return result;
   }
 
-  const objectOfSelectedCountries = arrayIntoObject(arraySelectedCountries);
+  /*
 
-  console.log("arrayIntoObject", objectOfSelectedCountries);
+  #c75a2d
+
+  | Shade          | Hex       |
+| -------------- | --------- |
+| Light grey     | `#D1D5DB` |
+| Medium grey    | `#9CA3AF` |
+| Dark grey      | `#4B5563` |
+| Very dark grey | `#1F2937` |
+
+
+
+  */
+
 
   const menuPreviewState = {
     isMenuDisplayed,
@@ -399,7 +407,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                     <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
                       <div className="flex min-w-[500px] justify-center">
                         <Map
-                          alreadySelectedCountryObject={objectOfSelectedCountries}
+                          alreadySelectedCountryObject={
+                            arrayIntoObject(arraySelectedCountries)
+                          }
                           handleCountrySelect={handleCountrySelect}
                           isDarkMode={isDarkMode}
                           selectedCountry={selectedCountry}
