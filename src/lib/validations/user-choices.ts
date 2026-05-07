@@ -65,6 +65,10 @@ export const pinnedCountrySchema = z.object({
     .max(100, "Country name is too long"),
 });
 
+export const emptySelectedCountryArray = z.object({
+  selectedCountry: z.array(z.string()),
+});
+
 export const recipeStandardUUIDv4Schema = z.uuid({ version: "v4" });
 
 export const retrieveRecipeSchema = z.boolean();
@@ -85,3 +89,4 @@ export type RecipeStandardUUIDv4Schema = z.infer<typeof retrieveRecipeSchema>;
 export type EmailSchema = z.infer<typeof emailSchema>;
 
 export type PinnedCountrySchema = z.infer<typeof pinnedCountrySchema>;
+export type EmptySelectedCountryArray = z.infer<typeof emptySelectedCountryArray>;
