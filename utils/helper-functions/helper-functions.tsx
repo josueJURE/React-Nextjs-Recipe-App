@@ -16,3 +16,10 @@ export function formatDatefunction(date: Date | string  ): string {
     return new Date(date).getFullYear()
   }
   
+
+  export function toggleColor(isChecked: boolean, uncheckedColor: string, checkedColor: string): string {
+    return isChecked ? checkedColor : uncheckedColor;
+  }
+
+
+

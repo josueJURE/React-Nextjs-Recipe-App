@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ChefHat } from "lucide-react";
 import { toast } from "sonner";
 import { MenuPreview } from "./menu-preview";
+import { toggleColor } from "@/utils/helper-functions/helper-functions";
 
 import Map from "@/components/map";
 import { SwitchComponent } from "@/components/switchComponent";
@@ -309,6 +310,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   /*
 
   #c75a2d
+  #2f1d17 =>  text color 
 
   | Shade          | Hex       |
 | -------------- | --------- |
@@ -458,14 +460,14 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
                     <div className="space-y-3 pt-5">
                       <SwitchComponent
-                        style={{ backgroundColor: themeColor }}
+                        style={{ backgroundColor: toggleColor(shouldGenerateAudio, "red", themeColor) }}
                         onSwitch={handleAudioGeneration}
                         onChecked={shouldGenerateAudio}
                       >
                         Generate Audio
                       </SwitchComponent>
                       <SwitchComponent
-                        style={{ backgroundColor: themeColor }}
+                        style={{ backgroundColor: toggleColor(shouldGenerateImage, "red", themeColor) }}
                         onSwitch={handleImageGeneration}
                         onChecked={shouldGenerateImage}
                       >
