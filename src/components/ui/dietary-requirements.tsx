@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import { SwitchComponent } from "@/components/switchComponent";
 import { sectionHeadingClassName, themeColor } from "@/utils/const";
+import { toggleColor } from "@/utils/helper-functions/helper-functions";
 import type { DietaryRequirementsProps } from "@/utils/types";
 
 function DietaryRequirements({
@@ -49,7 +50,10 @@ function DietaryRequirements({
         <SwitchComponent
           onSwitch={handleVeganChange}
           onChecked={vegan}
-          style={{ backgroundColor: themeColor, opacity: isUpdating ? 0.6 : 1 }}
+          style={{
+            backgroundColor: toggleColor(vegan, "red", themeColor),
+            opacity: isUpdating ? 0.6 : 1,
+          }}
         >
           Vegan
         </SwitchComponent>
@@ -57,7 +61,9 @@ function DietaryRequirements({
         <SwitchComponent
           onSwitch={(checked) => onOtherToggle?.(checked)}
           onChecked={otherChecked}
-          style={{ backgroundColor: themeColor }}
+          style={{
+            backgroundColor: toggleColor(otherChecked, "red", themeColor),
+          }}
         >
           Other dietary requirements
         </SwitchComponent>
