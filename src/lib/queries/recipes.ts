@@ -57,21 +57,20 @@ export const handleSavedMenuResponse = async (menuContent: string) => {
   toast("menu saved to your db");
 };
 
+type SelectedCountryPayload = {
+  selectedCountry: string;
+  vegan: boolean;
+  userOtherDietaryRequirements: string;
+  isImageGenerated: boolean;
+};
 
-type SelectedCountryPayload  = {
-  selectedCountry: string,
-  vegan: boolean,
-  userOtherDietaryRequirements: string,
-  isImageGenerated: boolean
-
-}
 
 export const handleCountrySelectionResponse = async ({
   selectedCountry,
   vegan,
   userOtherDietaryRequirements,
   isImageGenerated,
-} : SelectedCountryPayload ) => {
+}: SelectedCountryPayload) => {
   const response = await fetch("/api/user/country-post-request", {
     method: "POST",
     headers,
@@ -91,5 +90,7 @@ export const handleCountrySelectionResponse = async ({
     );
   }
 
-  return response
+  return response;
 };
+
+

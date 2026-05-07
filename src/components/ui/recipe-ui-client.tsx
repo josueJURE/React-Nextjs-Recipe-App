@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState,  } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChefHat } from "lucide-react";
@@ -61,8 +61,20 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   console.log("sessionData", typeof sessionData?.user.name);
 
+  // interface SystemSetting {
+  //   savedSelectedCountries: string[];
+  //   // selectedCountries: string[]
+  // }
+
+  // type GroupedSettings = Record<string, SystemSetting[]>;
+
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [recipes, setRecipes] = useState<unknown[]>([]);
+  // const [arraySelectedCountries, setArraySelectedCountries] =
+  //   useState<GroupedSettings>({});
+  const [arraySelectedCountries, setArraySelectedCountries] = useState<
+    string[]
+  >([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isMenuDisplayed, setIsMenuDisplayed] = useState<boolean>(false);
@@ -268,6 +280,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
         if (data.success) {
           setRecipes(data.recipes);
+
+          setArraySelectedCountries(data.savedSelectedCountries);
         } else {
           setLoadError(data.error ?? "Failed to fetch articles");
         }
@@ -280,6 +294,33 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     };
     void fetchRecipes();
   }, []);
+
+
+  const arrayIntoObject = (array: string[]): Record<string, string> => {
+    const result: Record<string, string> = {};
+
+    for (let i = 0; i < array.length; i++) {
+      result[array[i]] = "#1F2937";
+    }
+
+    return result;
+  }
+
+  /*
+
+  #c75a2d
+
+  | Shade          | Hex       |
+| -------------- | --------- |
+| Light grey     | `#D1D5DB` |
+| Medium grey    | `#9CA3AF` |
+| Dark grey      | `#4B5563` |
+| Very dark grey | `#1F2937` |
+
+
+
+  */
+
 
   const menuPreviewState = {
     isMenuDisplayed,
@@ -299,7 +340,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   return (
-    <section className={appSectionClassName}  >
+    <section className={appSectionClassName}>
       <div className={appShellClassName}>
         <div className={heroContainerClassName}>
           {!isMenuDisplayed && (
@@ -345,6 +386,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
               <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
                 <div className="space-y-6">
+                  {/* <div>{arraySelectedCountries[0]?.selectedCountries}</div> */}
                   <div className={infoPanelClassName}>
                     {!selectedCountry ? (
                       <>
@@ -365,6 +407,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                     <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
                       <div className="flex min-w-[500px] justify-center">
                         <Map
+                          alreadySelectedCountryObject={
+                            arrayIntoObject(arraySelectedCountries)
+                          }
                           handleCountrySelect={handleCountrySelect}
                           isDarkMode={isDarkMode}
                           selectedCountry={selectedCountry}

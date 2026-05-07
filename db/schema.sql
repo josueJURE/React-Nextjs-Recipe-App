@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     "email" TEXT NOT NULL,
     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
     "image" TEXT,
+    "selectedCountries" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")

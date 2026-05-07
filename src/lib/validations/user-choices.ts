@@ -57,6 +57,14 @@ export const recipeContentSchema = z
   .min(1, "Recipe required")
   .max(50000);
 
+export const pinnedCountrySchema = z.object({
+  country: z
+    .string()
+    .trim()
+    .min(1, "Country is required")
+    .max(100, "Country name is too long"),
+});
+
 export const recipeStandardUUIDv4Schema = z.uuid({ version: "v4" });
 
 export const retrieveRecipeSchema = z.boolean();
@@ -75,4 +83,5 @@ export type RecipeSchema = z.infer<typeof recipeContentSchema>;
 export type RetrieveRecipeSchema = z.infer<typeof retrieveRecipeSchema>;
 export type RecipeStandardUUIDv4Schema = z.infer<typeof retrieveRecipeSchema>;
 export type EmailSchema = z.infer<typeof emailSchema>;
-export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>;
+
+export type PinnedCountrySchema = z.infer<typeof pinnedCountrySchema>;
