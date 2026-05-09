@@ -420,10 +420,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                             <h2 className={sectionHeadingClassName}>
                               Pick a country
                             </h2>
-                            <p className={`${bodyTextClassName} pt-2`}>
-                              Select a cuisine region to tailor the recipe
-                              generation.
-                            </p>
                           </>
                         ) : (
                           <p className={sectionHeadingClassName}>
