@@ -56,21 +56,13 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-
-
-
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
   const { data: sessionData } = useSession();
 
-
-
   console.log("sessionData", typeof sessionData?.user.name);
-  const [isSetMap, setIsSetMap] = useState<boolean>(false)
   const [selectedCountry, setSelectedCountry] = useState<string>("");
   const [recipes, setRecipes] = useState<unknown[]>([]);
-  // const [arraySelectedCountries, setArraySelectedCountries] =
-  //   useState<GroupedSettings>({});
   const [arraySelectedCountries, setArraySelectedCountries] = useState<
     string[]
   >([]);
@@ -294,18 +286,16 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     void fetchRecipes();
   }, []);
 
-
-
   // const [data, setData] = useState<string | null>(null);
 
   async function resetMap() {
     try {
-      const response = await fetch('/api/user/reset-map', {
+      const response = await fetch("/api/user/reset-map", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({selectedCountry: []})
+        body: JSON.stringify({ selectedCountry: [] }),
       });
 
       const data = await response.json();
@@ -318,22 +308,14 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
       setArraySelectedCountries(data.selectedCountries ?? []);
 
       console.log(data);
-      console.log("resetMap")
-
+      console.log("resetMap");
     } catch (error) {
-      console.error("Error  trying to reset map", error)
+      console.error("Error  trying to reset map", error);
       toast.error("Failed to reset map");
     } finally {
-      console.log("hello")
+      console.log("hello");
     }
- 
   }
-
-
-
-
-  
-
 
   const selectedCountriesObject = useMemo((): Record<string, string> => {
     const result: Record<string, string> = {};
@@ -344,6 +326,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
     return result;
   }, [arraySelectedCountries]);
+
+
 
   /*
 
@@ -377,6 +361,8 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     handleEmailingUser,
     handleSaveMenu,
   };
+
+  console.log("arraySelectedCountries.length)", arraySelectedCountries.length)
 
   return (
     <section className={appSectionClassName}>
@@ -427,28 +413,29 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                 <div className="space-y-6">
                   {/* <div>{arraySelectedCountries[0]?.selectedCountries}</div> */}
                   <div className={infoPanelClassName}>
-                    {!selectedCountry ? (
-                      <>
-                      <div className=" flex flex-wrap justify-between ">
-
-                      <h2 className={sectionHeadingClassName}>
-                          Pick a country
-                        </h2>
-                        {/* <Button>Reset Map</Button> */}
-                        <Button onClick={resetMap}>Reset Map</Button>
-                        <p className={`${bodyTextClassName} pt-2`}>
-                          Select a cuisine region to tailor the recipe
-                          generation.
-                        </p>
-
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        {!selectedCountry ? (
+                          <>
+                            <h2 className={sectionHeadingClassName}>
+                              Pick a country
+                            </h2>
+                            <p className={`${bodyTextClassName} pt-2`}>
+                              Select a cuisine region to tailor the recipe
+                              generation.
+                            </p>
+                          </>
+                        ) : (
+                          <p className={sectionHeadingClassName}>
+                            {`You picked ${selectedCountry}`}
+                          </p>
+                        )}
                       </div>
-                  
-                      </>
-                    ) : (
-                      <p className={sectionHeadingClassName}>
-                        {`You picked ${selectedCountry}`}
-                      </p>
-                    )}
+
+                      {arraySelectedCountries.length > 0 && (
+                        <Button onClick={resetMap}>Reset Map</Button>
+                      )}
+                    </div>
 
                     <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
                       <div className="flex min-w-[500px] justify-center">
