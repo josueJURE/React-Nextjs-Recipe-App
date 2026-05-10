@@ -26,7 +26,6 @@ import {
   appSectionClassName,
   appShellClassName,
   bodyTextClassName,
-  cardClassName,
   cardContentClassName,
   cardDescriptionClassName,
   cardHeaderClassName,
@@ -48,7 +47,6 @@ import DietaryRequirements from "@/components/ui/dietary-requirements";
 
 import { Button } from "@/components/ui/button";
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -83,6 +81,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     useState<string>("");
   const [recipeAudio, setRecipeAudio] = useState<string | null>(null);
   const isDarkMode = false;
+  const [mapSize, setMapSize] = useState<number>(320);
 
   const handleSignOut = async () => {
     await signOut();
@@ -264,6 +263,19 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
   };
 
   useEffect(() => {
+    const updateMapSize = () => {
+      const viewportWidth = window.innerWidth;
+      const reservedSpace = viewportWidth < 640 ? 96 : 160;
+      setMapSize(Math.min(500, Math.max(240, viewportWidth - reservedSpace)));
+    };
+
+    updateMapSize();
+    window.addEventListener("resize", updateMapSize);
+
+    return () => window.removeEventListener("resize", updateMapSize);
+  }, []);
+
+  useEffect(() => {
     const fetchRecipes = async () => {
       try {
         const response = await fetch("/api/user/recipe-get-request");
@@ -362,7 +374,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     handleSaveMenu,
   };
 
-  console.log("arraySelectedCountries.length)", arraySelectedCountries.length)
+  console.log("arraySelectedCountries.length)", arraySelectedCountries.length);
 
   return (
     <section className={appSectionClassName}>
@@ -371,7 +383,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
           {!isMenuDisplayed && (
             <div className={heroIconContainerClassName}>
               <ChefHat
-                className="size-12 sm:size-14"
+                className="size-9 sm:size-10"
                 style={{ color: themeColor }}
                 strokeWidth={2.4}
               />
@@ -379,9 +391,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
           )}
 
           {!isMenuDisplayed && (
-            <div className="space-y-4">
+            <div className="space-y-2">
               {/* <h1 className={heroTitleClassName}>Culinary Explorer</h1> */}
-              <p className={cardTitleClassName}>
+              <p className={`${cardTitleClassName} px-2`}>
                 Welcome back{" "}
                 {retrieveUserFirstName(sessionData?.user.name) ??
                   userProps.name}
@@ -391,9 +403,9 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
         </div>
 
         {!isMenuDisplayed && (
-          <Card className={`${cardClassName} max-w-5xl`}>
+          <section className="w-full max-w-6xl">
             <CardHeader className={cardHeaderClassName}>
-              <CardTitle className={`${cardTitleClassName} text-nowrap`}>
+              <CardTitle className={`${cardTitleClassName} text-balance`}>
                 Build your next menu
               </CardTitle>
               <CardDescription className={cardDescriptionClassName}>
@@ -402,19 +414,19 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
               </CardDescription>
             </CardHeader>
 
-            <CardContent className={`${cardContentClassName} space-y-8 `}>
+            <CardContent className={`${cardContentClassName} space-y-5`}>
               {loadError && (
-                <div className="rounded-[1.35rem] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                   {loadError}
                 </div>
               )}
 
-              <div className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-                <div className="space-y-6">
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)] lg:items-start">
+                <div className="space-y-4">
                   {/* <div>{arraySelectedCountries[0]?.selectedCountries}</div> */}
                   <div className={infoPanelClassName}>
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
+                    <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
+                      <div className="min-w-0">
                         {!selectedCountry ? (
                           <>
                             <h2 className={sectionHeadingClassName}>
@@ -429,16 +441,24 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       </div>
 
                       {arraySelectedCountries.length > 0 && (
-                        <Button onClick={resetMap}>Reset Map</Button>
+                        <Button
+                          className="min-h-11 w-full rounded-md px-4 text-sm sm:w-auto"
+                          onClick={resetMap}
+                          type="button"
+                          variant="outline"
+                        >
+                          Reset Map
+                        </Button>
                       )}
                     </div>
 
-                    <div className="mt-5 overflow-x-auto rounded-[1.35rem] border border-[#efe5dc] bg-white p-4">
-                      <div className="flex min-w-[500px] justify-center">
+                    <div className="mt-4 overflow-hidden rounded-lg border border-[#d8e2d6] bg-white p-3 sm:p-4">
+                      <div className="flex justify-center">
                         <Map
                           alreadySelectedCountryObject={selectedCountriesObject}
                           handleCountrySelect={handleCountrySelect}
                           isDarkMode={isDarkMode}
+                          size={mapSize}
                           selectedCountry={selectedCountry}
                         />
                       </div>
@@ -473,7 +493,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                   </div>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <div className={infoPanelClassName}>
                     <h2 className={sectionHeadingClassName}>
                       Generation options
@@ -483,7 +503,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       the generated recipe.
                     </p>
 
-                    <div className="space-y-3 pt-5">
+                    <div className="space-y-3 pt-4">
                       <SwitchComponent
                         style={{
                           backgroundColor: toggleColor(
@@ -519,7 +539,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                       Generate a new recipe, revisit saved menus, or sign out.
                     </p>
 
-                    <div className="space-y-3 pt-5">
+                    <div className="grid gap-3 pt-4">
                       <Button
                         className={primaryButtonClassName}
                         type="button"
@@ -556,7 +576,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </section>
         )}
 
         {isMenuDisplayed && (

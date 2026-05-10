@@ -27,7 +27,21 @@ import {
 } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 
-import { themeColor, borderRadius } from "@/utils/const";
+import {
+  accentLinkClassName,
+  appSectionClassName,
+  bodyTextClassName,
+  cardClassName,
+  cardContentClassName,
+  cardDescriptionClassName,
+  cardHeaderClassName,
+  cardTitleClassName,
+  fieldLabelClassName,
+  inputClassName,
+  primaryButtonClassName,
+  primaryButtonStyle,
+  themeColor,
+} from "@/utils/const";
 
 const resetPasswordSchema = z
   .object({
@@ -111,24 +125,28 @@ function ResetPasswordForm() {
   const hasInvalidLink = Boolean(resetError) || !token;
 
   return (
-    <section className=" min-h-[100vh] w-2xl bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center">
-      <div className="mx-auto flex min-h-[80vh] w-full max-w-5xl items-center justify-center">
-        <Card className="w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10">
-          <CardHeader className="gap-3 px-6 sm:px-12">
-            <CardTitle className="font-serif text-4xl font-semibold text-[#2f1d17] sm:text-5xl text-center">
+    <section className={appSectionClassName}>
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-2xl items-center justify-center">
+        <Card className={cardClassName}>
+          <CardHeader className={cardHeaderClassName}>
+            <CardTitle className={cardTitleClassName}>
               Reset Password
             </CardTitle>
-            <CardDescription className="text-nowrap text-lg text-[#8b7d74] sm:text-xl text-center">
+            <CardDescription className={cardDescriptionClassName}>
               Choose a new password for your account.
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-6 sm:px-12">
+          <CardContent className={cardContentClassName}>
             {hasInvalidLink ? (
               <div className="grid gap-4">
                 <p className="text-sm text-red-600">
                   This reset link is invalid or expired.
                 </p>
-                <Button asChild>
+                <Button
+                  asChild
+                  className={primaryButtonClassName}
+                  style={primaryButtonStyle}
+                >
                   <Link href="/forgot-password">Request a new reset link</Link>
                 </Button>
               </div>
@@ -136,16 +154,16 @@ function ResetPasswordForm() {
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-8"
+                  className="space-y-5 sm:space-y-6"
                 >
-                  <div className="grid gap-4">
+                  <div className="grid gap-4 sm:gap-5">
                     <FormField
                       control={form.control}
                       name="newPassword"
                       render={({ field }) => (
                         <FormItem className="space-y-3">
                           <FormLabel
-                            className="text-xl font-semibold text-[#2f1d17] sm:text-2xl"
+                            className={fieldLabelClassName}
                             htmlFor="email"
                           >
                             New password
@@ -156,7 +174,7 @@ function ResetPasswordForm() {
                               autoComplete="new-password"
                               placeholder="Enter your new password"
                               {...field}
-                              className="h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl"
+                              className={inputClassName}
                             />
                           </FormControl>
                           <FormMessage />
@@ -170,7 +188,7 @@ function ResetPasswordForm() {
                       render={({ field }) => (
                         <FormItem className="grid gap-2">
                           <FormLabel
-                            className="text-xl font-semibold text-[#2f1d17] sm:text-2xl"
+                            className={fieldLabelClassName}
                             htmlFor="confirmPassword"
                           >
                             Confirm Password
@@ -181,7 +199,7 @@ function ResetPasswordForm() {
                               autoComplete="new-password"
                               placeholder="Confirm your new password"
                               {...field}
-                              className="h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl"
+                              className={inputClassName}
                             />
                           </FormControl>
                           <FormMessage />
@@ -191,8 +209,8 @@ function ResetPasswordForm() {
 
                     <Button
                       type="submit"
-                      className="h-15 w-full  text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
-                      style={{ background: themeColor, borderRadius }}
+                      className={primaryButtonClassName}
+                      style={primaryButtonStyle}
                     >
                       Reset password
                     </Button>
@@ -201,9 +219,13 @@ function ResetPasswordForm() {
               </Form>
             )}
 
-            <div className="mt-4 text-center text-sm">
+            <div className={`${bodyTextClassName} mt-4 text-center`}>
               Remembered your password?{" "}
-              <Link href="/sign-in" className="underline">
+              <Link
+                href="/sign-in"
+                className={accentLinkClassName}
+                style={{ color: themeColor }}
+              >
                 Sign in
               </Link>
             </div>

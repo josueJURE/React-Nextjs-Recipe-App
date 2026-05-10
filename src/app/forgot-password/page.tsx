@@ -26,7 +26,18 @@ import { authClient } from "@/lib/auth-client";
 
 import { emailSchema } from "@/lib/validations/user-choices";
 
-import { themeColor, borderRadius } from "@/utils/const";
+import {
+  appSectionClassName,
+  cardClassName,
+  cardContentClassName,
+  cardDescriptionClassName,
+  cardHeaderClassName,
+  cardTitleClassName,
+  fieldLabelClassName,
+  inputClassName,
+  primaryButtonClassName,
+  primaryButtonStyle,
+} from "@/utils/const";
 
 // Schema for email validation
 const formSchema = z.object({
@@ -61,24 +72,24 @@ export default function ForgetPasswordPreview() {
   }
 
   return (
-    <section className="min-h-screen w-2xl bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center">
-      <div className="mx-auto flex min-h-[80vh] w-full max-w-5xl items-center justify-center">
-        <Card className="w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10">
-          <CardHeader className="gap-3 px-6 sm:px-12">
-            <CardTitle className="font-serif text-4xl font-semibold text-[#2f1d17] sm:text-5xl text-center">
+    <section className={appSectionClassName}>
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-2xl items-center justify-center">
+        <Card className={cardClassName}>
+          <CardHeader className={cardHeaderClassName}>
+            <CardTitle className={cardTitleClassName}>
               Forgot Password
             </CardTitle>
-            <CardDescription className="text-nowrap text-lg text-[#8b7d74] sm:text-xl text-center">
+            <CardDescription className={cardDescriptionClassName}>
               Enter an email address to receive a password reset link.
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-6 sm:px-12">
+          <CardContent className={cardContentClassName}>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
+                className="space-y-5 sm:space-y-6"
               >
-                <div className="grid gap-4">
+                <div className="grid gap-4 sm:gap-5">
                   {/* Email Field */}
                   <FormField
                     control={form.control}
@@ -86,7 +97,7 @@ export default function ForgetPasswordPreview() {
                     render={({ field }) => (
                       <FormItem className="space-y-3">
                         <FormLabel
-                          className="text-xl font-semibold text-[#2f1d17] sm:text-2xl"
+                          className={fieldLabelClassName}
                           htmlFor="email"
                         >
                           Email
@@ -98,7 +109,7 @@ export default function ForgetPasswordPreview() {
                             type="email"
                             autoComplete="email"
                             {...field}
-                            className="h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl"
+                            className={inputClassName}
                           />
                         </FormControl>
                         <FormMessage />
@@ -107,8 +118,8 @@ export default function ForgetPasswordPreview() {
                   />
                   <Button
                     type="submit"
-                    className="h-15 w-full  text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
-                    style={{ background: themeColor, borderRadius }}
+                    className={primaryButtonClassName}
+                    style={primaryButtonStyle}
                   >
                     Send Reset Link
                   </Button>

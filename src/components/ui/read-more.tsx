@@ -55,26 +55,26 @@ export function ReadMore({
   return (
     <Card
       id={id}
-      className="gap-4 rounded-[1.35rem] border-[#efe5dc] bg-[#fffdfa] py-0 shadow-[0_14px_35px_-28px_rgba(81,52,34,0.55)]"
+      className="gap-4 rounded-lg border-[#dfe8dd] bg-white/95 py-0 shadow-[0_14px_35px_-30px_rgba(36,56,45,0.5)]"
     >
-      <CardHeader className="px-5 pt-5 pb-0">
-        <CardDescription className="text-base font-medium text-[#8b7d74]">
+      <CardHeader className="px-4 pt-4 pb-0 sm:px-5 sm:pt-5">
+        <CardDescription className="text-sm font-medium text-[#657167] sm:text-base">
           {displayDate}
         </CardDescription>
       </CardHeader>
-      <CardContent id={contentId} className="px-5">
-        <p className={`${bodyTextClassName} text-base leading-7 sm:text-lg`}>
+      <CardContent id={contentId} className="px-4 sm:px-5">
+        <p className={bodyTextClassName}>
           {beginText}
           {itCanOverFlow && !isExpanded ? "..." : ""}
           {itCanOverFlow && isExpanded && endText ? ` ${endText}` : ""}
         </p>
       </CardContent>
 
-      <CardFooter className="flex items-center justify-between gap-3 px-5 pb-5">
+      <CardFooter className="flex flex-wrap items-center justify-between gap-3 px-4 pb-4 sm:px-5 sm:pb-5">
         {itCanOverFlow ? (
           <Button
             variant="ghost"
-            className="h-10 rounded-[1rem] px-4 text-base font-semibold hover:bg-[#fcf5ef]"
+            className="min-h-11 rounded-md px-4 text-sm font-semibold hover:bg-[#f2f7f3] sm:text-base"
             style={{ color: themeColor }}
             aria-expanded={isExpanded}
             aria-controls={contentId}
@@ -95,7 +95,7 @@ export function ReadMore({
               size="icon"
               aria-label="Delete recipe"
               disabled={isDeleting || !onDelete}
-              className="size-10 rounded-full text-[#8b3b26] hover:bg-red-50 hover:text-red-700"
+              className="size-11 rounded-md text-[#8b3b26] hover:bg-red-50 hover:text-red-700"
             >
               <Trash2 className="size-4" />
             </Button>

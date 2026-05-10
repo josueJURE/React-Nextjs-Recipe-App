@@ -28,7 +28,21 @@ import { useRouter } from "next/navigation";
 
 import { registerFormSchema } from "@/lib/validations/user-choices";
 import { signUp } from "@/lib/auth-client";
-import { themeColor, borderRadius } from "@/utils/const";
+import {
+  accentLinkClassName,
+  appSectionClassName,
+  bodyTextClassName,
+  cardClassName,
+  cardContentClassName,
+  cardDescriptionClassName,
+  cardHeaderClassName,
+  cardTitleClassName,
+  fieldLabelClassName,
+  inputClassName,
+  primaryButtonClassName,
+  primaryButtonStyle,
+  themeColor,
+} from "@/utils/const";
 
 const formSchema = registerFormSchema;
 
@@ -49,7 +63,7 @@ export default function Register() {
     try {
       const { name, email, password } = values;
       console.log(name, email, password);
-      const { data, error } = await signUp.email(
+      await signUp.email(
         {
           name: name || "",
           email,
@@ -59,12 +73,12 @@ export default function Register() {
         },
 
         {
-          onRequest: (ctx) => {
+          onRequest: () => {
             toast("Please wait while we processing your registration");
 
             // show loading
           },
-          onSuccess: (ctx) => {
+          onSuccess: () => {
             form.reset();
 
             router.push("/sign-in"); // ✅ client-side redirect
@@ -90,24 +104,22 @@ export default function Register() {
   }
 
   return (
-    <section className="min-h-screen w-2xl bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center">
-      <div className="mx-auto flex min-h-[80vh] w-full max-w-5xl items-center justify-center">
-        <Card className="w-full max-w-4xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10">
-          <CardHeader className="gap-3 px-6 sm:px-12">
-          <CardTitle className="font-serif text-5xl font-semibold text-[#2f1d17] sm:text-5xl text-center">
-              Register
-            </CardTitle>
-            <CardDescription className="text-nowrap text-lg text-[#8b7d74] sm:text-xl text-center">
+    <section className={appSectionClassName}>
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-3xl items-center justify-center">
+        <Card className={`${cardClassName} max-w-3xl`}>
+          <CardHeader className={cardHeaderClassName}>
+            <CardTitle className={cardTitleClassName}>Register</CardTitle>
+            <CardDescription className={cardDescriptionClassName}>
               Create a new account by filling out the form below.
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-6 sm:px-12">
+          <CardContent className={cardContentClassName}>
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
+                className="space-y-5 sm:space-y-6"
               >
-                <div className="grid gap-4">
+                <div className="grid gap-4 sm:gap-5">
                   {/* Name Field */}
                   <FormField
                     control={form.control}
@@ -115,7 +127,7 @@ export default function Register() {
                     render={({ field }) => (
                       <FormItem className="space-y-3">
                         <FormLabel
-                          className="text-xl font-semibold text-[#2f1d17] sm:text-2xl"
+                          className={fieldLabelClassName}
                           htmlFor="name"
                         >
                           Full Name
@@ -125,7 +137,7 @@ export default function Register() {
                             id="name"
                             placeholder="John Doe"
                             {...field}
-                            className="h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl"
+                            className={inputClassName}
                           />
                         </FormControl>
                         <FormMessage />
@@ -141,7 +153,7 @@ export default function Register() {
                       <FormItem className="grid gap-2">
                         <FormLabel
                           htmlFor="email"
-                          className="text-xl font-semibold text-[#2f1d17] sm:text-2xl"
+                          className={fieldLabelClassName}
                         >
                           Email
                         </FormLabel>
@@ -152,7 +164,7 @@ export default function Register() {
                             type="email"
                             autoComplete="email"
                             {...field}
-                            className="h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl"
+                            className={inputClassName}
                           />
                         </FormControl>
                         <FormMessage />
@@ -170,7 +182,7 @@ export default function Register() {
                       <FormItem className="grid gap-2">
                         <FormLabel
                           htmlFor="password"
-                          className="text-xl font-semibold text-[#2f1d17] sm:text-2xl"
+                          className={fieldLabelClassName}
                         >
                           Password
                         </FormLabel>
@@ -180,7 +192,7 @@ export default function Register() {
                             placeholder="******"
                             autoComplete="new-password"
                             {...field}
-                            className="h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl"
+                            className={inputClassName}
                           />
                         </FormControl>
                         <FormMessage />
@@ -196,7 +208,7 @@ export default function Register() {
                       <FormItem className="grid gap-2">
                         <FormLabel
                           htmlFor="confirmPassword"
-                          className="text-xl font-semibold text-[#2f1d17] sm:text-2xl"
+                          className={fieldLabelClassName}
                         >
                           Confirm Password
                         </FormLabel>
@@ -206,7 +218,7 @@ export default function Register() {
                             placeholder="******"
                             autoComplete="new-password"
                             {...field}
-                            className="h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl"
+                            className={inputClassName}
                           />
                         </FormControl>
                         <FormMessage />
@@ -216,20 +228,20 @@ export default function Register() {
 
                   <Button
                     type="submit"
-                    className="h-15 w-full rounded-[1.35rem] text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl"
-                    style={{ background: themeColor, borderRadius }}
+                    className={primaryButtonClassName}
+                    style={primaryButtonStyle}
                   >
                     Register
                   </Button>
                 </div>
               </form>
             </Form>
-            <p className="text-lg text-[#7d7068] sm:text-xl text-center">
+            <p className={`${bodyTextClassName} pt-4 text-center`}>
               Already have an account?{" "}
               <Link
                 href="/sign-in"
-                className="inline-block text-lg font-medium transition-colors hover:text-[#a94520] sm:text-xl"
-                style={{color: themeColor}}
+                className={accentLinkClassName}
+                style={{ color: themeColor }}
               >
                 Login
               </Link>
