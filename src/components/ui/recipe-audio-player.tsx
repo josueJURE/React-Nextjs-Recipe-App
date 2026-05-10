@@ -47,11 +47,11 @@ export default function RecipeAudioPlayer({ url }: RecipeAudioPlayerProps) {
   };
 
   return (
-    <div className="mb-4 rounded-lg border-2 border-black bg-white/80 p-4">
+    <div className="mb-4 rounded-lg border border-[#d8e2d6] bg-white/90 p-3 sm:p-4">
       <WavesurferPlayer
-        height={80}
-        waveColor="rgb(139, 92, 246)"
-        progressColor="rgb(109, 40, 217)"
+        height={64}
+        waveColor="#b8d0bd"
+        progressColor="#c75a2d"
         url={url}
         onReady={setWavesurfer}
         onPlay={() => setIsPlaying(true)}
@@ -64,7 +64,7 @@ export default function RecipeAudioPlayer({ url }: RecipeAudioPlayerProps) {
           onClick={onSkipBack}
           variant="outline"
           size="icon"
-          className="h-10 w-10"
+          className="size-11 rounded-md"
           aria-label="Skip back 10 seconds"
         >
           <SkipBack className="h-5 w-5" />
@@ -73,7 +73,7 @@ export default function RecipeAudioPlayer({ url }: RecipeAudioPlayerProps) {
           type="button"
           onClick={onPlayPause}
           size="icon"
-          className="h-12 w-12"
+          className="size-12 rounded-md"
           aria-label={isPlaying ? "Pause audio" : "Play audio"}
         >
           {isPlaying ? (
@@ -87,7 +87,7 @@ export default function RecipeAudioPlayer({ url }: RecipeAudioPlayerProps) {
           onClick={onSkipForward}
           variant="outline"
           size="icon"
-          className="h-10 w-10"
+          className="size-11 rounded-md"
           aria-label="Skip forward 10 seconds"
         >
           <SkipForward className="h-5 w-5" />

@@ -6,6 +6,7 @@ function Map({
   isDarkMode,
   selectedCountry,
   alreadySelectedCountryObject,
+  size = 500,
 }: MapProps) {
   const pinnedCountryColor = selectedCountry
     ? { [selectedCountry]: "#DC2626" }
@@ -26,7 +27,7 @@ function Map({
       hoverColor="#9CA3AF"
       selectColor=" #c75a2d"
       cityColors={countryColors}
-      size={500}
+      size={size}
       onSelect={(state) => {
         if (!state) return;
         handleCountrySelect(state);

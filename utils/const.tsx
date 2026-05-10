@@ -2,55 +2,55 @@ import type { CSSProperties } from "react";
 
 export const themeColor = "#c75a2d";
 export const themeHoverColor = "#b24c24";
-export const borderRadius = "10.5rem";
+export const borderRadius = "0.5rem";
 
 export const appSectionClassName =
-  "min-h-[80vh] w-full bg-[radial-gradient(circle_at_top,_#fffdfb_0%,_#f9f2eb_52%,_#f3e7dc_100%)] px-4 py-8 text-[#35241b] sm:px-6 lg:px-8 justify-self-center";
+  "min-h-screen w-full bg-[linear-gradient(135deg,_#f7f8f2_0%,_#eef5f1_46%,_#fbf4ed_100%)] px-4 py-6 text-[#35241b] sm:px-6 sm:py-8 lg:px-8";
 export const appShellClassName =
-  "mx-auto flex w-full max-w-5xl flex-col items-center gap-10 md:gap-14";
+  "mx-auto flex w-full max-w-6xl flex-col items-center gap-6 sm:gap-8 lg:gap-10";
 export const heroContainerClassName =
-  "flex flex-col items-center gap-6 text-center";
+  "flex w-full max-w-3xl flex-col items-center gap-4 text-center sm:gap-5";
 export const heroIconContainerClassName =
-  "flex size-28 items-center justify-center rounded-full bg-[#f7e8df] shadow-[0_18px_45px_-32px_rgba(81,52,34,0.9)] sm:size-32";
+  "flex size-16 items-center justify-center rounded-lg bg-[#e7f0e8] shadow-[0_16px_34px_-28px_rgba(50,77,62,0.85)] sm:size-20";
 export const displayFontClassName = "font-serif";
-export const heroTitleClassName = `${displayFontClassName} text-5xl font-semibold`;
+export const heroTitleClassName = `${displayFontClassName} text-3xl font-semibold leading-tight text-[#24382d] sm:text-4xl lg:text-5xl`;
 export const heroSubtitleClassName =
-  "mx-auto inline-block px-4 py-1 text-lg text-[#756961] sm:text-2xl";
+  "mx-auto max-w-2xl text-sm leading-6 text-[#59695e] sm:text-base lg:text-lg";
 export const cardClassName =
-  "w-full max-w-2xl rounded-[2rem] border border-[#efe5dc] bg-[#fffdfa] py-8 shadow-[0_24px_60px_-28px_rgba(81,52,34,0.35)] sm:py-10";
-export const cardHeaderClassName = "gap-3 px-6 sm:px-12";
-export const cardTitleClassName = `${displayFontClassName} text-center text-5xl font-semibold text-[#2f1d17] sm:text-5xl`;
+  "w-full max-w-2xl rounded-lg border border-[#dfe8dd] bg-white/95 py-5 shadow-[0_20px_45px_-34px_rgba(36,56,45,0.55)] sm:py-6";
+export const cardHeaderClassName = "gap-2 px-4 sm:px-6 lg:px-8";
+export const cardTitleClassName = `${displayFontClassName} text-center text-2xl font-semibold leading-tight text-[#24382d] sm:text-3xl lg:text-4xl`;
 export const cardDescriptionClassName =
-  "text-center text-lg text-[#8b7d74] sm:text-2xl";
-export const cardContentClassName = "px-6 sm:px-12";
-export const sectionHeadingClassName = `${displayFontClassName} text-2xl font-semibold text-[#2f1d17] sm:text-3xl`;
-export const bodyTextClassName = "text-lg text-[#7d7068] sm:text-xl";
+  "mx-auto max-w-2xl text-center text-sm leading-6 text-[#657167] sm:text-base";
+export const cardContentClassName = "px-4 sm:px-6 lg:px-8";
+export const sectionHeadingClassName = `${displayFontClassName} text-lg font-semibold leading-snug text-[#24382d] sm:text-xl lg:text-2xl`;
+export const bodyTextClassName = "text-sm leading-6 text-[#657167] sm:text-base";
 export const fieldLabelClassName =
-  "text-xl font-semibold text-[#2f1d17] sm:text-2xl";
+  "text-sm font-semibold text-[#24382d] sm:text-base";
 export const inputClassName =
-  "h-15 rounded-[1.35rem] border-[#e6ddd5] bg-white px-6 text-lg text-[#5b4d46] placeholder:text-[#8b7d74] shadow-none focus-visible:border-[#dba57a] focus-visible:ring-[#e6c4a8]/40 sm:h-18 sm:text-2xl";
+  "min-h-12 rounded-md border-[#d8e2d6] bg-white px-4 py-3 text-base text-[#3f4c43] shadow-none placeholder:text-[#889589] focus-visible:border-[#7fa789] focus-visible:ring-[#b8d0bd]/45";
 export const primaryButtonClassName =
-  "h-15 w-full rounded-[1.35rem] text-lg font-semibold text-white shadow-none hover:bg-[#b24c24] sm:h-18 sm:text-2xl";
+  "min-h-12 w-full rounded-md px-4 py-3 text-sm font-semibold text-white shadow-none hover:bg-[#b24c24] sm:text-base";
 export const secondaryButtonClassName =
-  "h-13 w-full rounded-[1.2rem] border-[#eadfd6] bg-white text-base font-medium text-[#4c372d] hover:bg-[#fcf5ef] sm:h-14 sm:text-lg";
+  "min-h-12 w-full rounded-md border-[#d8e2d6] bg-white px-4 py-3 text-sm font-medium text-[#324d3e] hover:bg-[#f2f7f3] sm:text-base";
 export const primaryButtonStyle: CSSProperties = {
   background: themeColor,
   borderRadius,
 };
 export const accentLinkClassName =
-  "inline-block text-lg font-medium transition-colors hover:text-[#a94520] sm:text-xl";
+  "inline-block min-h-11 text-sm font-medium leading-11 transition-colors hover:text-[#a94520] sm:text-base";
 export const infoPanelClassName =
-  "rounded-[1.5rem] border border-[#efe5dc] bg-[#fcf6f0] p-5 w-auto";
+  "w-full rounded-lg border border-[#dfe8dd] bg-white/90 p-4 shadow-[0_14px_34px_-30px_rgba(36,56,45,0.5)] sm:p-5";
 export const switchRowClassName =
-  "flex items-center justify-between gap-4 rounded-[1.35rem] border border-[#efe5dc] bg-white px-5 py-4";
+  "flex min-h-12 items-center justify-between gap-4 rounded-md border border-[#d8e2d6] bg-white px-4 py-3";
 export const switchLabelClassName =
-  "text-lg font-semibold text-[#2f1d17] sm:text-xl";
+  "text-sm font-semibold text-[#24382d] sm:text-base";
 export const previewShellClassName =
-  "relative min-h-[520px] overflow-hidden rounded-[1.5rem] border border-[#efe5dc] bg-[#fffaf6] p-4";
+  "relative w-full overflow-hidden rounded-lg border border-[#dfe8dd] bg-white/95 p-3 shadow-[0_20px_45px_-34px_rgba(36,56,45,0.55)] sm:p-4";
 export const previewSurfaceClassName =
-  "h-full overflow-y-auto rounded-[1.35rem] border border-[#e7d7ca] bg-white bg-cover bg-center bg-no-repeat p-5";
+  "min-h-[70vh] overflow-y-auto rounded-lg border border-[#d8e2d6] bg-white bg-cover bg-center bg-no-repeat p-4 sm:p-5";
 export const previewTextareaClassName =
-  "min-h-[420px] w-full rounded-[1.35rem] border border-[#e6ddd5] bg-[#fffdfa] p-5 text-base leading-7 text-[#4c372d] shadow-none outline-none";
+  "min-h-[45vh] w-full resize-y rounded-md border border-[#d8e2d6] bg-white/95 p-4 text-sm leading-6 text-[#3f4c43] shadow-none outline-none sm:min-h-[420px] sm:text-base sm:leading-7";
 
 
   export const checkboxTexts = [

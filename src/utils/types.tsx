@@ -46,6 +46,7 @@ export interface MapProps {
   isDarkMode: boolean;
   selectedCountry: string;
   alreadySelectedCountryObject: Record<string, string>;
+  size?: number;
 }
 
 export interface GeographyFeature {

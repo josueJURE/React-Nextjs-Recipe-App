@@ -26,7 +26,6 @@ import {
   secondaryButtonClassName,
   themeColor,
   checkboxTexts,
-  formFields,
 } from "@/utils/const";
 
 import { currentYear } from "@/utils/helper-functions/helper-functions";
@@ -36,7 +35,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -55,7 +53,6 @@ import {
   type SignInForm,
 } from "@/lib/validations/user-choices";
 import { CheckBox } from "@/components/ui/checkbox";
-import { validateAuthorizationCode } from "better-auth";
 
 const year = new Date();
 
@@ -113,32 +110,34 @@ export default function SignIn() {
   };
 
   return (
-    <section className={`${appSectionClassName} h-screen`}>
-      <div className="flex justify-evenly items-center">
-        <Card className={cardClassName}>
-          <div className={`${heroContainerClassName} max-w-2xl `}>
+    <section className={appSectionClassName}>
+      <div className="mx-auto grid w-full max-w-6xl gap-4 lg:min-h-[calc(100vh-4rem)] lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <Card className={`${cardClassName} order-2 max-w-none lg:order-1`}>
+          <div className={`${heroContainerClassName} px-4 sm:px-6 lg:px-8`}>
             <div className={heroIconContainerClassName}>
               <ChefHat
-                className="size-12 sm:size-14"
+                className="size-9 sm:size-10"
                 style={{ color: themeColor }}
                 strokeWidth={2.4}
               />
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <h1 className={heroTitleClassName}>Culinary Explorer</h1>
               <p className={heroSubtitleClassName}>
                 Discover authentic recipes from around the world
               </p>
 
-              {checkboxTexts.map((text) => {
-                return <CheckBox key={text.id} text={text.text} />;
-              })}
+              <div className="grid gap-2 pt-2 text-left">
+                {checkboxTexts.map((text) => {
+                  return <CheckBox key={text.id} text={text.text} />;
+                })}
+              </div>
             </div>
           </div>
         </Card>
 
-        <Card className={cardClassName}>
+        <Card className={`${cardClassName} order-1 max-w-none lg:order-2`}>
           <CardHeader className={cardHeaderClassName}>
             <CardTitle className={cardTitleClassName}>Welcome back</CardTitle>
             <CardDescription className={cardDescriptionClassName}>
@@ -150,7 +149,7 @@ export default function SignIn() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="mt-4 space-y-7 sm:space-y-8"
+                className="mt-3 space-y-5 sm:space-y-6"
               >
                 <FormField
                   control={form.control}
@@ -172,8 +171,6 @@ export default function SignIn() {
                     </FormItem>
                   )}
                 />
-
-            
 
                 <FormField
                   control={form.control}
@@ -197,7 +194,7 @@ export default function SignIn() {
                   )}
                 />
 
-                <div className="space-y-5 pt-2">
+                <div className="space-y-4 pt-1">
                   <Button
                     className={primaryButtonClassName}
                     style={primaryButtonStyle}
@@ -207,7 +204,7 @@ export default function SignIn() {
                     {isLoading ? "Signing In..." : "Sign In"}
                   </Button>
 
-                  <div className="space-y-4 pt-1 text-center">
+                  <div className="space-y-3 pt-1 text-center">
                     <Link
                       href="/forgot-password"
                       className={accentLinkClassName}
@@ -216,7 +213,7 @@ export default function SignIn() {
                       Forgot password?
                     </Link>
 
-                    <p className="text-lg text-[#7d7068] sm:text-xl">
+                    <p className="text-sm leading-6 text-[#657167] sm:text-base">
                       Don&apos;t have an account?{" "}
                       <Link
                         href="/sign-up"
@@ -228,7 +225,7 @@ export default function SignIn() {
                     </p>
                   </div>
 
-                  <div className="pt-4">
+                  <div className="pt-2">
                     <div className="mb-4 flex items-center gap-4 text-sm text-[#a2948a]">
                       <span className="h-px flex-1 bg-[#eadfd6]" />
                       <span>or continue with</span>
@@ -245,11 +242,11 @@ export default function SignIn() {
                       <FcGoogle className="size-5" />
                       Continue with Google
                     </Button>
-                    <div className="flex justify-center mt-2.5">
-                      <CardFooter className="text-center">{`${currentYear(
+                    <p className="mt-3 text-center text-xs leading-5 text-[#657167] sm:text-sm">
+                      {`${currentYear(
                         year
-                      )} Culinary Explorer. All Rights Reserved`}</CardFooter>
-                    </div>
+                      )} Culinary Explorer. All Rights Reserved`}
+                    </p>
                   </div>
                 </div>
               </form>
