@@ -4,6 +4,8 @@ export const themeColor = "#c75a2d";
 export const themeHoverColor = "#b24c24";
 export const borderRadius = "0.5rem";
 
+export const tabsTriggerClassName = "min-h-11 rounded-md px-3 py-2 text-sm font-semibold text-[#657167] hover:text-[#24382d] data-[state=active]:border-[#c75a2d] data-[state=active]:bg-[#c75a2d] data-[state=active]:text-white data-[state=active]:shadow-sm sm:text-base"
+
 export const appSectionClassName =
   "min-h-screen w-full bg-[linear-gradient(135deg,_#f7f8f2_0%,_#eef5f1_46%,_#fbf4ed_100%)] px-4 py-6 text-[#35241b] sm:px-6 sm:py-8 lg:px-8";
 export const appShellClassName =

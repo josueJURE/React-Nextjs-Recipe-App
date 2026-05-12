@@ -39,6 +39,7 @@ import {
   primaryButtonStyle,
   sectionHeadingClassName,
   themeColor,
+  tabsTriggerClassName,
 } from "@/utils/const";
 
 import { retrieveUserFirstName } from "@/utils/helper-functions/helper-functions";
@@ -53,6 +54,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function RecipeUIClient(userProps: RecipeUIProps) {
   const router = useRouter();
@@ -339,8 +341,6 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
     return result;
   }, [arraySelectedCountries]);
 
-
-
   /*
 
   #c75a2d
@@ -378,6 +378,26 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
 
   return (
     <section className={appSectionClassName}>
+      <div className="flex w-full justify-center px-4 pb-4">
+        <Tabs
+          defaultValue="build-menu"
+          className="w-full max-w-md items-center"
+        >
+          <TabsList className="!h-auto grid w-full grid-cols-2 rounded-lg border border-[#d8e2d6] bg-white/80 p-1 shadow-[0_14px_34px_-30px_rgba(36,56,45,0.5)]">
+            <TabsTrigger className={tabsTriggerClassName} value="build-menu">
+              Build your menu
+            </TabsTrigger>
+            <TabsTrigger className={tabsTriggerClassName} value="account">
+              Take picture
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent className={appSectionClassName} value="account">
+            Make changes to your account here.
+          </TabsContent>
+          <TabsContent value="build-menu"></TabsContent>
+        </Tabs>
+      </div>
+
       <div className={appShellClassName}>
         <div className={heroContainerClassName}>
           {!isMenuDisplayed && (
