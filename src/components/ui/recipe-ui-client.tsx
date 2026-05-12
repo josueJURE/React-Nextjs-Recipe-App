@@ -383,7 +383,7 @@ export default function RecipeUIClient(userProps: RecipeUIProps) {
           defaultValue="build-menu"
           className="w-full max-w-md items-center"
         >
-          <TabsList className="h-auto grid w-full grid-cols-2 rounded-lg border border-[#d8e2d6] bg-white/80 p-1 shadow-[0_14px_34px_-30px_rgba(36,56,45,0.5)]">
+          <TabsList className="!h-auto grid w-full grid-cols-2 rounded-lg border border-[#d8e2d6] bg-white/80 p-1 shadow-[0_14px_34px_-30px_rgba(36,56,45,0.5)]">
             <TabsTrigger className={tabsTriggerClassName} value="build-menu">
               Build your menu
             </TabsTrigger>
