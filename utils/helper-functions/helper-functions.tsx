@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 export function formatDatefunction(date: Date | string  ): string {
     return new Date(date).toLocaleDateString('en-GB', {
         day: '2-digit',
@@ -20,6 +27,8 @@ export function formatDatefunction(date: Date | string  ): string {
   export function toggleColor(isChecked: boolean, uncheckedColor: string, checkedColor: string): string {
     return isChecked ? checkedColor : uncheckedColor;
   }
+
+
 
 
 
