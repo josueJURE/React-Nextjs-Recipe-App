@@ -14,12 +14,12 @@ import {
   tabsTriggerClassName,
 } from "@/utils/const";
 
-export default function TabComponent() {
+export default function TabComponent(): React.JSX.Element {
   const [stream, setStream] = useState<MediaStream | null>(null);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  async function startCamera() {
+  async function startCamera(): Promise<void> {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -35,15 +35,17 @@ export default function TabComponent() {
     }
   }
 
-  function stopCamera() {
+  function stopCamera(): void {
     if (stream) {
-      console.log("typeof stream.getTracks()", typeof stream.getTracks());
-      stream.getTracks().forEach((track) => track.stop());
+      const tracks = stream.getTracks();
+
+      for (const track of tracks) {
+        track.stop();
+      }
+
       setStream(null);
     }
   }
-
-
 
   return (
     <div className="flex w-full justify-center px-4 pb-6 sm:px-6 lg:px-8">
@@ -88,17 +90,16 @@ export default function TabComponent() {
               >
                 Start camera
               </Button>
-              {stream && <Button
-                className={secondaryButtonClassName}
-                onClick={
-                  stopCamera
-                }
-                type="button"
-                variant="outline"
-              >
-                Stop camera
-              </Button>  }
-          
+              {stream && (
+                <Button
+                  className={secondaryButtonClassName}
+                  onClick={stopCamera}
+                  type="button"
+                  variant="outline"
+                >
+                  Stop camera
+                </Button>
+              )}
             </div>
           </section>
         </TabsContent>
