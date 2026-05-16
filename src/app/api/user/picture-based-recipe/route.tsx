@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { imageToText } from "@/lib/chat-completions/openai";
+import { isProduction } from "@/lib/server/env";
 import { textToImageSchema } from "@/lib/validations/user-choices";
 
 export async function POST(request: NextRequest) {
@@ -23,16 +24,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const isProduction = process.env.NODE_ENV === "production";
-
     if (!isProduction) {
-      // Development: Use a mock description to save OpenAI API tokens
       const description =
         "Mock description: I can see a few ingredients on a kitchen surface.";
 
       return NextResponse.json({ description }, { status: 200 });
     } else {
-      // Production: Use actual OpenAI API
       const stream = await imageToText(userImageToTextValidation.data.image);
       let description = "";
 

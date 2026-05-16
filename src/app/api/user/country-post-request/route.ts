@@ -11,6 +11,7 @@ type UpdatedPinnedCountriesRow = {
 };
 
 import { chatCompletion } from "@/lib/chat-completions/openai";
+import { isProduction } from "@/lib/server/env";
 
 export async function POST(request: NextRequest) {
   try {
@@ -75,7 +76,6 @@ export async function POST(request: NextRequest) {
     console.log("is other picked up", other);
 
     const encoder = new TextEncoder();
-    const isProduction = process.env.NODE_ENV === "production";
 
     // Mock recipe for development to save tokens
     const mockRecipe = `(mockRecipe aa)One traditional Turkish dish that can easily be made vegan is "Borscht."

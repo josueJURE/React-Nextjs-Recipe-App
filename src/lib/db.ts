@@ -1,5 +1,7 @@
 import { Pool, type QueryResultRow } from "pg";
 
+import { isProduction } from "@/lib/server/env";
+
 const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
@@ -16,7 +18,7 @@ const db =
     connectionString,
   });
 
-if (process.env.NODE_ENV !== "production") {
+if (!isProduction) {
   globalForPg.pgPool = db;
 }
 
