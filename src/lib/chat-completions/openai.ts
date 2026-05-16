@@ -29,22 +29,19 @@ export async function chatCompletion(
   return stream;
 }
 
-
-export async function imageGeneration(recipe:string) {
+export async function imageGeneration(recipe: string) {
   const image = await openaiObject.images.generate({
     model: "dall-e-3",
     prompt: recipe,
     n: 1,
     size: "1024x1024",
-  })
+  });
 
-  const result =  image?.data && image.data[0]?.url;
-  
-  
-  console.log(result)
+  const result = image?.data && image.data[0]?.url;
 
-  return  result
-  
+  console.log(result);
+
+  return result;
 }
 
 export async function audioGeneration(recipe: string) {
@@ -58,10 +55,31 @@ export async function audioGeneration(recipe: string) {
   const buffer = Buffer.from(await audio.arrayBuffer());
 
   // Convert buffer to base64
-  const base64Audio = buffer.toString('base64');
+  const base64Audio = buffer.toString("base64");
 
   // Return as a data URL that can be used by audio players
   return `data:audio/mp3;base64,${base64Audio}`;
 }
 
+export async function imageToText(picture: string) {
+  const response = await openaiObject.chat.completions.create({
+    model: "gpt-4o",
+    messages: [
+      {
+        role: "user",
+        content: [
+          { type: "text", text: "Describe what you see" },
+          {
+            type: "image_url",
+            image_url: {
+              url: picture,
+            },
+          },
+        ],
+      },
+    ],
+    stream: true,
+  });
 
+  return response;
+}

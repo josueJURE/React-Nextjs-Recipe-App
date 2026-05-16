@@ -30,6 +30,16 @@ export const userChoicesSchema = z.object({
   isImageGenerated: z.boolean(),
 });
 
+export const textToImageSchema = z.object({
+  image: z
+    .string()
+    .min(1, "Image is required")
+    .max(20_000_000, "Image is too large")
+    .refine((value) => value.startsWith("data:image/"), {
+      message: "Image must be a data URL",
+    }),
+});
+
 export const emailSchema = z.email();
 
 export const countrySchema = z
@@ -90,3 +100,4 @@ export type EmailSchema = z.infer<typeof emailSchema>;
 
 export type PinnedCountrySchema = z.infer<typeof pinnedCountrySchema>;
 export type EmptySelectedCountryArray = z.infer<typeof emptySelectedCountryArray>;
+export type TextToImageSchema = z.infer<typeof textToImageSchema>;

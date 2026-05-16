@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,11 +17,20 @@ import {
 
 export default function TabComponent(): React.JSX.Element {
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [imageDescription, setImageDescription] = useState<string>("");
+  const [pictureError, setPictureError] = useState<string | null>(null);
+  const [isDescribingPicture, setIsDescribingPicture] =
+    useState<boolean>(false);
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   async function startCamera(): Promise<void> {
     try {
+      setCapturedImage(null);
+      setImageDescription("");
+      setPictureError(null);
+
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: false,
@@ -44,6 +54,78 @@ export default function TabComponent(): React.JSX.Element {
       }
 
       setStream(null);
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+  }
+
+  function takePicture(): string | null {
+    const video = videoRef.current;
+
+    if (!video || video.videoWidth === 0 || video.videoHeight === 0) {
+      return null;
+    }
+
+    const canvas = document.createElement("canvas");
+    const maxDimension = 1024;
+    const scale = Math.min(
+      1,
+      maxDimension / Math.max(video.videoWidth, video.videoHeight)
+    );
+    canvas.width = Math.round(video.videoWidth * scale);
+    canvas.height = Math.round(video.videoHeight * scale);
+
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      return null;
+    }
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const image = canvas.toDataURL("image/jpeg", 0.85);
+    setCapturedImage(image);
+    return image;
+  }
+
+  async function sendPictureToAi(image: string | null) {
+    if (!image) {
+      setPictureError("Could not capture an image");
+      return;
+    }
+
+    setIsDescribingPicture(true);
+    setImageDescription("");
+    setPictureError(null);
+
+    try {
+      const response = await fetch("/api/user/picture-based-recipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image }),
+      });
+
+      const data = (await response.json()) as {
+        description?: string;
+        message?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(data.message ?? "Image description failed");
+      }
+
+      setImageDescription(data.description ?? "");
+      console.log("image description", data.description);
+    } catch (error) {
+      console.error("Error response:", error);
+      setPictureError(
+        error instanceof Error ? error.message : "Image description failed"
+      );
+    } finally {
+      setIsDescribingPicture(false);
     }
   }
 
@@ -82,15 +164,16 @@ export default function TabComponent(): React.JSX.Element {
             </div>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <Button
-                className={primaryButtonClassName}
-                onClick={startCamera}
-                style={primaryButtonStyle}
-                type="button"
-              >
-                Start camera
-              </Button>
-              {stream && (
+              {!stream ? (
+                <Button
+                  className={primaryButtonClassName}
+                  onClick={startCamera}
+                  style={primaryButtonStyle}
+                  type="button"
+                >
+                  Start camera
+                </Button>
+              ) : (
                 <Button
                   className={secondaryButtonClassName}
                   onClick={stopCamera}
@@ -100,7 +183,43 @@ export default function TabComponent(): React.JSX.Element {
                   Stop camera
                 </Button>
               )}
+              {stream && (
+                <Button
+                  className={secondaryButtonClassName}
+                  onClick={() => {
+                    const image = takePicture();
+                    void sendPictureToAi(image);
+                  }}
+                  disabled={isDescribingPicture}
+                  type="button"
+                  variant="outline"
+                >
+                  {isDescribingPicture ? "Reading picture..." : "Take a picture"}
+                </Button>
+              )}
             </div>
+
+            {capturedImage && (
+              <div className="relative mt-4 aspect-video overflow-hidden rounded-lg border border-[#d8e2d6] bg-[#f2f7f3]">
+                <Image
+                  alt="Captured ingredients"
+                  className="object-cover"
+                  fill
+                  src={capturedImage}
+                  unoptimized
+                />
+              </div>
+            )}
+
+            {imageDescription && (
+              <p className={`${bodyTextClassName} mt-4`}>{imageDescription}</p>
+            )}
+
+            {pictureError && (
+              <p className="mt-4 text-sm font-medium text-red-600">
+                {pictureError}
+              </p>
+            )}
           </section>
         </TabsContent>
 
