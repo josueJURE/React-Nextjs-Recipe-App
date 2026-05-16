@@ -23,14 +23,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const stream = await imageToText(userImageToTextValidation.data.image);
-    let description = "";
+    const isProduction = process.env.NODE_ENV === "production";
 
-    for await (const chunk of stream) {
-      description += chunk.choices[0]?.delta?.content ?? "";
+    if (!isProduction) {
+      // Development: Use a mock description to save OpenAI API tokens
+      const description =
+        "Mock description: I can see a few ingredients on a kitchen surface.";
+
+      return NextResponse.json({ description }, { status: 200 });
+    } else {
+      // Production: Use actual OpenAI API
+      const stream = await imageToText(userImageToTextValidation.data.image);
+      let description = "";
+
+      for await (const chunk of stream) {
+        description += chunk.choices[0]?.delta?.content ?? "";
+      }
+
+      return NextResponse.json({ description }, { status: 200 });
     }
-
-    return NextResponse.json({ description }, { status: 200 });
   } catch (error) {
     console.error("Error in POST handler:", error);
     return NextResponse.json(
