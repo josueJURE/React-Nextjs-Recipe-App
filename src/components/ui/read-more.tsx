@@ -87,6 +87,9 @@ export function ReadMore({
         )}
 
         <AlertDialogCompoment
+          title="Delete recipe?"
+          description="This action cannot be undone."
+        
           onConfirm={handleDeleteClick}
           trigger={
             <Button
