@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { imageToText } from "@/lib/chat-completions/openai";
+import { isProduction } from "@/lib/server/env";
 import { textToImageSchema } from "@/lib/validations/user-choices";
 
 export async function POST(request: NextRequest) {
@@ -23,14 +24,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const stream = await imageToText(userImageToTextValidation.data.image);
-    let description = "";
+    if (!isProduction) {
+      const description =
+        "Mock description: I can see a few ingredients on a kitchen surface.";
 
-    for await (const chunk of stream) {
-      description += chunk.choices[0]?.delta?.content ?? "";
+      return NextResponse.json({ description }, { status: 200 });
+    } else {
+      const stream = await imageToText(userImageToTextValidation.data.image);
+      let description = "";
+
+      for await (const chunk of stream) {
+        description += chunk.choices[0]?.delta?.content ?? "";
+      }
+
+      return NextResponse.json({ description }, { status: 200 });
     }
-
-    return NextResponse.json({ description }, { status: 200 });
   } catch (error) {
     console.error("Error in POST handler:", error);
     return NextResponse.json(

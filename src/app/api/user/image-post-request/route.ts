@@ -3,6 +3,7 @@ import { readFile } from "fs/promises";
 import { join } from "path";
 
 import { imageGeneration } from "@/lib/chat-completions/openai";
+import { isProduction } from "@/lib/server/env";
 
 import { menuContentForImageSchema } from "@/lib/validations/user-choices";
 
@@ -26,7 +27,6 @@ export async function POST(request: NextRequest) {
     const { menuContent } = menuContentOPENAIValidation.data;
     console.log("menuContentz", menuContent);
 
-    const isProduction = process.env.NODE_ENV === "production";
     let openAIimage: string | null | undefined;
 
     if (!isProduction) {
