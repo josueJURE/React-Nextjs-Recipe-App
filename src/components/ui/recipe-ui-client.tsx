@@ -45,6 +45,7 @@ import {
 import { retrieveUserFirstName } from "@/utils/helper-functions/helper-functions";
 
 import DietaryRequirements from "@/components/ui/dietary-requirements";
+import { AlertDialogCompoment } from "@/components/dialog";
 
 import { Button } from "@/components/ui/button";
 import {

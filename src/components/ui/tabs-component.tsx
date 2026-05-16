@@ -15,6 +15,8 @@ import {
   tabsTriggerClassName,
 } from "@/utils/const";
 
+import { AlertDialogCompoment } from "@/components/dialog";
+
 export default function TabComponent(): React.JSX.Element {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -184,18 +186,28 @@ export default function TabComponent(): React.JSX.Element {
                 </Button>
               )}
               {stream && (
-                <Button
-                  className={secondaryButtonClassName}
-                  onClick={() => {
+                <AlertDialogCompoment
+                title="Take and analyze this picture?"
+                description="We’ll capture the current camera frame and use it to suggest a recipe."
+                cancelLabel="Cancel"
+                actionLabel="Analyse picture"
+                 onConfirm={() => {
                     const image = takePicture();
                     void sendPictureToAi(image);
                   }}
-                  disabled={isDescribingPicture}
-                  type="button"
-                  variant="outline"
-                >
-                  {isDescribingPicture ? "Reading picture..." : "Take a picture"}
-                </Button>
+                  trigger={
+                    <Button
+                      className={secondaryButtonClassName}
+                      disabled={isDescribingPicture}
+                      type="button"
+                      variant="outline"
+                    >
+                      {isDescribingPicture
+                        ? "Reading picture..."
+                        : "Take a picture"}
+                    </Button>
+                  }
+                />
               )}
             </div>
 

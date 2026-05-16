@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,32 +14,45 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
-interface AlertDialogCompomentProps {
-  onConfirm: () => Promise<void> | void;
 
-  trigger?: ReactNode;
-}
+type AlertDialogCompomentProps = {
+  onConfirm: () => void;
+  trigger?: React.ReactNode;
+  title: string;
+  description: string;
+  cancelLabel?: string;
+  actionLabel?: string;
+  buttonLabel?: string;
+};
 
 export function AlertDialogCompoment({
   onConfirm,
   trigger,
+  title,
+  description,
+  cancelLabel = "Cancel",
+  actionLabel = "Continue",
+
 }: AlertDialogCompomentProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        {trigger ?? <Button variant="outline">Delete</Button>}
+        {trigger ?? <Button variant="outline"></Button>}
       </AlertDialogTrigger>
+
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete this
-            recipe from your account.
+            {description}
           </AlertDialogDescription>
         </AlertDialogHeader>
+
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>Continue</AlertDialogAction>
+          <AlertDialogCancel>{cancelLabel}</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm}>
+            {actionLabel}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
