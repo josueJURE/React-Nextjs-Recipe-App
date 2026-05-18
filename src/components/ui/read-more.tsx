@@ -89,7 +89,9 @@ export function ReadMore({
         <AlertDialogCompoment
           title="Delete recipe?"
           description="This action cannot be undone."
-        
+          actionLabel="Delete"
+          actionLoadingLabel="Deleting..."
+          disabled={isDeleting}
           onConfirm={handleDeleteClick}
           trigger={
             <Button
@@ -100,7 +102,7 @@ export function ReadMore({
               disabled={isDeleting || !onDelete}
               className="size-11 rounded-md text-[#8b3b26] hover:bg-red-50 hover:text-red-700"
             >
-              <Trash2 className="size-4" />
+              <Trash2 className={isDeleting ? "size-4 animate-pulse" : "size-4"} />
             </Button>
           }
         />
