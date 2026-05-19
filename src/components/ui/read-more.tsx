@@ -68,16 +68,21 @@ export function ReadMore({
 
   return (
     <Tabs
-      defaultValue="build-menu"
+      defaultValue="recipe"
       className="mx-auto w-full max-w-6xl items-center gap-4"
     >
-      <TabsList className="!h-auto mx-auto grid w-full max-w-md grid-cols-2 rounded-lg border border-[#d8e2d6] bg-white/80 p-1 shadow-[0_14px_34px_-30px_rgba(36,56,45,0.5)]">
+      <TabsList className="!h-auto mx-auto grid w-full max-w-md grid-cols-3 rounded-lg border border-[#d8e2d6] bg-white/80 p-1 shadow-[0_14px_34px_-30px_rgba(36,56,45,0.5)]">
         <TabsTrigger className={tabsTriggerClassName} value="recipe">
-          See your recipe
+          your recipes
         </TabsTrigger>
-        <TabsTrigger className={tabsTriggerClassName} value="nutrition">
-          
-        </TabsTrigger>
+        <TabsTrigger
+          className={tabsTriggerClassName}
+          value="nutrition"
+        >Nutrition</TabsTrigger>
+         <TabsTrigger
+          className={tabsTriggerClassName}
+          value="shopping-list"
+        >Shopping-list</TabsTrigger>
       </TabsList>
 
       <TabsContent className="mt-4 w-full" value="recipe">
@@ -144,6 +149,11 @@ export function ReadMore({
       <TabsContent className="mt-4 w-full" value="nutrition">
         <Card>
           <div>Nutrition</div>
+        </Card>
+      </TabsContent>
+      <TabsContent className="mt-4 w-full" value="shopping-list">
+        <Card>
+          <div>Shopping List</div>
         </Card>
       </TabsContent>
     </Tabs>
