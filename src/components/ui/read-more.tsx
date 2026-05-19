@@ -10,9 +10,23 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// import {
+
+//   infoPanelClassName,
+//   primaryButtonClassName,
+//   primaryButtonStyle,
+//   secondaryButtonClassName,
+//   sectionHeadingClassName,
+//   tabsTriggerClassName,
+// } from "@/utils/const";
 
 import { formatDatefunction } from "@/utils/helper-functions/helper-functions";
-import { bodyTextClassName, themeColor } from "@/utils/const";
+import {
+  bodyTextClassName,
+  themeColor,
+  tabsTriggerClassName,
+} from "@/utils/const";
 
 import type { ReadMoreProps } from "@/utils/types";
 import { Trash2 } from "lucide-react";
@@ -53,60 +67,85 @@ export function ReadMore({
   };
 
   return (
-    <Card
-      id={id}
-      className="gap-4 rounded-lg border-[#dfe8dd] bg-white/95 py-0 shadow-[0_14px_35px_-30px_rgba(36,56,45,0.5)]"
+    <Tabs
+      defaultValue="build-menu"
+      className="mx-auto w-full max-w-6xl items-center gap-4"
     >
-      <CardHeader className="px-4 pt-4 pb-0 sm:px-5 sm:pt-5">
-        <CardDescription className="text-sm font-medium text-[#657167] sm:text-base">
-          {displayDate}
-        </CardDescription>
-      </CardHeader>
-      <CardContent id={contentId} className="px-4 sm:px-5">
-        <p className={bodyTextClassName}>
-          {beginText}
-          {itCanOverFlow && !isExpanded ? "..." : ""}
-          {itCanOverFlow && isExpanded && endText ? ` ${endText}` : ""}
-        </p>
-      </CardContent>
+      <TabsList className="!h-auto mx-auto grid w-full max-w-md grid-cols-2 rounded-lg border border-[#d8e2d6] bg-white/80 p-1 shadow-[0_14px_34px_-30px_rgba(36,56,45,0.5)]">
+        <TabsTrigger className={tabsTriggerClassName} value="recipe">
+          See your recipe
+        </TabsTrigger>
+        <TabsTrigger className={tabsTriggerClassName} value="nutrition">
+          
+        </TabsTrigger>
+      </TabsList>
 
-      <CardFooter className="flex flex-wrap items-center justify-between gap-3 px-4 pb-4 sm:px-5 sm:pb-5">
-        {itCanOverFlow ? (
-          <Button
-            variant="ghost"
-            className="min-h-11 rounded-md px-4 text-sm font-semibold hover:bg-[#f2f7f3] sm:text-base"
-            style={{ color: themeColor }}
-            aria-expanded={isExpanded}
-            aria-controls={contentId}
-            onClick={() => setIsExpanded((expanded) => !expanded)}
-          >
-            {isExpanded ? "Show less" : "Show more"}
-          </Button>
-        ) : (
-          <span aria-hidden="true" />
-        )}
+      <TabsContent className="mt-4 w-full" value="recipe">
+        <Card
+          id={id}
+          className="gap-4 rounded-lg border-[#dfe8dd] bg-white/95 py-0 shadow-[0_14px_35px_-30px_rgba(36,56,45,0.5)]"
+        >
+          <CardHeader className="px-4 pt-4 pb-0 sm:px-5 sm:pt-5">
+            <CardDescription className="text-sm font-medium text-[#657167] sm:text-base">
+              {displayDate}
+            </CardDescription>
+          </CardHeader>
+          <CardContent id={contentId} className="px-4 sm:px-5">
+            <p className={bodyTextClassName}>
+              {beginText}
+              {itCanOverFlow && !isExpanded ? "..." : ""}
+              {itCanOverFlow && isExpanded && endText ? ` ${endText}` : ""}
+            </p>
+          </CardContent>
 
-        <AlertDialogCompoment
-          title="Delete recipe?"
-          description="This action cannot be undone."
-          actionLabel="Delete"
-          actionLoadingLabel="Deleting..."
-          disabled={isDeleting}
-          onConfirm={handleDeleteClick}
-          trigger={
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label="Delete recipe"
-              disabled={isDeleting || !onDelete}
-              className="size-11 rounded-md text-[#8b3b26] hover:bg-red-50 hover:text-red-700"
-            >
-              <Trash2 className={isDeleting ? "size-4 animate-pulse" : "size-4"} />
-            </Button>
-          }
-        />
-      </CardFooter>
-    </Card>
+          <CardFooter className="flex flex-wrap items-center justify-between gap-3 px-4 pb-4 sm:px-5 sm:pb-5">
+            {itCanOverFlow ? (
+              <>
+                <Button
+                  variant="ghost"
+                  className="min-h-11 rounded-md px-4 text-sm font-semibold hover:bg-[#f2f7f3] sm:text-base"
+                  style={{ color: themeColor }}
+                  aria-expanded={isExpanded}
+                  aria-controls={contentId}
+                  onClick={() => setIsExpanded((expanded) => !expanded)}
+                >
+                  {isExpanded ? "Show less" : "Show more"}
+                </Button>
+              </>
+            ) : (
+              <span aria-hidden="true" />
+            )}
+
+            <AlertDialogCompoment
+              title="Delete recipe?"
+              description="This action cannot be undone."
+              actionLabel="Delete"
+              actionLoadingLabel="Deleting..."
+              disabled={isDeleting}
+              onConfirm={handleDeleteClick}
+              trigger={
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Delete recipe"
+                  disabled={isDeleting || !onDelete}
+                  className="size-11 rounded-md text-[#8b3b26] hover:bg-red-50 hover:text-red-700"
+                >
+                  <Trash2
+                    className={isDeleting ? "size-4 animate-pulse" : "size-4"}
+                  />
+                </Button>
+              }
+            />
+          </CardFooter>
+        </Card>
+      </TabsContent>
+      <TabsContent className="mt-4 w-full" value="nutrition">
+        <Card>
+          <div>Nutrition</div>
+        </Card>
+      </TabsContent>
+    </Tabs>
   );
 }
